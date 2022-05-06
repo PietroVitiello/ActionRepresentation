@@ -20,7 +20,7 @@ pr = PyRep()
 plt.ion()
 
 SCENE_FILE = join(dirname(abspath(__file__)), "Simulations/coppelia_robot_arm.ttt")
-pr.launch(SCENE_FILE, headless=False)
+pr.launch(SCENE_FILE, headless=True)
 pr.start()
 pr.step_ui()
 
@@ -29,12 +29,21 @@ bot = MyRobot()
 target = Target()
 camera = VisionSensor("Vision_sensor")
 
+print(target.get_orientation())
+print(bot.robot.get_orientation())
+
 # target.set_position([0, 1, 0.1])
 
 # bot.find_jointVelo(target, 40)
-for i in range(40):
-    bot.move_arm(pr, target, 50, 5)
-# bot.nana()
+for _ in range(10):
+    target.random_pos()
+    bot.resetInitial()
+    bot.stayStill(pr, 1)
+    bot.move_arm(pr, target, 5)
+
+# initialConf = [0, math.radians(-40), 0, math.radians(-130), 0, math.radians(60), 0]
+# bot.robot.set_joint_positions(initialConf)
+# bot.stayStill(pr, 1000)
 
 # i=0
 # while i<10e6:

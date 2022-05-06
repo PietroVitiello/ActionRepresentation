@@ -24,7 +24,8 @@ class MyRobot():
         self.disable_controlLoop()
 
         # initialConf = [0, math.radians(-30), 0, math.radians(-50), 0, math.radians(20), 0]
-        initialConf = [0, 0, 0, math.radians(-90), 0, math.radians(0), 0]
+        # initialConf = [0, 0, 0, math.radians(-90), 0, math.radians(0), 0]
+        initialConf = [0, math.radians(-40), 0, math.radians(-130), 0, math.radians(60), 0]
         self.set_initialConf(initialConf)
         self.robot.set_motor_locked_at_zero_velocity(True)
 
@@ -50,18 +51,18 @@ class MyRobot():
     def get_movementDir(self, target: Shape) -> np.ndarray:
         tip = self.robot._ik_tip.get_position()
         target = target.get_position()
-        print("target: ", target)
         # self.robot._ik_target.set_position(target)
         direction = target - tip
         return direction
 
     def get_linearVelo(self, direction: np.ndarray, time: float) -> np.ndarray:
-        v = direction / 3 #time
+        v = direction / 20 #time
         # print("v ", v)
         R = self.robot.get_matrix()[:3,:3]
         # R = self.get_EErotation()[:3,:3]
         # print("\noriginal ", v)
         # print(np.matmul(np.linalg.inv(R), v))
+        # return v
         return np.matmul(np.linalg.inv(R), v)
 
     def find_jointVelo(self, v: np.ndarray) -> np.ndarray:
@@ -89,6 +90,10 @@ class MyRobot():
             direction = self.get_movementDir(target)
             # print(direction)
             v = self.get_linearVelo(direction, time)
+            print(f"\nVelocity magnitude: {np.linalg.norm(v)}")
+            print(f"Direction: {direction}")
+            print(f"Target: {target.get_position()}")
+            print(f"Position: {self.robot._ik_tip.get_position()}")
             # print("rotated v ", v)
             q = self.find_jointVelo(v)
             self.robot.set_joint_target_velocities(q)

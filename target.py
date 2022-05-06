@@ -16,10 +16,11 @@ class Target(Shape):
         self.set_color([1.0, 0.1, 0.1])
         self.set_renderable(True)
 
-        self.position_min, self.position_max = [-0.5, 0.5, 0.3], [0.5, 1, 0.3]
+        self.position_min, self.position_max = [-0.5, 0.5, 0.025], [0.5, 0.85, 0.025] #[-0.5, 0.5, 0.3], [0.5, 1, 0.3]
+        self.initailOrientation = self.get_orientation()
         self.random_pos()
 
-        self.set_dynamic(False)
+        # self.set_dynamic(False)
 
     def set_posBoundaries(self, min, max):
         self.position_min, self.position_max = min, max
@@ -27,3 +28,4 @@ class Target(Shape):
     def random_pos(self):
         pos = list(np.random.uniform(self.position_min, self.position_max))
         self.set_position(pos)
+        self.set_orientation(self.initailOrientation)
