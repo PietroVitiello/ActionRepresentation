@@ -1,9 +1,3 @@
-import matplotlib.pyplot as plt
-import numpy as np
-import math
-# import time as t
-from os.path import dirname, join, abspath
-
 from pyrep import PyRep
 from pyrep.robots.arms.lbr_iiwa_14_r820 import LBRIwaa14R820
 from pyrep.robots.arms.panda import Panda
@@ -11,8 +5,13 @@ from pyrep.robots.end_effectors.mico_gripper import MicoGripper
 from pyrep.const import ObjectType, PrimitiveShape, JointMode
 from pyrep.objects.vision_sensor import VisionSensor
 from pyrep.objects.shape import Shape
-
 from pyrep.backend import sim
+
+from quadratic import Quadratic
+
+import matplotlib.pyplot as plt
+import numpy as np
+import math
 
 class MyRobot():
 
@@ -40,12 +39,6 @@ class MyRobot():
     def resetInitial(self):
         self.robot.set_joint_positions(self.initialConf, disable_dynamics=True)
 
-    def stayStill(self, pr: PyRep, time: float):
-        self.robot.set_joint_target_velocities([0]*7)
-        n_steps = np.round(time / 0.05).astype(int)
-        for _ in range(n_steps):
-            pr.step()
-
     def get_trueJacobian(self):
         self.robot._ik_target.set_matrix(self.robot._ik_tip.get_matrix())
         sim.simCheckIkGroup(self.robot._ik_group,
@@ -62,10 +55,12 @@ class MyRobot():
 
     def get_linearVelo(self, direction: np.ndarray, time: float) -> np.ndarray:
         v = direction / time
-        R = self.robot.get_matrix()[:3,:3]
-        return np.matmul(np.linalg.inv(R), v)
+        # R = self.robot.get_matrix()[:3,:3]
+        return v #np.matmul(np.linalg.inv(R), v)
 
     def find_jointVelo(self, v: np.ndarray) -> np.ndarray:
+        R = self.robot.get_matrix()[:3,:3]
+        v = np.matmul(np.linalg.inv(R), v)
         J = self.get_trueJacobian()
         q = np.matmul(np.linalg.pinv(J.T), v)
         return q
@@ -97,9 +92,29 @@ class MyRobot():
             pr.step()
             time -= 0.05
 
-    def trajetoryNoise(self, pos: np.ndarray, target: np.ndarray, n_steps: float):
-        direction = target - pos
-        theta = np.random.uniform(-180, 180)
+    def stayStill(self, pr: PyRep, time: float):
+        self.robot.set_joint_target_velocities([0]*7)
+        n_steps = np.round(time / 0.05).astype(int)
+        for _ in range(n_steps):
+            pr.step()
+
+    def trajetoryNoise(self, pr:PyRep, target: Shape, time: float=2): #(self, pos: np.ndarray, target: np.ndarray, n_steps: float):
+        curve = Quadratic(self.robot._ik_tip.get_position(), target.get_position())
+        curve.find_middlePoint()
+        n_steps = np.round(time / 0.05).astype(int)
+
+        distance = self.get_movementDir(target)
+        direction = distance / np.linalg.norm(distance)
+        v_lin = (curve.get_archLen()/time) * direction
+
+        for _ in range(n_steps):
+            v = curve.get_tangentVelocity(self.robot._ik_tip, v_lin)
+            q = self.find_jointVelo(v)
+            self.robot.set_joint_target_velocities(q)
+            # t.sleep(0.04)
+            pr.step()
+
+
         
 
 
