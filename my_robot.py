@@ -65,6 +65,26 @@ class MyRobot():
         q = np.matmul(np.linalg.pinv(J.T), v)
         return q
 
+    def get_angularSpeed(self, target_or: np.ndarray) -> np.ndarray:
+        ee = self.robot.joints[-1]
+        current_or = ee.get_orientation()
+        # current_or = self.gripper.get_orientation()
+        return (current_or - target_or) / 5 #to get it to move in one time step
+
+    def get_jointVelo_constrained(self, v: np.ndarray, w: np.ndarray):
+        # print(f"\n\n\nVelocity Jacobian: \n{self.robot.get_jacobian()}")
+        self.robot.set_ik_element_properties()
+        R = self.robot.get_matrix()[:3,:3]
+        v = np.matmul(np.linalg.inv(R), v)
+        vw = np.hstack((v, w))
+        print(vw)
+
+        J = self.get_trueJacobian()
+        # J = self.robot.get_jacobian()
+        # print(f"\nJacobian: \n{J}")
+        q = np.matmul(np.linalg.pinv(J.T), vw)
+        return q
+
     def move_inDir(self, pr: PyRep, direction: np.ndarray, time: float):
         v = self.get_linearVelo(direction, time)
         n_steps = np.round(time / 0.05).astype(int)
@@ -75,7 +95,7 @@ class MyRobot():
             self.robot.set_joint_target_velocities(q)
             pr.step()
 
-    def move_arm(self, pr:PyRep, target: Shape, time: float=2):
+    def moveArm(self, pr:PyRep, target: Shape, time: float=2):
         n_steps = np.round(time / 0.05).astype(int)
         # print(n_steps)
 
@@ -105,14 +125,28 @@ class MyRobot():
 
         distance = self.get_movementDir(target)
         direction = distance / np.linalg.norm(distance)
-        v_lin = (curve.get_archLen()/time) * direction
+        v_lin = (curve.get_arcLen()/time) * direction
 
         for _ in range(n_steps):
             v = curve.get_tangentVelocity(self.robot._ik_tip, v_lin)
             q = self.find_jointVelo(v)
             self.robot.set_joint_target_velocities(q)
-            # t.sleep(0.04)
             pr.step()
+        
+        curve.rem()
+
+    def moveArm_constrained(self, pr: PyRep):
+        v = np.array([0, 0, 0])
+        # target_or = self.gripper.get_orientation() + np.array([math.radians(45),0, 0])
+        ee = self.robot.joints[-1]
+        target_or = ee.get_orientation() + np.array([0, 0, math.radians(45)])
+        for _ in range(600):
+            w = self.get_angularSpeed(target_or)
+            # w = np.array([0,0.05,0])
+            q = self.get_jointVelo_constrained(v, w)
+            self.robot.set_joint_target_velocities(q)
+            pr.step()
+
 
 
         

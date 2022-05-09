@@ -44,13 +44,17 @@ print(bot.robot.get_orientation())
 #     target.random_pos()
 #     bot.resetInitial()
 #     bot.stayStill(pr, 1)
-#     bot.move_arm(pr, target, 5)
+#     bot.moveArm(pr, target, 5)
 
-for _ in range(10):
-    target.random_pos()
-    bot.resetInitial()
-    bot.stayStill(pr, 1)
-    bot.trajetoryNoise(pr, target, 15)
+bot.resetInitial()
+bot.stayStill(pr, 1)
+bot.moveArm_constrained(pr)
+
+# for _ in range(1):
+#     target.random_pos()
+#     bot.resetInitial()
+#     bot.stayStill(pr, 1)
+#     bot.trajetoryNoise(pr, target, 50)
 
 # initialConf = [0, math.radians(-40), 0, math.radians(-130), 0, math.radians(60), 0]
 # bot.robot.set_joint_positions(initialConf)
@@ -61,7 +65,7 @@ for _ in range(10):
 #     print(i)
 #     i+=1
 
-# bot.move_inDir(pr, np.array([0, 0, -1]), 20)
+# bot.move_inDir(pr, np.array([0, 0, 1]), 20)
 
 # pr.stop()
 pr.shutdown()
