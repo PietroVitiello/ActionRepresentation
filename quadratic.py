@@ -59,12 +59,12 @@ class Quadratic():
         return self.eq[0] * 2 * rel_pos[0]
 
     def find_middlePoint(self):
-        # theta = np.random.uniform(-np.pi/2, np.pi/2)
-        theta = 0
+        theta = np.random.uniform(-np.pi/2, np.pi/2)
+        # theta = 0
         self.linear_mid.rotate([theta, 0, 0])
 
-        # self.apex = np.random.uniform(0, self.max_deviation)
-        self.apex = 0.5
+        self.apex = np.random.uniform(0, self.max_deviation)
+        # self.apex = 0.5
         print(f"apex: {self.apex}")
         self.ortho = self.get_axis()
         self.eq = self.find_quadratic()

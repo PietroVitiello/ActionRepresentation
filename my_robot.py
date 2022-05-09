@@ -66,10 +66,12 @@ class MyRobot():
         return q
 
     def get_angularSpeed(self, target_or: np.ndarray) -> np.ndarray:
-        ee = self.robot.joints[-1]
+        # ee = self.robot.joints[-1]
+        ee = self.robot._ik_tip
         current_or = ee.get_orientation()
         # current_or = self.gripper.get_orientation()
-        return (current_or - target_or) / 5 #to get it to move in one time step
+        return target_or / 1
+        return (target_or - current_or) / 5 #to get it to move in one time step
 
     def get_jointVelo_constrained(self, v: np.ndarray, w: np.ndarray):
         # print(f"\n\n\nVelocity Jacobian: \n{self.robot.get_jacobian()}")
@@ -77,7 +79,6 @@ class MyRobot():
         R = self.robot.get_matrix()[:3,:3]
         v = np.matmul(np.linalg.inv(R), v)
         vw = np.hstack((v, w))
-        print(vw)
 
         J = self.get_trueJacobian()
         # J = self.robot.get_jacobian()
@@ -135,17 +136,56 @@ class MyRobot():
         
         curve.rem()
 
-    def moveArm_constrained(self, pr: PyRep):
+    def moveArm_constrained(self, pr: PyRep, target):
         v = np.array([0, 0, 0])
+        curve = Quadratic(self.robot._ik_tip.get_position(), target.get_position())
         # target_or = self.gripper.get_orientation() + np.array([math.radians(45),0, 0])
-        ee = self.robot.joints[-1]
-        target_or = ee.get_orientation() + np.array([0, 0, math.radians(45)])
+        # ee = self.robot.joints[-1]
+        ee = self.robot._ik_tip
+        print(f"\nBot orientation: {self.robot.get_orientation()}")
+        print(f"EE orientation: {ee.get_orientation()}")
+        # target_or = ee.get_orientation() + np.array([0, 0, math.radians(45)])
+        # target_or = ee.get_orientation() + np.array([0, math.radians(20), 0])
         for _ in range(600):
+            target_or = curve.linear_mid.get_orientation(relative_to=ee)
+            print("Target orientation: ", target_or)
             w = self.get_angularSpeed(target_or)
-            # w = np.array([0,0.05,0])
+            # w = np.array([0, 0, math.radians(90)/20])
             q = self.get_jointVelo_constrained(v, w)
             self.robot.set_joint_target_velocities(q)
             pr.step()
+
+    
+    def nana(self, pr: PyRep, target):
+        curve = Quadratic(self.robot._ik_tip.get_position(), target.get_position())
+        v = np.array([0, 0, 0])
+        for _ in range(600):
+            q = self.get_quaternion(curve.linear_mid)
+            w = self.get_rotationAxis(q)
+            if type(w) == np.ndarray:
+                print("doing")
+                q = self.get_jointVelo_constrained(v, w)
+                self.robot.set_joint_target_velocities(q)
+            else:
+                self.robot.set_joint_target_velocities([0]*7)
+            pr.step()
+
+    def get_quaternion(self, target):
+        ee = self.robot._ik_tip #self.robot.joints[-1]
+        q = ee.get_quaternion(relative_to=target)
+        return q
+
+    def get_rotationAxis(self, q):
+        theta = np.arccos(q[0])*2
+        print("theta: ", theta, " which is ", math.degrees(theta))
+        if theta > math.radians(10):
+            axis = q[1:]/np.sin(theta/2)
+            w = axis * theta / 5
+            return w
+        else:
+            print("inside")
+            return False
+        
 
 
 
