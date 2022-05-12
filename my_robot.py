@@ -4,14 +4,16 @@ from pyrep.robots.arms.panda import Panda
 from pyrep.robots.end_effectors.mico_gripper import MicoGripper
 from pyrep.const import ObjectType, PrimitiveShape, JointMode
 from pyrep.objects.vision_sensor import VisionSensor
-from pyrep.objects.shape import Shape
+from pyrep.objects import Shape, Dummy
 from pyrep.backend import sim
+from target import Target
 
 from quadratic import Quadratic
 
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+import time as t
 
 class MyRobot():
 
@@ -39,6 +41,9 @@ class MyRobot():
     def resetInitial(self):
         self.robot.set_joint_positions(self.initialConf, disable_dynamics=True)
 
+    def getTip(self) -> Dummy:
+        return self.robot._ik_tip
+
     def get_trueJacobian(self):
         self.robot._ik_target.set_matrix(self.robot._ik_tip.get_matrix())
         sim.simCheckIkGroup(self.robot._ik_group,
@@ -46,6 +51,9 @@ class MyRobot():
         jacobian, (rows, cols) = sim.simGetIkGroupMatrix(self.robot._ik_group, 0)
         jacobian = np.array(jacobian).reshape((rows, cols), order='F')
         return np.flip(jacobian, axis=0)
+
+    def findQuadratic(self, target: Target) -> Quadratic:
+        return Quadratic(self.robot._ik_tip, target)
 
     def get_movementDir(self, target: Shape) -> np.ndarray:
         tip = self.robot._ik_tip.get_position()
@@ -58,13 +66,6 @@ class MyRobot():
         # R = self.robot.get_matrix()[:3,:3]
         return v #np.matmul(np.linalg.inv(R), v)
 
-    def find_jointVelo(self, v: np.ndarray) -> np.ndarray:
-        R = self.robot.get_matrix()[:3,:3]
-        v = np.matmul(np.linalg.inv(R), v)
-        J = self.get_trueJacobian()
-        q = np.matmul(np.linalg.pinv(J.T), v)
-        return q
-
     def get_angularSpeed(self, target_or: np.ndarray) -> np.ndarray:
         # ee = self.robot.joints[-1]
         ee = self.robot._ik_tip
@@ -72,6 +73,14 @@ class MyRobot():
         # current_or = self.gripper.get_orientation()
         return target_or / 1
         return (target_or - current_or) / 5 #to get it to move in one time step
+
+    def get_jointVelo(self, v: np.ndarray) -> np.ndarray:
+        self.robot.set_ik_element_properties(constraint_alpha_beta=False, constraint_gamma=False)
+        R = self.robot.get_matrix()[:3,:3]
+        v = np.matmul(np.linalg.inv(R), v)
+        J = self.get_trueJacobian()
+        q = np.matmul(np.linalg.pinv(J.T), v)
+        return q
 
     def get_jointVelo_constrained(self, v: np.ndarray, w: np.ndarray):
         # print(f"\n\n\nVelocity Jacobian: \n{self.robot.get_jacobian()}")
@@ -86,15 +95,36 @@ class MyRobot():
         q = np.matmul(np.linalg.pinv(J.T), vw)
         return q
 
+    def stayStill(self, pr: PyRep, time: float):
+        self.robot.set_joint_target_velocities([0]*7)
+        n_steps = np.round(time / 0.05).astype(int)
+        for _ in range(n_steps):
+            pr.step()
+
     def move_inDir(self, pr: PyRep, direction: np.ndarray, time: float):
         v = self.get_linearVelo(direction, time)
         n_steps = np.round(time / 0.05).astype(int)
 
         for i in range(n_steps):
             v = self.get_linearVelo(direction, time)
-            q = self.find_jointVelo(v)
+            q = self.get_jointVelo(v)
             self.robot.set_joint_target_velocities(q)
             pr.step()
+
+    def orientArm(self, pr: PyRep, orientation: np.ndarray, time: float):
+        v = np.array([0, 0, 0])
+        n_steps = np.round(time / 0.05).astype(int)
+
+        dummy = Dummy.create()
+        dummy.set_orientation(orientation)
+
+        for i in range(n_steps):
+            orientation = dummy.get_orientation(relative_to=self.robot._ik_tip)
+            w = self.get_angularSpeed(orientation)
+            q = self.get_jointVelo_constrained(v, w)
+            self.robot.set_joint_target_velocities(q)
+            pr.step()
+            time -= 0.05
 
     def moveArm(self, pr:PyRep, target: Shape, time: float=2):
         n_steps = np.round(time / 0.05).astype(int)
@@ -107,20 +137,30 @@ class MyRobot():
             # print(f"Direction: {distance}")
             # print(f"Target: {target.get_position()}")
             # print(f"Position: {self.robot._ik_tip.get_position()}")
-            q = self.find_jointVelo(v)
+            q = self.get_jointVelo(v)
             self.robot.set_joint_target_velocities(q)
-            # t.sleep(0.04)
+            t.sleep(0.5)
             pr.step()
             time -= 0.05
 
-    def stayStill(self, pr: PyRep, time: float):
-        self.robot.set_joint_target_velocities([0]*7)
+    def moveArm_constrained(self, pr:PyRep, target: Shape, time: float=2):
+        curve = self.findQuadratic(target)
         n_steps = np.round(time / 0.05).astype(int)
-        for _ in range(n_steps):
-            pr.step()
 
-    def trajetoryNoise(self, pr:PyRep, target: Shape, time: float=2): #(self, pos: np.ndarray, target: np.ndarray, n_steps: float):
-        curve = Quadratic(self.robot._ik_tip.get_position(), target.get_position())
+        for i in range(n_steps):
+            distance = self.get_movementDir(target)
+            orientation = curve.linear_mid.get_orientation(relative_to=self.robot._ik_tip)
+            v = self.get_linearVelo(distance, time)
+            w = self.get_angularSpeed(orientation)
+            q = self.get_jointVelo_constrained(v, w)
+            self.robot.set_joint_target_velocities(q)
+            # t.sleep(0.5)
+            pr.step()
+            time -= 0.05
+        curve.remove_dummies()
+
+    def moveArmCurved(self, pr:PyRep, target: Shape, time: float=2): #(self, pos: np.ndarray, target: np.ndarray, n_steps: float):
+        curve = self.findQuadratic(target)
         curve.find_middlePoint()
         n_steps = np.round(time / 0.05).astype(int)
 
@@ -129,31 +169,31 @@ class MyRobot():
         v_lin = (curve.get_arcLen()/time) * direction
 
         for _ in range(n_steps):
-            v = curve.get_tangentVelocity(self.robot._ik_tip, v_lin)
-            q = self.find_jointVelo(v)
+            v = curve.get_tangentVelocity(v_lin)
+            q = self.get_jointVelo(v)
             self.robot.set_joint_target_velocities(q)
             pr.step()
-        
-        curve.rem()
+        curve.remove_dummies()
 
-    def moveArm_constrained(self, pr: PyRep, target):
-        v = np.array([0, 0, 0])
-        curve = Quadratic(self.robot._ik_tip.get_position(), target.get_position())
-        # target_or = self.gripper.get_orientation() + np.array([math.radians(45),0, 0])
-        # ee = self.robot.joints[-1]
-        ee = self.robot._ik_tip
-        print(f"\nBot orientation: {self.robot.get_orientation()}")
-        print(f"EE orientation: {ee.get_orientation()}")
-        # target_or = ee.get_orientation() + np.array([0, 0, math.radians(45)])
-        # target_or = ee.get_orientation() + np.array([0, math.radians(20), 0])
-        for _ in range(600):
-            target_or = curve.linear_mid.get_orientation(relative_to=ee)
-            print("Target orientation: ", target_or)
-            w = self.get_angularSpeed(target_or)
-            # w = np.array([0, 0, math.radians(90)/20])
+    def moveArmCurved_constrained(self, pr:PyRep, target: Shape, time: float=2):
+        curve = self.findQuadratic(target)
+        curve.find_middlePoint()
+        n_steps = np.round(time / 0.05).astype(int)
+
+        distance = self.get_movementDir(target)
+        direction = distance / np.linalg.norm(distance)
+        v_lin = (curve.get_arcLen()/time) * direction
+
+        print("cavolfiore: ", 13/n_steps)
+
+        for _ in range(n_steps-13):
+            orientation = curve.get_FaceTargetOrientation()
+            v = curve.get_tangentVelocity(v_lin)
+            w = self.get_angularSpeed(orientation)
             q = self.get_jointVelo_constrained(v, w)
             self.robot.set_joint_target_velocities(q)
             pr.step()
+        curve.remove_dummies()
 
     
     def nana(self, pr: PyRep, target):

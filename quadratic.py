@@ -1,23 +1,26 @@
-from pyrep.objects.dummy import Dummy
-from pyrep.objects import Object
+from pyrep.objects import Object, Shape, Dummy
+from pyrep.backend import sim
 import numpy as np
 import math
 
 class Quadratic():
 
-    def __init__(self, tip, target, max_deviation=0.5) -> None:
-        self.tip = tip
-        self.target = target
+    def __init__(self, tip: Dummy, target: Shape, max_deviation=0.1) -> None:
+        self.ik_tip = tip
+        self.ik_target = target
+        self.tip = tip.get_position()
+        self.target = target.get_position()
         self.max_deviation = max_deviation
 
         self.distance_vec = self.target - self.tip
-        self.distance = np.linalg.norm(self.distance_vec)
-        linear_mid_pos = (target + tip)/2
-        self.linear_mid = Dummy.create(0.1)
+        self.distance = np.linalg.norm(self.distance_vec) * 3
+
+        linear_mid_pos = (self.target + self.tip)/2
+        self.linear_mid = Dummy.create(0.001)
         self.set_linearMid(linear_mid_pos)
-        self.defaultOrientation = self.linear_mid.get_orientation()
 
         self.ortho, self.apex, self.eq = None, None, None
+        self.all_dummies = [self.linear_mid]
 
     def set_linearMid(self, pos: np.ndarray) -> None:
         self.linear_mid.set_position(pos)
@@ -29,8 +32,34 @@ class Quadratic():
         self.linear_mid.rotate([0, 0, gamma])
         self.linear_mid.rotate([0, beta, 0])
 
-    def reset_orientation(self):
-        self.linear_mid.set_orientation(self.defaultOrientation)
+    def resetCurve(self):
+        self.tip = self.ik_tip.get_position()
+        self.target = self.ik_target.get_position()
+
+        self.distance_vec = self.target - self.tip
+        self.distance = np.linalg.norm(self.distance_vec)
+
+        linear_mid_pos = (self.target + self.tip)/2
+        self.linear_mid = Dummy.create(0.001)
+        sim.simSetObjectInt32Parameter(self.linear_mid.get_handle(), 10, 11)
+        self.set_linearMid(linear_mid_pos)
+
+        self.ortho, self.apex, self.eq = None, None, None
+        self.all_dummies.append(self.linear_mid)
+
+    def get_FaceTargetOrientation(self):
+        dummy = Dummy.create(0.001)
+        direction = self.ik_target.get_position() - self.ik_tip.get_position()
+        direction = direction / np.linalg.norm(direction)
+        gamma = np.arctan2(direction[1], direction[0])
+        x_projection = direction[0]/np.cos(gamma)
+        beta = np.arctan2(-direction[2], x_projection)
+
+        dummy.rotate([0, 0, gamma])
+        dummy.rotate([0, beta, 0])
+        orientation = dummy.get_orientation(relative_to=self.ik_tip)
+        dummy.remove()
+        return orientation
 
     def get_axis(self, ax=2):
         R = self.linear_mid.get_matrix()
@@ -50,8 +79,8 @@ class Quadratic():
         return (2*a*sqrt + hyper_term)/2
         # return self.distance
 
-    def getGradient(self, ik_tip: Object):
-        rel_pos = ik_tip.get_position(relative_to=self.linear_mid)
+    def getGradient(self):
+        rel_pos = self.ik_tip.get_position(relative_to=self.linear_mid)
         # print(f"\nrelative position: {rel_pos}")
         # print(f"distance/2: {np.linalg.norm(self.distance_vec)/2}")
         # T = self.linear_mid.get_matrix()
@@ -69,10 +98,11 @@ class Quadratic():
         self.ortho = self.get_axis()
         self.eq = self.find_quadratic()
 
-        n = Dummy.create(0.07)
-        n.set_orientation(self.linear_mid.get_orientation())
-        n.set_position(self.linear_mid.get_position()+self.apex*self.ortho)
-        self.n = n
+        # n = Dummy.create(0.07)
+        # n.set_orientation(self.linear_mid.get_orientation())
+        # n.set_position(self.linear_mid.get_position()+self.apex*self.ortho)
+        # self.n = n
+        # self.all_dummies.append(self.n)
         # self.apex = self.linear_mid.get_position() + (ortho * deviation)
 
     # def get_tangentVelocity(self, ik_tip: Object, v: np.ndarray):
@@ -86,8 +116,8 @@ class Quadratic():
     #     v = self.quaternionProd(q_inv, self.quaternionProd(v, q))
     #     return v[1:]
 
-    def get_tangentVelocity(self, ik_tip: Object, v: np.ndarray):
-        grad = self.getGradient(ik_tip)
+    def get_tangentVelocity(self, v: np.ndarray):
+        grad = self.getGradient()
         theta = - np.arctan(grad)
         R = self.linear_mid.get_matrix()[:-1,:-1]
         rotation = np.array([[np.cos(theta), 0, np.sin(theta)],
@@ -105,9 +135,10 @@ class Quadratic():
                         w0 * z1 + x0 * y1 - y0 * x1 + z0 * w1])
         return res
 
-    def rem(self):
-        self.linear_mid.remove()
-        self.n.remove()
+    def remove_dummies(self):
+        for dummy in self.all_dummies:
+            dummy.remove()
+        self.all_dummies = []
 
 
 

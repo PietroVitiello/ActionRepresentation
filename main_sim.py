@@ -9,6 +9,7 @@ from pyrep.robots.end_effectors.mico_gripper import MicoGripper
 from pyrep.const import ObjectType, PrimitiveShape
 from pyrep.objects.vision_sensor import VisionSensor
 from pyrep.objects.shape import Shape
+from quadratic import Quadratic
 
 from my_robot import MyRobot
 from target import Target
@@ -29,9 +30,6 @@ bot = MyRobot()
 target = Target()
 camera = VisionSensor("Vision_sensor")
 
-print(target.get_orientation())
-print(bot.robot.get_orientation())
-
 # target.set_position([0, 1, 0.1])
 
 # bot.find_jointVelo(target, 40)
@@ -46,9 +44,12 @@ print(bot.robot.get_orientation())
 #     bot.stayStill(pr, 1)
 #     bot.moveArm(pr, target, 5)
 
-# bot.resetInitial()
-bot.stayStill(pr, 1)
-bot.moveArm_constrained(pr, target)
+for _ in range(6):
+    target.random_pos()
+    # target.set_position([0.45, 0.55, 0.025])
+    bot.resetInitial()
+    bot.stayStill(pr, 1)
+    bot.moveArmCurved(pr, target, 5)
 
 # for _ in range(10):
 #     target.random_pos()
