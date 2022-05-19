@@ -13,6 +13,7 @@ from quadratic import Quadratic
 
 from my_robot import MyRobot
 from target import Target
+from robot_movement import RobotMovement
 
 import time
 import math
@@ -29,6 +30,7 @@ pr.step_ui()
 bot = MyRobot()
 target = Target()
 camera = VisionSensor("Vision_sensor")
+rmove = RobotMovement(bot, target, pr)
 
 # target.set_position([0, 1, 0.1])
 
@@ -41,8 +43,9 @@ camera = VisionSensor("Vision_sensor")
 for _ in range(5):
     target.random_pos()
     bot.resetInitial()
-    bot.stayStill(pr, 1)
-    bot.moveArm_constrained(pr, target, 4)
+    rmove.resetCurve()
+    rmove.stayStill(1)
+    rmove.moveArm_constrained(4)
 
 # for _ in range(5):
 #     target.random_pos()

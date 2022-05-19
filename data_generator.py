@@ -40,6 +40,9 @@ class Generator():
     def setCameraRes(self, res: int) -> None:
         self.camera.set_resolution([res, res])
 
+    def restrictTargetBound(self):
+        self.target.set_restrictedBoundaries()
+
     def terminate(self) -> None:
         self.pr.stop()
         self.pr.shutdown()
@@ -109,7 +112,9 @@ class Generator():
         self.curve.remove_dummies()
 
     def getGenerator(self, move_type: str, constraint: str, time: float=2) -> Generator:
-        if constraint == 'normal':
+        if move_type == 'human-like':
+            pass
+        elif constraint == 'normal':
             if move_type == 'linear':
                 movement = self.moveArm
             elif move_type == 'curved':

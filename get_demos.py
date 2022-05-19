@@ -26,6 +26,7 @@ SCENE_FILE = "Simulations/coppelia_robot_arm.ttt"
 SAVING_DIR = join(dirname(abspath(__file__)), "Dataset/try_1")
 
 gen = Generator(SCENE_FILE, 32)
+gen.restrictTargetBound()
 
 n_demos = 100 #total number of demonstrations
 n_trj = 2 #number of different trajectories for each target position
