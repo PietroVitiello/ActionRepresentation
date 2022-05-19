@@ -5,7 +5,7 @@ import math
 
 class Quadratic():
 
-    def __init__(self, tip: Dummy, target: Shape, max_deviation=0.1) -> None:
+    def __init__(self, tip: Dummy, target: Shape, max_deviation=0.15) -> None:
         self.ik_tip = tip
         self.ik_target = target
         self.tip = tip.get_position()
@@ -13,7 +13,7 @@ class Quadratic():
         self.max_deviation = max_deviation
 
         self.distance_vec = self.target - self.tip
-        self.distance = np.linalg.norm(self.distance_vec) * 3
+        self.distance = np.linalg.norm(self.distance_vec)
 
         linear_mid_pos = (self.target + self.tip)/2
         self.linear_mid = Dummy.create(0.001)
@@ -88,12 +88,12 @@ class Quadratic():
         return self.eq[0] * 2 * rel_pos[0]
 
     def find_middlePoint(self):
-        theta = np.random.uniform(-np.pi/2, np.pi/2)
-        # theta = 0
+        # theta = np.random.uniform(-np.pi/2, np.pi/2)
+        theta = 0
         self.linear_mid.rotate([theta, 0, 0])
 
-        self.apex = np.random.uniform(0, self.max_deviation)
-        # self.apex = 0.5
+        # self.apex = np.random.uniform(0, self.max_deviation)
+        self.apex = self.max_deviation
         print(f"apex: {self.apex}")
         self.ortho = self.get_axis()
         self.eq = self.find_quadratic()

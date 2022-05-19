@@ -168,7 +168,7 @@ class MyRobot():
         direction = distance / np.linalg.norm(distance)
         v_lin = (curve.get_arcLen()/time) * direction
 
-        for _ in range(n_steps):
+        for _ in range(n_steps-8):
             v = curve.get_tangentVelocity(v_lin)
             q = self.get_jointVelo(v)
             self.robot.set_joint_target_velocities(q)
