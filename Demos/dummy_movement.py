@@ -21,7 +21,7 @@ class DummyMovement():
 
     def __init__(self, target: Target, time: float) -> None:
         self.target = target
-        self.time = time
+        self.time = time * 0.9
         self.dummy = None
         self.generateDummy()
 
@@ -29,11 +29,14 @@ class DummyMovement():
         x = np.random.uniform(-1, 1)
         y = np.sqrt(1 - x**2)
         y_sign = 1 if np.random.uniform() < 0.5 else -1
-        distance = np.random.uniform(0.01, 0.15)
+        distance = np.random.uniform(0.1, 0.15)
         # distance = 0.7
         rel_pos = np.array([x, y*y_sign, 0])*distance
-        self.dummy = Dummy.create(0.001)
+        self.dummy = Dummy.create(0.001) #(0.001)
         self.dummy.set_position(self.target.get_position() + rel_pos)
+
+    def remove_dummy(self):
+        self.dummy.remove()
 
     def getDummy(self) -> Dummy:
         return self.dummy
@@ -52,4 +55,5 @@ class DummyMovement():
         pos = self.dummy.get_position()
         v = self.getVelocity() * 0.05
         self.dummy.set_position(pos + v)
+        self.time -= 0.05
 
