@@ -38,17 +38,17 @@ target.set_restrictedBoundaries()
 
 # bot.find_jointVelo(target, 40)
 
-# target.random_pos()
+target.random_pos()
 # bot.trajetoryNoise(target)
-# bot.stayStill(pr, 100)
+rmove.stayStill(100)
 
-for _ in range(5):
-    target.random_pos()
-    bot.resetInitial()
-    rmove.resetCurve()
-    rmove.stayStill(1)
-    # rmove.moveArmCurved_constrained(3)
-    rmove.humanMovement(5)
+# for _ in range(5):
+#     target.random_pos()
+#     bot.resetInitial()
+#     rmove.resetCurve()
+#     rmove.stayStill(1)
+#     # rmove.moveArmCurved_constrained(3)
+#     rmove.humanMovement(5)
 
 # for _ in range(5):
 #     target.random_pos()
