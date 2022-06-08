@@ -13,6 +13,7 @@ from quadratic import Quadratic
 
 from my_robot import MyRobot
 from target import Target
+from dummy_movement import DummyMovement
 
 import time
 import math
@@ -25,7 +26,7 @@ class RobotMovement():
         self.target = target
         self.pr = pr
 
-        self.curve = Quadratic(self.bot.getTip(), self.target)
+        self.curve = Quadratic(self.bot.getTip(), self.target, 0.08)
 
     def resetCurve(self) -> None:
         self.curve.resetCurve()
@@ -34,6 +35,7 @@ class RobotMovement():
         self.robot.set_joint_target_velocities([0]*7)
         n_steps = np.round(time / 0.05).astype(int)
         for _ in range(n_steps):
+            # print("debug: ", self.bot.gripper.get_joint_positions())
             self.pr.step()
 
     def move_inDir(self, direction: np.ndarray, time: float):
@@ -126,6 +128,41 @@ class RobotMovement():
             self.robot.set_joint_target_velocities(q)
             self.pr.step()
         self.curve.remove_dummies()
+
+    def humanMovement(self, time: float):
+        self.curve.find_middlePoint()
+        dmove = DummyMovement(self.target, time)
+        n_steps = np.round(time / 0.05).astype(int)
+
+        distance = self.bot.get_movementDir(self.target)
+        direction = distance / np.linalg.norm(distance)
+        v_lin = (self.curve.get_arcLen()/time) * direction
+
+        # print("cavolfiore: ", 13/n_steps)
+
+        for i in range(n_steps):
+            orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
+            # v = self.curve.get_tangentVelocity(v_lin)
+            v = self.curve.get_enhancedTangentVelocity(v_lin, time)
+            w = self.bot.get_angularSpeed(orientation)
+            q = self.bot.get_jointVelo_constrained(v, w)
+            # q = self.bot.get_jointVelo(v)
+            if self.check_cubeReached():
+                i = n_steps + 1
+                print("Cube Reached")
+                q = np.zeros(q.shape)
+            self.robot.set_joint_target_velocities(q)
+            self.pr.step()
+            dmove.step()
+            print("step: ", i+1)
+        self.curve.remove_dummies()
+        dmove.remove_dummy()
+
+    def check_cubeReached(self, threshold=0.04) -> bool:
+        distance = self.target.get_position() - self.robot._ik_tip.get_position()
+        distance = np.linalg.norm(distance)
+        return True if distance <= threshold else False
+
 
 
 

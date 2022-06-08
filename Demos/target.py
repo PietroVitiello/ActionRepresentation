@@ -26,8 +26,8 @@ class Target(Shape):
         self.position_min, self.position_max = min, max
 
     def set_restrictedBoundaries(self):
-        self.position_min = [-0.4, 0.5, 0.025]
-        self.position_max = [0.4, 0.85, 0.025]
+        self.position_min = [-0.35, 0.55, 0.025]
+        self.position_max = [0.35, 0.85, 0.025]
 
     def random_pos(self):
         pos = list(np.random.uniform(self.position_min, self.position_max))

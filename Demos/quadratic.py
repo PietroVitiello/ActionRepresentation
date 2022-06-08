@@ -1,11 +1,15 @@
+from ctypes import Union
 from pyrep.objects import Object, Shape, Dummy
 from pyrep.backend import sim
 import numpy as np
 import math
 
+from target import Target
+from typing import Union
+
 class Quadratic():
 
-    def __init__(self, tip: Dummy, target: Shape, max_deviation=0.15) -> None:
+    def __init__(self, tip: Dummy, target: Shape, max_deviation=0.05) -> None:
         self.ik_tip = tip
         self.ik_target = target
         self.tip = tip.get_position()
@@ -21,6 +25,13 @@ class Quadratic():
 
         self.ortho, self.apex, self.eq = None, None, None
         self.all_dummies = [self.linear_mid]
+
+    def setTarget(self, target: Union[Target, Dummy]):
+        self.ik_target = target
+        self.target = target.get_position()
+        self.remove_dummies()
+        print("Changed quadratic target and removed all previous dummies")
+        # self.resetCurve()
 
     def set_linearMid(self, pos: np.ndarray) -> None:
         self.linear_mid.set_position(pos)
@@ -47,9 +58,14 @@ class Quadratic():
         self.ortho, self.apex, self.eq = None, None, None
         self.all_dummies.append(self.linear_mid)
 
-    def get_FaceTargetOrientation(self):
+    def get_FaceTargetOrientation(self, look_at=None):
+        # print(type(None))
+        # print(type(look_at) == type(None))
+        if type(look_at) == type(None):
+            look_at = self.ik_target
+
         dummy = Dummy.create(0.001)
-        direction = self.ik_target.get_position() - self.ik_tip.get_position()
+        direction = look_at.get_position() - self.ik_tip.get_position()
         direction = direction / np.linalg.norm(direction)
         gamma = np.arctan2(direction[1], direction[0])
         x_projection = direction[0]/np.cos(gamma)
@@ -88,13 +104,13 @@ class Quadratic():
         return self.eq[0] * 2 * rel_pos[0]
 
     def find_middlePoint(self):
-        # theta = np.random.uniform(-np.pi/2, np.pi/2)
-        theta = 0
+        theta = np.random.uniform(-np.pi/2, np.pi/2)
+        # theta = 0
         self.linear_mid.rotate([theta, 0, 0])
 
-        # self.apex = np.random.uniform(0, self.max_deviation)
-        self.apex = self.max_deviation
-        print(f"apex: {self.apex}")
+        self.apex = np.random.uniform(0, self.max_deviation)
+        # self.apex = self.max_deviation
+        # print(f"apex: {self.apex}")
         self.ortho = self.get_axis()
         self.eq = self.find_quadratic()
 
@@ -124,6 +140,19 @@ class Quadratic():
                              [0, 1, 0],
                              [-np.sin(theta), 0, np.cos(theta)]])
         return (R @ rotation @ np.linalg.inv(R) @ v)
+
+    def get_enhancedTangentVelocity(self, v: np.ndarray, time: float):
+        grad = self.getGradient()
+        theta = - np.arctan(grad)
+        R = self.linear_mid.get_matrix()[:-1,:-1]
+        rotation = np.array([[np.cos(theta), 0, np.sin(theta)],
+                             [0, 1, 0],
+                             [-np.sin(theta), 0, np.cos(theta)]])
+        rel_v = rotation @ np.linalg.inv(R) @ v
+        # rel_v[2] += 0.4 * np.abs(rel_v[2])
+        rel_v = R @ rel_v
+        rel_v[2] += 0.4 * np.abs(rel_v[2])
+        return rel_v
 
     @staticmethod
     def quaternionProd(q0, q1):

@@ -6,7 +6,9 @@ from pyrep.const import ObjectType, PrimitiveShape, JointMode
 from pyrep.objects.vision_sensor import VisionSensor
 from pyrep.objects import Shape, Dummy
 from pyrep.backend import sim
+
 from target import Target
+from mico_gripper import MicoGripperComplete
 
 from quadratic import Quadratic
 
@@ -19,7 +21,7 @@ class MyRobot():
 
     def __init__(self) -> None:
         self.robot = LBRIwaa14R820()
-        self.gripper = MicoGripper()
+        self.gripper = MicoGripperComplete()
 
         self.initialConf = None
 
@@ -33,13 +35,20 @@ class MyRobot():
 
     def disable_controlLoop(self):
         [j.set_control_loop_enabled(False) for j in self.robot.joints]
+        # [j.set_control_loop_enabled(False) for j in self.gripper.joints]
 
     def set_initialConf(self, config):
-        self.initialConf = config
+        self.initialConf = (config, self.gripper.get_joint_positions())
         self.robot.set_joint_positions(config)
+        # self.gripper.set_motor_locked_at_zero_velocity(True)
 
     def resetInitial(self):
-        self.robot.set_joint_positions(self.initialConf, disable_dynamics=True)
+        # print("gripper joints: ", self.gripper.get_joint_positions())
+        # print("gripper target pos: ", self.gripper.get_joint_target_positions())
+        # print("gripper target vel: ", self.gripper.get_joint_target_velocities())
+        self.robot.set_joint_positions(self.initialConf[0], disable_dynamics=True)
+        # self.gripper.set_joint_positions(self.initialConf[1], disable_dynamics=True)
+        # print("gripper joints: ", self.gripper.get_joint_positions())
 
     def getTip(self) -> Dummy:
         return self.robot._ik_tip

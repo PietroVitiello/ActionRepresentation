@@ -21,7 +21,7 @@ import math
 pr = PyRep()
 plt.ion()
 
-SCENE_FILE = join(dirname(abspath(__file__)), "Simulations/coppelia_robot_arm_copy.ttt")
+SCENE_FILE = join(dirname(abspath(__file__)), "Simulations/coppelia_robot_arm_view.ttt")
 pr.launch(SCENE_FILE, headless=False)
 pr.start()
 pr.step_ui()
@@ -32,20 +32,23 @@ target = Target()
 camera = VisionSensor("Vision_sensor")
 rmove = RobotMovement(bot, target, pr)
 
+target.set_restrictedBoundaries()
+
 # target.set_position([0, 1, 0.1])
 
 # bot.find_jointVelo(target, 40)
 
-# target.random_pos()
+target.random_pos()
 # bot.trajetoryNoise(target)
-# bot.stayStill(pr, 100)
+rmove.stayStill(100)
 
-for _ in range(5):
-    target.random_pos()
-    bot.resetInitial()
-    rmove.resetCurve()
-    rmove.stayStill(1)
-    rmove.moveArm_constrained(4)
+# for _ in range(5):
+#     target.random_pos()
+#     bot.resetInitial()
+#     rmove.resetCurve()
+#     rmove.stayStill(1)
+#     # rmove.moveArmCurved_constrained(3)
+#     rmove.humanMovement(5)
 
 # for _ in range(5):
 #     target.random_pos()
