@@ -133,6 +133,54 @@ class RobotMovement():
             self.pr.step()
         self.curve.remove_dummies()
 
+    def imperfect_humanMovement(self, time: float):
+        self.curve.find_middlePoint()
+        dmove = DummyMovement(self.target, time)
+        n_steps = np.round(time / 0.05).astype(int)
+
+        distance = self.bot.get_movementDir(self.target)
+        direction = distance / np.linalg.norm(distance)
+        v_lin = (self.curve.get_arcLen()/time) * direction
+
+        # print("cavolfiore: ", 13/n_steps)
+
+        for i in range(n_steps):
+            orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
+            # v = self.curve.get_tangentVelocity(v_lin)
+            v = self.curve.get_enhancedTangentVelocity(v_lin, time)
+            w = self.bot.get_angularSpeed(orientation)
+            q = self.bot.get_jointVelo_constrained(v, w)
+            # q = self.bot.get_jointVelo(v)
+            if self.check_cubeReached():
+                i = n_steps + 1
+                print("Cube Reached")
+                q = np.zeros(q.shape)
+            self.robot.set_joint_target_velocities(q)
+            self.pr.step()
+            dmove.step()
+            print("step: ", i+1)
+        self.curve.remove_dummies()
+        dmove.remove_dummy()
+
+    def humanMovement(self, time: float):
+        #only velocity
+        theta = self.curve.find_middlePoint()
+        n_steps = np.round(time / 0.05).astype(int)
+
+        distance = self.bot.get_movementDir(self.target)
+        direction = distance / np.linalg.norm(distance)
+        v_lin = (self.curve.get_arcLen()/time) * direction
+
+        for i in range(n_steps):
+            v = self.curve.getVelocity2Target(v_lin)
+            q = self.bot.get_jointVelo(v)
+            self.robot.set_joint_target_velocities(q)
+            self.pr.step()
+            if self.check_cubeReached():
+                print(f"Cube Reached at step {i+1}")
+                break
+        self.curve.remove_dummies()
+
     # def humanMovement(self, time: float):
     #     theta = self.curve.find_middlePoint()
     #     dmove = DummyMovement(self.target, time)
@@ -186,9 +234,12 @@ class RobotMovement():
     #         # v_standard = self.curve.get_enhancedTangentVelocity(v_lin, time)
     #         v, _ = self.curve.getVelocity2Target(v_lin, i)
     #         w = self.bot.get_angularSpeed(orientation)
-    #         w /= 0.05
+    #         # w /= 0.05
     #         # w = np.array([0,0,0])
     #         # v = [0,0,0]
+
+    #         # print("without w: ", self.bot.get_jointVelo(v))
+    #         # print("with w=0: ", self.bot.get_jointVelo_constrained(v, w), "\n")
 
     #         print("vw: ", np.hstack((v, w)))
     #         print("vw standard: ", np.hstack((v_standard, w)))
@@ -196,6 +247,7 @@ class RobotMovement():
 
     #         q = self.bot.get_jointVelo_constrained(v, w)
     #         # q = self.bot.get_jointVelo(v)
+    #         # q = self.bot.get_jointVelo_4orientation(w)
     #         q_standard = self.bot.get_jointVelo_constrained(v_standard, w)
 
     #         print("q: ", q)
@@ -214,29 +266,30 @@ class RobotMovement():
     #     self.curve.remove_dummies()
     #     dmove.remove_dummy()
 
-    def humanMovement(self, time: float):
-        theta = self.curve.find_middlePoint()
-        dmove = DummyMovement(self.target, time)
-        n_steps = np.round(time / 0.05).astype(int)
+    # def humanMovement(self, time: float):
+    #     [j.set_control_loop_enabled(True) for j in self.robot.joints]
+    #     theta = self.curve.find_middlePoint()
+    #     dmove = DummyMovement(self.target, time)
+    #     n_steps = np.round(time / 0.05).astype(int)
 
-        distance = self.bot.get_movementDir(self.target)
-        direction = distance / np.linalg.norm(distance)
-        v_lin = (self.curve.get_arcLen()/time) * direction
+    #     distance = self.bot.get_movementDir(self.target)
+    #     direction = distance / np.linalg.norm(distance)
+    #     v_lin = (self.curve.get_arcLen()/time) * direction
 
-        # print("cavolfiore: ", 13/n_steps)
+    #     # print("cavolfiore: ", 13/n_steps)
 
-        for i in range(n_steps):
-            target_pos = self.curve.getVelocity2Target(v_lin, i)
-            config = self.robot.get_configs_for_tip_pose(position=target_pos, euler=dmove.getDummy().get_orientation())
-            print("configs:\n", config)
-            self.robot.set_joint_target_positions(config[0])
+    #     for i in range(n_steps):
+    #         target_pos = self.curve.getVelocity2Target(v_lin, i)
+    #         config = self.robot.get_configs_for_tip_pose(position=target_pos, euler=dmove.getDummy().get_orientation())
+    #         print("configs:\n", config)
+    #         self.robot.set_joint_target_positions(config[0])
             
-            # input("Next step")
-            self.pr.step()
-            dmove.step()
-            # print("step: ", i)
-        self.curve.remove_dummies()
-        dmove.remove_dummy()
+    #         # input("Next step")
+    #         self.pr.step()
+    #         dmove.step()
+    #         # print("step: ", i)
+    #     self.curve.remove_dummies()
+    #     dmove.remove_dummy()
 
     def check_cubeReached(self, threshold=0.04) -> bool:
         distance = self.target.get_position() - self.robot._ik_tip.get_position()
@@ -246,6 +299,20 @@ class RobotMovement():
         return True if distance <= threshold else False
 
     def autonomousMovement(self, model, transform):
+        #take the image from the robot
+        img = self.camera.capture_rgb()
+        img = Image.fromarray(np.uint8(img*255)).convert('RGB')
+        # img = Image.fromarray((img * 255).astype(np.uint8)).resize((64, 64)).convert('RGB')
+        img: torch.Tensor = transform(img)
+        img = img.unsqueeze(0)
+        #shove it into the model
+        v: torch.Tensor = model(img)[0]
+        v = v.detach().numpy()
+        q = self.bot.get_jointVelo(v)
+        self.robot.set_joint_target_velocities(q)
+        self.pr.step()
+
+    def autonomousMovement_constrained(self, model, transform):
         #take the image from the robot
         img = self.camera.capture_rgb()
         img = Image.fromarray(np.uint8(img*255)).convert('RGB')

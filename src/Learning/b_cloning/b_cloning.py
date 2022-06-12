@@ -23,7 +23,7 @@ BATCH_SIZE = 64
 LR = 0.001
 WD = 1e-7
 USE_GPU = True
-PATH_DATASET = "../../Demos/Dataset/try_2/"
+PATH_DATASET = "../../Demos/Dataset/followDummy_1/"
 
 
 #setup image transforms
@@ -52,7 +52,7 @@ class SimDataset(Dataset):
         jointVel = [float(item) for item in self.df['jVel'][index].split(",")]
         eePos = [float(item) for item in self.df['eePos'][index].split(",")]
         cPos = [float(item) for item in self.df['cPos'][index].split(",")]
-        ee_target = [float(item) for item in self.df['ee_target'][index].split(",")]
+        ee_target = [float(item) for item in self.df['ee_targetVel'][index].split(",")]
 
         # #push them into a single array so that we can output them without much issue here. MIGHT WANT TO CHANGE THIS LATER!!!
         jointVel.extend(eePos)
@@ -103,7 +103,7 @@ def train_model(model,optimizer,epochs=1):
 
 # ---------------- Run Training ---------------- #
 torch.cuda.empty_cache()
-model = BaselineCNN()
+model = BaselineCNN(3)
 optimizer = optim.Adamax(model.parameters(), lr=LR, weight_decay=WD)
 
 params = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -111,4 +111,4 @@ print("Total number of parameters is: {}".format(params))
 train_model(model, optimizer, epochs = EPOCHS)
 
 # save the model
-torch.save(model.state_dict(), 'TrainedModels/model.pt')
+torch.save(model.state_dict(), 'TrainedModels/baselineCNN_follow.pt')

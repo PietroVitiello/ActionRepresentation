@@ -1,0 +1,9 @@
+~~~~~ baselineCNN_follow ~~~~~
+EPOCHS = 100
+BATCH_SIZE = 64
+LR = 0.001
+WD = 1e-7
+USE_GPU = True
+PATH_DATASET = "../../Demos/Dataset/followDummy_1/"
+
+estimating 3 DoF velocity of ee

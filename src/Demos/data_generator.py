@@ -57,10 +57,10 @@ class Generator():
 
     def resetEpisode(self):
         self.target.random_pos()
-        self.bot.resetInitial()
+        self.bot.resetInitial(self.pr)
 
     def resetRun(self):
-        self.bot.resetInitial()      
+        self.bot.resetInitial(self.pr)
 
     def moveArm(self, v_lin) -> None:
         distance = self.bot.get_movementDir(self.target)
@@ -90,8 +90,8 @@ class Generator():
 
     def get_CurrentData(self) -> Tuple:
         im = self.camera.capture_rgb()
-        # joint_vel = self.bot.robot.get_joint_velocities()
-        joint_vel = self.bot.robot.get_joint_target_velocities()
+        joint_vel = self.bot.robot.get_joint_velocities()
+        joint_target_vel = self.bot.robot.get_joint_target_velocities()
         joint_pos = self.bot.robot.get_joint_positions()
 
         ee_pos = self.bot.robot.get_tip().get_position()
@@ -100,7 +100,7 @@ class Generator():
         cube_pos = self.target.get_position()
         rel_cubePos = cube_pos - ee_pos
         
-        return (im, joint_vel, joint_pos, ee_pos, ee_vel, rel_cubePos)
+        return (im, joint_target_vel, joint_vel, joint_pos, ee_pos, ee_vel, rel_cubePos)
 
     def setGenerator(self, movement_function: Callable):
         n_steps = np.round(self.time / 0.05).astype(int)
@@ -138,7 +138,7 @@ class Generator():
     #     self.curve.remove_dummies()
     #     dmove.remove_dummy()
 
-    def humanTrjGenerator(self):
+    def imperfect_humanTrjGenerator(self):
         self.curve.find_middlePoint()
         dmove = DummyMovement(self.target, self.time)
         n_steps = np.round(self.time / 0.05).astype(int)
@@ -163,7 +163,24 @@ class Generator():
         self.curve.remove_dummies()
         dmove.remove_dummy()
 
-    def check_cubeReached(self, threshold=0.03) -> bool:
+    def humanTrjGenerator(self):
+        self.curve.find_middlePoint()
+        dmove = DummyMovement(self.target, self.time)
+
+        distance = self.bot.get_movementDir(self.target)
+        direction = distance / np.linalg.norm(distance)
+        v_lin = (self.curve.get_arcLen()/self.time) * direction
+
+        while self.check_cubeReached() is False:
+            v = self.curve.getVelocity2Target(v_lin)
+            q = self.bot.get_jointVelo(v)
+            self.bot.robot.set_joint_target_velocities(q)
+            yield v, *self.get_CurrentData()
+            self.simStep()
+        self.curve.remove_dummies()
+        dmove.remove_dummy()
+
+    def check_cubeReached(self, threshold=0.04) -> bool:
         distance = self.target.get_position() - self.bot.robot._ik_tip.get_position()
         distance = np.linalg.norm(distance)
         return True if distance <= threshold else False

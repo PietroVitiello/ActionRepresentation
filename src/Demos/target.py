@@ -30,7 +30,7 @@ class Target(Shape):
         self.position_max = [0.35, 0.85, 0.025]
 
     def random_pos(self):
-        # pos = list(np.random.uniform(self.position_min, self.position_max))
-        pos = [0, 0.75, 0.025]
+        pos = list(np.random.uniform(self.position_min, self.position_max))
+        # pos = [0, 0.75, 0.025]
         self.set_position(pos)
         self.set_orientation(self.initailOrientation)

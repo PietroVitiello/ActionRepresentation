@@ -43,13 +43,13 @@ target.set_restrictedBoundaries()
 # rmove.stayStill(100)
 
 for _ in range(10):
-    print("\n\n\n\n")
+    # print("\n\n\n\n")
     target.random_pos()
-    bot.resetInitial()
+    bot.resetInitial(pr)
     rmove.resetCurve()
     # input("Next step")
     rmove.stayStill(1)
-    # rmove.moveArmCurved_constrained(3)
+    # rmove.moveArmCurved(10)
     rmove.humanMovement(5)
 
 # for _ in range(5):

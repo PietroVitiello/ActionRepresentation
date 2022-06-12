@@ -38,8 +38,8 @@ transform = transforms.Compose(
         ]
     )
 
-model = BaselineCNN()
-model.load_state_dict(torch.load("Learning/b_cloning/TrainedModels/model.pt"))
+model = BaselineCNN(3)
+model.load_state_dict(torch.load("Learning/b_cloning/TrainedModels/baselineCNN_follow.pt"))
 model.eval()
 
 num_testEpisodes = 32
@@ -49,13 +49,13 @@ max_n_steps = 140
 for episode in range(num_testEpisodes):
     print(f"Beginning episode {episode+1}")
     target.random_pos()
-    bot.resetInitial()
+    bot.resetInitial(pr)
     rmove.stayStill(2)
     reached = False
     step_n = 0
     while reached == False and step_n<max_n_steps:
         rmove.autonomousMovement(model, transform)
-        reached = rmove.check_cubeReached(0.08)
+        reached = rmove.check_cubeReached(0.04)
         step_n += 1
 
     if reached:

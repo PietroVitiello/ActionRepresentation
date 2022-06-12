@@ -24,7 +24,10 @@ class MyRobot():
 
         self.initialConf = None
 
-        # self.disable_controlLoop()
+        self.disable_controlLoop()
+
+        self.robot_state = self.robot.get_configuration_tree()
+        self.gripper_state = self.gripper.get_configuration_tree()
 
         # initialConf = [0, math.radians(-30), 0, math.radians(-50), 0, math.radians(20), 0]
         # initialConf = [0, 0, 0, math.radians(-90), 0, math.radians(0), 0]
@@ -41,13 +44,14 @@ class MyRobot():
         self.robot.set_joint_positions(config)
         # self.gripper.set_motor_locked_at_zero_velocity(True)
 
-    def resetInitial(self):
-        # print("gripper joints: ", self.gripper.get_joint_positions())
-        # print("gripper target pos: ", self.gripper.get_joint_target_positions())
-        # print("gripper target vel: ", self.gripper.get_joint_target_velocities())
+    def resetInitial(self, pr: PyRep):
+        self.robot.reset_dynamic_object()
+        self.gripper.reset_dynamic_object()
+        pr.set_configuration_tree(self.robot_state)
+        pr.set_configuration_tree(self.gripper_state)
+        
         self.robot.set_joint_positions(self.initialConf[0], disable_dynamics=True)
-        # self.gripper.set_joint_positions(self.initialConf[1], disable_dynamics=True)
-        # print("gripper joints: ", self.gripper.get_joint_positions())
+        self.gripper.set_joint_positions(self.initialConf[1], disable_dynamics=True)
 
     def getTip(self) -> Dummy:
         return self.robot._ik_tip
@@ -104,6 +108,12 @@ class MyRobot():
         # J = self.robot.get_jacobian()
         # print(f"\nJacobian: \n{J}")
         q = np.matmul(np.linalg.pinv(J.T), vw)
+        return q
+
+    def get_jointVelo_4orientation(self, w: np.ndarray) -> np.ndarray:
+        self.robot.set_ik_element_properties(constraint_x=False, constraint_y=False, constraint_z=False)
+        J = self.get_trueJacobian()
+        q = np.matmul(np.linalg.pinv(J.T), w)
         return q
 
     def get_quaternion(self, target):

@@ -22,8 +22,8 @@ import os
 
 from Demos.data_generator import Generator
 
-SCENE_FILE = "Demos/Simulations/coppelia_robot_arm.ttt"
-SAVING_DIR = join(dirname(abspath(__file__)), "Demos/Dataset/auxiliary_try1")
+SCENE_FILE = "Simulations/coppelia_robot_arm.ttt"
+SAVING_DIR = join(dirname(abspath(__file__)), "Demos/Dataset/followDummy_1")
 
 gen = Generator(SCENE_FILE, 64)
 gen.restrictTargetBound()
@@ -42,7 +42,7 @@ constraint = 'normal'
 desired_time = n_steps * 0.05
 
 #dataframe
-col_name = ["imLoc","ee_target","jVel","jPos","eeVel","eePos","cPos"]
+col_name = ["imLoc","j_targetVel","jVel","jPos","ee_targetVel","eeVel","eePos","cPos"]
 df = pd.DataFrame(columns = col_name)
 
 # for ep in range(n_episodes):
@@ -91,7 +91,7 @@ for ep in range(n_episodes):
             os.makedirs(SAVING_DIR + location, exist_ok=True)
             location += f"/step_{s}.jpg"
 
-            ee_target, im, joint_vel, joint_pos, ee_vel, ee_pos, cube_pos = data
+            ee_target, im, joint_target, joint_vel, joint_pos, ee_vel, ee_pos, cube_pos = data
             ee_target = ",".join(ee_target.astype(str))
             joint_vel = ",".join(np.array(joint_vel).astype(str))
             joint_pos = ",".join(np.array(joint_pos).astype(str))
@@ -104,7 +104,7 @@ for ep in range(n_episodes):
             im.save(SAVING_DIR + location)
             # im.save("try.jpg")
 
-            row = [location, ee_target, joint_vel, joint_pos, ee_vel, ee_pos, cube_pos]
+            row = [location, joint_target, joint_vel, joint_pos, ee_target, ee_vel, ee_pos, cube_pos]
             df_length = len(df)
             df.loc[df_length] = row
             s += 1

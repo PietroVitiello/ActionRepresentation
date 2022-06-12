@@ -26,7 +26,7 @@ class Quadratic():
         self.all_dummies = [self.linear_mid]
 
         self.target_pos = self.tip
-        print(f"bracadabra: {self.target_pos}")
+        # print(f"bracadabra: {self.target_pos}")
         # print(self.ik_tip.get_position())
         # self.target_pos = np.array([15,15,15])
         # print(self.ik_tip.get_position())
@@ -123,8 +123,8 @@ class Quadratic():
         return self.eq[0] * 2 * rel_pos[0]
 
     def find_middlePoint(self):
-        # theta = np.random.uniform(-np.pi, np.pi)
-        theta = - np.pi
+        theta = np.random.uniform(-(4/6)*np.pi, (4/6)*np.pi)
+        # theta = - np.pi
         self.linear_mid.rotate([theta, 0, 0])
 
         # self.apex = np.random.uniform(0, self.max_deviation)
@@ -175,6 +175,19 @@ class Quadratic():
         rel_v[2] += 0.4 * np.abs(rel_v[2])
         return rel_v
 
+    def getVelocity2Target(self, v: np.ndarray):
+        #just follow position
+        grad = self.getGradientAtTarget()
+        theta = - np.arctan(grad)
+        R = self.linear_mid.get_matrix()[:-1,:-1]
+        rotation = np.array([[np.cos(theta), 0, np.sin(theta)],
+                             [0, 1, 0],
+                             [-np.sin(theta), 0, np.cos(theta)]])
+        rel_v = R @ rotation @ (np.array([1,0,0])*np.linalg.norm(v))
+        self.target_pos = self.target_pos + (rel_v*0.05)
+        self.verga.set_position(self.target_pos)
+        return (self.target_pos - self.ik_tip.get_position()) / 0.05
+
     # def getVelocity2Target(self, v: np.ndarray):
     #     grad = self.getGradientAtTarget()
     #     gg = self.getGradient()
@@ -211,24 +224,24 @@ class Quadratic():
     #     print("distance: ", (self.target_pos - self.ik_tip.get_position()), "\n")
     #     return (self.target_pos - self.ik_tip.get_position()) / 1, self.verga
 
-    def getVelocity2Target(self, v: np.ndarray, step):
-        if step == 0:
-            self.target_pos = self.ik_tip.get_position()
-        grad = self.getGradientAtTarget()
-        gg = self.getGradient()
-        theta = - np.arctan(grad)
-        print(f"gradients: {- np.arctan(grad)}\t{- np.arctan(gg)}")
-        R = self.linear_mid.get_matrix()[:-1,:-1]
-        rotation = np.array([[np.cos(theta), 0, np.sin(theta)],
-                             [0, 1, 0],
-                             [-np.sin(theta), 0, np.cos(theta)]])
-        rel_v = R @ rotation @ np.linalg.inv(R) @ v #(np.array([1,0,0])*np.linalg.norm(v))
-        print(f"nana: {self.target_pos}\t{self.ik_tip.get_position()}\t{rel_v}")
-        print(f"peppina: {self.target_pos - self.ik_tip.get_position()}")
-        self.target_pos = self.target_pos + (rel_v*0.05)
-        self.verga.set_position(self.target_pos)
-        print("distance: ", (self.target_pos - self.ik_tip.get_position()), "\n")
-        return self.target_pos
+    # def getVelocity2Target(self, v: np.ndarray, step):
+    #     if step == 0:
+    #         self.target_pos = self.ik_tip.get_position()
+    #     grad = self.getGradientAtTarget()
+    #     gg = self.getGradient()
+    #     theta = - np.arctan(grad)
+    #     print(f"gradients: {- np.arctan(grad)}\t{- np.arctan(gg)}")
+    #     R = self.linear_mid.get_matrix()[:-1,:-1]
+    #     rotation = np.array([[np.cos(theta), 0, np.sin(theta)],
+    #                          [0, 1, 0],
+    #                          [-np.sin(theta), 0, np.cos(theta)]])
+    #     rel_v = R @ rotation @ np.linalg.inv(R) @ v #(np.array([1,0,0])*np.linalg.norm(v))
+    #     print(f"nana: {self.target_pos}\t{self.ik_tip.get_position()}\t{rel_v}")
+    #     print(f"peppina: {self.target_pos - self.ik_tip.get_position()}")
+    #     self.target_pos = self.target_pos + (rel_v*0.05)
+    #     self.verga.set_position(self.target_pos)
+    #     print("distance: ", (self.target_pos - self.ik_tip.get_position()), "\n")
+    #     return self.target_pos
 
     # def getVelocity2Target(self, v: np.ndarray, step):
     #     self.target_pos = self.ik_tip.get_position()
