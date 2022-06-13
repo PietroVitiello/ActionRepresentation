@@ -1,21 +1,7 @@
 import torch
-from torch.nn import Conv2d, MaxPool2d
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
-from torch.utils.data import DataLoader, Dataset
-from torch.utils.data import sampler
-from torchvision import datasets, transforms
-from os.path import dirname, join, abspath
-import numpy as np
-import math
-import pandas as pd
-import matplotlib.pyplot as plt
-import PIL
-import PIL.Image as Image
-import random
-
-from models import BaselineCNN
+from torch.utils.data import DataLoader
 
 class Train():
 
@@ -45,15 +31,18 @@ class Train():
         self.model = model.to(device=self.device)
         self.dataloader = dataset
 
-        # OPTIMISER
+        self.optimiser = self.get_optimiser(optimiser)
+        self.loss = self.get_loss(loss)
+
+    def get_optimiser(self, optimiser):
         if optimiser == 'Adamax':
-            self.optimiser = optim.Adamax(self.model.parameters(), lr=lr, weight_decay=weight_decay)
+            return optim.Adamax(self.model.parameters(), lr=self.lr, weight_decay=self.wd)
         else:
             raise Exception("The proposed optimiser is not available. Try a different one!")
-        
-        # LOSS
+
+    def get_loss(self, loss):
         if loss == 'MSE':
-            self.loss = nn.MSELoss()
+            return nn.MSELoss()
         else:
             raise Exception("The proposed loss is not available. Try a different one!")
 
@@ -65,16 +54,52 @@ class Train():
 
         for epoch in range(self.epochs):
             print("\n\n")
-            for t, (x, ee_v) in enumerate(self.dataloader):
+            for t, (x, labels) in enumerate(self.dataloader):
+
                 x = x.to(device=self.device,dtype=dtype)
-                ee_v = ee_v.to(device=self.device,dtype=dtype)
+                eeTarget = labels[0]
+                eeTarget = eeTarget.to(device=self.device,dtype=dtype)
 
                 out = self.model(x)
-                loss = self.loss(out, ee_v)
+                loss = self.loss(out, eeTarget)
 
                 self.optimiser.zero_grad()
                 loss.backward()
                 self.optimiser.step()
 
                 if t % print_every == 0:
-                    print('Epoch: %d, Iteration %d, loss = %.4f' % (epoch+1, t, loss.item()))
+                    print('Epoch: %d, Iteration %d, loss = %.6f' % (epoch+1, t, loss.item()))
+
+    def train_eeVelAux(self):
+
+        print_every = 10
+        dtype = torch.float32
+        self.model.train()
+
+        for epoch in range(self.epochs):
+            print("\n\n")
+            for t, (x, labels) in enumerate(self.dataloader):
+
+                x = x.to(device=self.device,dtype=dtype)
+                labels = torch.cat(labels, dim=1)
+                labels = labels.to(device=self.device,dtype=dtype)
+
+                out = self.model(x)
+                loss = self.loss(out, labels)
+
+                self.optimiser.zero_grad()
+                loss.backward()
+                self.optimiser.step()
+
+                if t % print_every == 0:
+                    print(f"Epoch: {epoch+1}, Iteration {t}, loss = {loss:.6f}")
+    
+    def train_model(self, mode):
+        if mode == 'eeVel':
+            self.train_eeVel()
+        elif mode == 'eeVel_aux':
+            self.train_eeVelAux()
+        else:
+            raise Exception("Training modality selected has not been recognized")
+
+    

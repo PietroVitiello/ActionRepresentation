@@ -306,7 +306,8 @@ class RobotMovement():
         img: torch.Tensor = transform(img)
         img = img.unsqueeze(0)
         #shove it into the model
-        v: torch.Tensor = model(img)[0]
+        # print(model(img).shape)
+        v: torch.Tensor = model(img) #[0]
         v = v.detach().numpy()
         q = self.bot.get_jointVelo(v)
         self.robot.set_joint_target_velocities(q)

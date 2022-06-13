@@ -95,12 +95,13 @@ class Generator():
         joint_pos = self.bot.robot.get_joint_positions()
 
         ee_pos = self.bot.robot.get_tip().get_position()
+        ee_orientation = self.bot.robot.get_tip().get_orientation()
         ee_vel = np.concatenate(list(self.bot.robot.get_tip().get_velocity()), axis=0)
 
         cube_pos = self.target.get_position()
         rel_cubePos = cube_pos - ee_pos
         
-        return (im, joint_target_vel, joint_vel, joint_pos, ee_pos, ee_vel, rel_cubePos)
+        return (im, joint_target_vel, joint_vel, joint_pos, ee_vel, ee_pos, ee_orientation, rel_cubePos)
 
     def setGenerator(self, movement_function: Callable):
         n_steps = np.round(self.time / 0.05).astype(int)
@@ -185,6 +186,24 @@ class Generator():
         distance = np.linalg.norm(distance)
         return True if distance <= threshold else False
 
+    def humanTrjGenerator_fixedSteps(self):
+        self.curve.find_middlePoint()
+        dmove = DummyMovement(self.target, self.time)
+        n_steps = np.round(self.time / 0.05).astype(int)
+
+        distance = self.bot.get_movementDir(self.target)
+        direction = distance / np.linalg.norm(distance)
+        v_lin = (self.curve.get_arcLen()/self.time) * direction
+
+        for _ in range(n_steps):
+            v = self.curve.getVelocity2Target(v_lin)
+            q = self.bot.get_jointVelo(v)
+            self.bot.robot.set_joint_target_velocities(q)
+            yield v, *self.get_CurrentData()
+            self.simStep()
+        self.curve.remove_dummies()
+        dmove.remove_dummy()
+
     def getGenerator(self, move_type: str, constraint: str, time: float=2) -> Generator:
         if move_type == 'human-like':
             pass
@@ -217,4 +236,4 @@ class Generator():
     def getHumanTrjGenerator(self, time: float=2) -> Generator:
         self.setTime(time)
         self.curve.resetCurve()
-        return self.humanTrjGenerator()
+        return self.humanTrjGenerator_fixedSteps()

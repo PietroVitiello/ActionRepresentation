@@ -23,7 +23,7 @@ import os
 from Demos.data_generator import Generator
 
 SCENE_FILE = "Simulations/coppelia_robot_arm.ttt"
-SAVING_DIR = join(dirname(abspath(__file__)), "Demos/Dataset/followDummy_1")
+SAVING_DIR = join(dirname(abspath(__file__)), "Demos/Dataset/followDummy_fixed_2")
 
 gen = Generator(SCENE_FILE, 64)
 gen.restrictTargetBound()
@@ -33,16 +33,16 @@ n_trj = 2 #number of different trajectories for each target position
 n_targetPos = np.ceil(n_demos/n_trj)
 n_demos = n_targetPos * n_trj
 
-n_episodes = 50
-n_runs = 2
-n_steps = 100
+n_episodes = 100
+n_runs = 1
+n_steps = 95
 
 move_type = 'linear'
 constraint = 'normal'
 desired_time = n_steps * 0.05
 
 #dataframe
-col_name = ["imLoc","j_targetVel","jVel","jPos","ee_targetVel","eeVel","eePos","cPos"]
+col_name = ["imLoc","j_targetVel","jVel","jPos","ee_targetVel","eeVel","eePos","eeOri","cPos"]
 df = pd.DataFrame(columns = col_name)
 
 # for ep in range(n_episodes):
@@ -90,13 +90,15 @@ for ep in range(n_episodes):
             # if not os.path.exists(SAVING_DIR + location):
             os.makedirs(SAVING_DIR + location, exist_ok=True)
             location += f"/step_{s}.jpg"
-
-            ee_target, im, joint_target, joint_vel, joint_pos, ee_vel, ee_pos, cube_pos = data
-            ee_target = ",".join(ee_target.astype(str))
+            
+            ee_target, im, joint_target, joint_vel, joint_pos, ee_vel, ee_pos, ee_orientation, cube_pos = data
+            joint_target = ",".join(np.array(joint_target).astype(str))
             joint_vel = ",".join(np.array(joint_vel).astype(str))
             joint_pos = ",".join(np.array(joint_pos).astype(str))
-            ee_pos = ",".join(ee_pos.astype(str))
+            ee_target = ",".join(ee_target.astype(str))
             ee_vel = ",".join(ee_vel.astype(str))
+            ee_pos = ",".join(ee_pos.astype(str))
+            ee_orientation = ",".join(ee_orientation.astype(str))
             cube_pos = ",".join(cube_pos.astype(str))
 
             im = Image.fromarray(np.uint8(im*255)).convert('RGB') #cm.gist_earth(im/255)*255)
@@ -104,7 +106,7 @@ for ep in range(n_episodes):
             im.save(SAVING_DIR + location)
             # im.save("try.jpg")
 
-            row = [location, joint_target, joint_vel, joint_pos, ee_target, ee_vel, ee_pos, cube_pos]
+            row = [location, joint_target, joint_vel, joint_pos, ee_target, ee_vel, ee_pos, ee_orientation, cube_pos]
             df_length = len(df)
             df.loc[df_length] = row
             s += 1

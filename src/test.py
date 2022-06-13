@@ -9,7 +9,7 @@ from pyrep.objects.vision_sensor import VisionSensor
 from Demos.my_robot import MyRobot
 from Demos.target import Target
 from Demos.robot_movement import RobotMovement
-from Learning.b_cloning.models import BaselineCNN
+from Learning.b_cloning.models import BaselineCNN, Aux_BaselineCNN, LSTM_BaselineCNN, LSTM_largerBaseCNN
 
 pr = PyRep()
 
@@ -38,8 +38,8 @@ transform = transforms.Compose(
         ]
     )
 
-model = BaselineCNN(3)
-model.load_state_dict(torch.load("Learning/b_cloning/TrainedModels/baselineCNN_follow.pt"))
+model = LSTM_largerBaseCNN(9, 3)
+model.load_state_dict(torch.load("Learning/b_cloning/TrainedModels/LSTM_largerBaseCNN_follow_2.pt"))
 model.eval()
 
 num_testEpisodes = 32
@@ -48,6 +48,7 @@ max_n_steps = 140
 
 for episode in range(num_testEpisodes):
     print(f"Beginning episode {episode+1}")
+    model.start_newSeq()
     target.random_pos()
     bot.resetInitial(pr)
     rmove.stayStill(2)

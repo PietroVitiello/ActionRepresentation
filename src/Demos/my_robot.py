@@ -45,6 +45,7 @@ class MyRobot():
         # self.gripper.set_motor_locked_at_zero_velocity(True)
 
     def resetInitial(self, pr: PyRep):
+        self.robot.set_joint_target_velocities([0]*(len(self.robot.joints)))
         self.robot.reset_dynamic_object()
         self.gripper.reset_dynamic_object()
         pr.set_configuration_tree(self.robot_state)
