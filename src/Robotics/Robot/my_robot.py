@@ -30,8 +30,8 @@ class MyRobot():
         self.disable_controlLoop()
         self.fixJoints()
 
-        # self.robot_state = self.robot.get_configuration_tree()
-        # self.gripper_state = self.gripper.get_configuration_tree()
+        self.robot_state = self.robot.get_configuration_tree()
+        self.gripper_state = self.gripper.get_configuration_tree()
         robot_conf, gripper_conf = self.get_DefaultConfiguration()
         self.set_initialConf(robot_conf, gripper_conf)
         print(f"Aperture: {self.gripper.get_joint_positions()}")
@@ -93,8 +93,8 @@ class MyRobot():
     def get_movementDir(self, target: Shape) -> np.ndarray:
         tip = self.robot._ik_tip.get_position()
         target = target.get_position()
-        distance = target - tip
-        return distance
+        distance_vec = target - tip
+        return distance_vec
 
     def get_linearVelo(self, direction: np.ndarray, time: float) -> np.ndarray:
         v = direction / time

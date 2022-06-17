@@ -67,13 +67,24 @@ class RobotMovement():
             self.pr.step()
             time -= 0.05
 
+    def displaceArm(self, destination: np.ndarray, time: float=2):
+        n_steps = np.round(time / 0.05).astype(int)
+        for _ in range(n_steps):
+            distance_vec = destination - self.robot._ik_tip.get_position()
+            v = self.bot.get_linearVelo(distance_vec, time)
+            q = self.bot.get_jointVelo(v)
+            self.robot.set_joint_target_velocities(q)
+            self.pr.step()
+            print(self.bot.gripper.get_joint_target_velocities())
+            time -= 0.05
+
     def moveArm(self, time: float=2):
         n_steps = np.round(time / 0.05).astype(int)
         # print(n_steps)
 
         for i in range(n_steps):
-            distance = self.bot.get_movementDir(self.target)
-            v = self.bot.get_linearVelo(distance, time)
+            distance_vec = self.bot.get_movementDir(self.target)
+            v = self.bot.get_linearVelo(distance_vec, time)
             # print(f"\nVelocity magnitude: {np.linalg.norm(v)}")
             # print(f"Direction: {distance}")
             # print(f"Target: {target.get_position()}")
@@ -88,9 +99,9 @@ class RobotMovement():
         n_steps = np.round(time / 0.05).astype(int)
 
         for i in range(n_steps):
-            distance = self.bot.get_movementDir(self.target)
+            distance_vec = self.bot.get_movementDir(self.target)
             orientation = self.curve.linear_mid.get_orientation(relative_to=self.robot._ik_tip)
-            v = self.bot.get_linearVelo(distance, time)
+            v = self.bot.get_linearVelo(distance_vec, time)
             w = self.bot.get_angularSpeed(orientation)
             q = self.bot.get_jointVelo_constrained(v, w)
             self.robot.set_joint_target_velocities(q)
@@ -103,8 +114,8 @@ class RobotMovement():
         self.curve.find_middlePoint()
         n_steps = np.round(time / 0.05).astype(int)
 
-        distance = self.bot.get_movementDir(self.target)
-        direction = distance / np.linalg.norm(distance)
+        distance_vec = self.bot.get_movementDir(self.target)
+        direction = distance_vec / np.linalg.norm(distance_vec)
         v_lin = (self.curve.get_arcLen()/time) * direction
 
         for _ in range(n_steps-8):
@@ -118,8 +129,8 @@ class RobotMovement():
         self.curve.find_middlePoint()
         n_steps = np.round(time / 0.05).astype(int)
 
-        distance = self.bot.get_movementDir(self.target)
-        direction = distance / np.linalg.norm(distance)
+        distance_vec = self.bot.get_movementDir(self.target)
+        direction = distance_vec / np.linalg.norm(distance_vec)
         v_lin = (self.curve.get_arcLen()/time) * direction
 
         print("cavolfiore: ", 13/n_steps)
@@ -138,8 +149,8 @@ class RobotMovement():
         dmove = DummyMovement(self.target, time)
         n_steps = np.round(time / 0.05).astype(int)
 
-        distance = self.bot.get_movementDir(self.target)
-        direction = distance / np.linalg.norm(distance)
+        distance_vec = self.bot.get_movementDir(self.target)
+        direction = distance_vec / np.linalg.norm(distance_vec)
         v_lin = (self.curve.get_arcLen()/time) * direction
 
         # print("cavolfiore: ", 13/n_steps)
@@ -167,8 +178,8 @@ class RobotMovement():
         theta = self.curve.find_middlePoint()
         n_steps = np.round(time / 0.05).astype(int)
 
-        distance = self.bot.get_movementDir(self.target)
-        direction = distance / np.linalg.norm(distance)
+        distance_vec = self.bot.get_movementDir(self.target)
+        direction = distance_vec / np.linalg.norm(distance_vec)
         v_lin = (self.curve.get_arcLen()/time) * direction
 
         for i in range(n_steps):
@@ -330,36 +341,44 @@ class RobotMovement():
     def graspingMovement(self, time: float):
 
         # grasped = False
-        # while not grasped:
+        # print(self.bot.gripper.get_joint_positions())
+        # while  not grasped:
         #     grasped = self.bot.close_gripper()
         #     self.pr.step()
+        #     print(self.bot.gripper.get_joint_positions())
         #     print(grasped)
         # print("Cube Grasped")
 
-        while True:
-            # print(self.bot.gripper.get_joint_target_velocities())
+        # while True:
+        #     # print(self.bot.gripper.get_joint_target_velocities())
+        #     print(self.bot.gripper.get_joint_positions())
+        #     self.pr.step()
+
+        while not self.check_cubeReached(0.01):
+            distance = self.bot.get_movementDir(self.target)
+            orientation = self.curve.linear_mid.get_orientation(relative_to=self.robot._ik_tip)
+            v = self.bot.get_linearVelo(distance, time)
+            w = self.bot.get_angularSpeed(orientation)
+            q = self.bot.get_jointVelo_constrained(v, w)
+            self.robot.set_joint_target_velocities(q)
             self.pr.step()
+            time -= 0.05
 
-        # while not self.check_cubeReached(0.03):
-        #     distance = self.bot.get_movementDir(self.target)
-        #     orientation = self.curve.linear_mid.get_orientation(relative_to=self.robot._ik_tip)
-        #     v = self.bot.get_linearVelo(distance, time)
-        #     w = self.bot.get_angularSpeed(orientation)
-        #     q = self.bot.get_jointVelo_constrained(v, w)
-        #     self.robot.set_joint_target_velocities(q)
-        #     self.pr.step()
-        #     time -= 0.05
-
-        # print("Cube Reached")
+        print("Cube Reached")
         
-        # q = [0]*len(q)
-        # self.robot.set_joint_target_velocities(q)
-        # grasped = False
-        # while not grasped:
-        #     grasped = self.bot.close_gripper()
-        #     self.pr.step()
-        #     print(grasped)
-        # print("Cube Grasped")
+        q = [0]*len(q)
+        self.robot.set_joint_target_velocities(q)
+        grasped = False
+        while not grasped:
+            grasped = self.bot.close_gripper()
+            self.pr.step()
+            print(grasped)
+        print("Cube Grasped")
+
+        destination = self.bot.getTip().get_position()
+        destination[2] += 0.1
+        self.displaceArm(destination)
+
         self.curve.remove_dummies()
 
 

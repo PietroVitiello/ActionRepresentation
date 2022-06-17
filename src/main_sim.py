@@ -85,7 +85,7 @@ target.set_restrictedBoundaries()
 for _ in range(10):
     # print("\n\n\n\n")
     target.random_pos()
-    # bot.resetInitial(pr)
+    bot.resetInitial(pr)
     rmove.resetCurve()
     # input("Next step")
     rmove.stayStill(1)
