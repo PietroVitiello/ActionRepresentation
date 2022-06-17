@@ -373,10 +373,13 @@ class RobotMovement():
             grasped = self.bot.close_gripper()
             self.pr.step()
             print(grasped)
+            print(self.bot.gripper.get_joint_forces())
         print("Cube Grasped")
+        # self.stayStill(0.1)
+        print(f"Last force: {self.bot.gripper.get_joint_forces()}")
 
         destination = self.bot.getTip().get_position()
-        destination[2] += 0.1
+        destination[2] += 0.3
         self.displaceArm(destination)
 
         self.curve.remove_dummies()
