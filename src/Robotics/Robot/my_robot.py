@@ -1,15 +1,18 @@
+from abc import abstractmethod
+from typing import List, Tuple
 from pyrep import PyRep
 from pyrep.robots.arms.lbr_iiwa_14_r820 import LBRIwaa14R820
 from pyrep.robots.arms.arm import Arm
+from pyrep.robots.end_effectors.gripper import Gripper
 from pyrep.robots.end_effectors.mico_gripper import MicoGripper
 from pyrep.const import ObjectType, PrimitiveShape, JointMode
 from pyrep.objects.vision_sensor import VisionSensor
 from pyrep.objects import Shape, Dummy
 from pyrep.backend import sim
 
-from .target import Target
+from ..target import Target
 from .mico_gripper import MicoGripperComplete
-from .quadratic import Quadratic
+from ..Kinematics.quadratic import Quadratic
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,34 +21,43 @@ import time as t
 
 class MyRobot():
 
-    def __init__(self) -> None:
-        self.robot = LBRIwaa14R820()
-        self.gripper = MicoGripperComplete()
+    def __init__(self, robot: Arm, hand: Gripper) -> None:
+        self.robot = robot
+        self.gripper = hand
 
         self.initialConf = None
 
         self.disable_controlLoop()
+        self.fixJoints()
 
-        self.robot_state = self.robot.get_configuration_tree()
-        self.gripper_state = self.gripper.get_configuration_tree()
+        # self.robot_state = self.robot.get_configuration_tree()
+        # self.gripper_state = self.gripper.get_configuration_tree()
+        robot_conf, gripper_conf = self.get_DefaultConfiguration()
+        self.set_initialConf(robot_conf, gripper_conf)
+        print(f"Aperture: {self.gripper.get_joint_positions()}")
 
-        # initialConf = [0, math.radians(-30), 0, math.radians(-50), 0, math.radians(20), 0]
-        # initialConf = [0, 0, 0, math.radians(-90), 0, math.radians(0), 0]
-        initialConf = [0, math.radians(-40), 0, math.radians(-130), 0, math.radians(60), 0]
-        self.set_initialConf(initialConf)
-        self.robot.set_motor_locked_at_zero_velocity(True)
+    @abstractmethod
+    def get_DefaultConfiguration(self) -> Tuple[List[float], List[float]]:
+        pass
 
     def disable_controlLoop(self):
         [j.set_control_loop_enabled(False) for j in self.robot.joints]
-        # [j.set_control_loop_enabled(False) for j in self.gripper.joints]
+        [j.set_control_loop_enabled(False) for j in self.gripper.joints]
 
-    def set_initialConf(self, config):
-        self.initialConf = (config, self.gripper.get_joint_positions())
-        self.robot.set_joint_positions(config)
-        # self.gripper.set_motor_locked_at_zero_velocity(True)
+    def fixJoints(self) -> None:
+        self.robot.set_joint_target_velocities([0]*(len(self.robot.joints)))
+        self.gripper.set_joint_target_velocities([0]*(len(self.gripper.joints)))
+        self.robot.set_motor_locked_at_zero_velocity(True)
+        self.gripper.set_motor_locked_at_zero_velocity(True)
+
+    def set_initialConf(self, robot_config: List[float], gripper_config: List[float]):
+        self.initialConf = (robot_config, gripper_config)
+        self.robot.set_joint_positions(robot_config)
+        self.gripper.set_joint_positions(gripper_config)
 
     def resetInitial(self, pr: PyRep):
         self.robot.set_joint_target_velocities([0]*(len(self.robot.joints)))
+        self.gripper.set_joint_target_velocities([0]*(len(self.gripper.joints)))
         self.robot.reset_dynamic_object()
         self.gripper.reset_dynamic_object()
         pr.set_configuration_tree(self.robot_state)
@@ -59,6 +71,13 @@ class MyRobot():
 
     def getRobot(self) -> Arm:
         return self.robot
+
+    def getGripper(self) -> Gripper:
+        return self.gripper
+
+    @abstractmethod
+    def close_gripper(self) -> bool:
+        pass
 
     def get_trueJacobian(self):
         self.robot._ik_target.set_matrix(self.robot._ik_tip.get_matrix())
@@ -98,7 +117,7 @@ class MyRobot():
         q = np.matmul(np.linalg.pinv(J.T), v)
         return q
 
-    def get_jointVelo_constrained(self, v: np.ndarray, w: np.ndarray):
+    def get_jointVelo_constrained(self, v: np.ndarray, w: np.ndarray) -> np.ndarray:
         # print(f"\n\n\nVelocity Jacobian: \n{self.robot.get_jacobian()}")
         self.robot.set_ik_element_properties()
         R = self.robot.get_matrix()[:3,:3]

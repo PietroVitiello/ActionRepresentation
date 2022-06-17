@@ -4,7 +4,7 @@ import numpy as np
 import math
 from typing import Union
 
-from .target import Target
+from ..target import Target
 
 class Quadratic():
 

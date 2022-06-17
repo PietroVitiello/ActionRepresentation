@@ -12,8 +12,8 @@ from pyrep.objects.vision_sensor import VisionSensor
 from pyrep.objects import Shape, Dummy
 
 from .quadratic import Quadratic
-from .my_robot import MyRobot
-from .target import Target
+from ..Robot.my_robot import MyRobot
+from ..target import Target
 from .dummy_movement import DummyMovement
 
 import time
@@ -326,6 +326,41 @@ class RobotMovement():
         q = self.bot.get_jointVelo_constrained(v[:3], v[3:])
         self.robot.set_joint_target_velocities(q)
         self.pr.step()
+
+    def graspingMovement(self, time: float):
+
+        # grasped = False
+        # while not grasped:
+        #     grasped = self.bot.close_gripper()
+        #     self.pr.step()
+        #     print(grasped)
+        # print("Cube Grasped")
+
+        while True:
+            # print(self.bot.gripper.get_joint_target_velocities())
+            self.pr.step()
+
+        # while not self.check_cubeReached(0.03):
+        #     distance = self.bot.get_movementDir(self.target)
+        #     orientation = self.curve.linear_mid.get_orientation(relative_to=self.robot._ik_tip)
+        #     v = self.bot.get_linearVelo(distance, time)
+        #     w = self.bot.get_angularSpeed(orientation)
+        #     q = self.bot.get_jointVelo_constrained(v, w)
+        #     self.robot.set_joint_target_velocities(q)
+        #     self.pr.step()
+        #     time -= 0.05
+
+        # print("Cube Reached")
+        
+        # q = [0]*len(q)
+        # self.robot.set_joint_target_velocities(q)
+        # grasped = False
+        # while not grasped:
+        #     grasped = self.bot.close_gripper()
+        #     self.pr.step()
+        #     print(grasped)
+        # print("Cube Grasped")
+        self.curve.remove_dummies()
 
 
 

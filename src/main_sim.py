@@ -10,10 +10,10 @@ from pyrep.const import ObjectType, PrimitiveShape
 from pyrep.objects.vision_sensor import VisionSensor
 from pyrep.objects.shape import Shape
 
-from Demos.quadratic import Quadratic
-from Demos.my_robot import MyRobot
-from Demos.target import Target
-from Demos.robot_movement import RobotMovement
+from Robotics.Kinematics.quadratic import Quadratic
+from Robotics.Robot.baxterBot import BaxterBot
+from Robotics.target import Target
+from Robotics.Kinematics.robot_movement import RobotMovement
 
 import time
 import math
@@ -21,13 +21,13 @@ import math
 pr = PyRep()
 plt.ion()
 
-SCENE_FILE = join(dirname(abspath(__file__)), "Demos/Simulations/coppelia_robot_arm.ttt")
+SCENE_FILE = join(dirname(abspath(__file__)), "Demos/Simulations/baxter_robot_arm.ttt")
 pr.launch(SCENE_FILE, headless=False)
 pr.start()
 pr.step_ui()
 
 # arm = get_arm()
-bot = MyRobot()
+bot = BaxterBot()
 target = Target()
 camera = VisionSensor("Vision_sensor")
 rmove = RobotMovement(bot, target, pr)
@@ -38,19 +38,21 @@ target.set_restrictedBoundaries()
 
 # bot.find_jointVelo(target, 40)
 
+################ Reaching ################
+
 # target.random_pos()
 # bot.trajetoryNoise(target)
 # rmove.stayStill(100)
 
-for _ in range(10):
-    # print("\n\n\n\n")
-    target.random_pos()
-    bot.resetInitial(pr)
-    rmove.resetCurve()
-    # input("Next step")
-    rmove.stayStill(1)
-    # rmove.moveArmCurved(10)
-    rmove.humanMovement(5)
+# for _ in range(10):
+#     # print("\n\n\n\n")
+#     target.random_pos()
+#     bot.resetInitial(pr)
+#     rmove.resetCurve()
+#     # input("Next step")
+#     rmove.stayStill(1)
+#     # rmove.moveArmCurved(10)
+#     rmove.humanMovement(5)
 
 # for _ in range(5):
 #     target.random_pos()
@@ -78,6 +80,17 @@ for _ in range(10):
 
 # bot.stayStill(pr, 1)
 # bot.nana(pr, target)
+
+################ Grasping ################
+for _ in range(10):
+    # print("\n\n\n\n")
+    target.random_pos()
+    # bot.resetInitial(pr)
+    rmove.resetCurve()
+    # input("Next step")
+    rmove.stayStill(1)
+    # rmove.moveArmCurved(10)
+    rmove.graspingMovement(5)
 
 pr.stop()
 pr.shutdown()

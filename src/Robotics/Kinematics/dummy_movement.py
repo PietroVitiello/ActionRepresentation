@@ -11,8 +11,8 @@ from pyrep.objects.vision_sensor import VisionSensor
 from pyrep.objects import Shape, Dummy
 
 from .quadratic import Quadratic
-from .my_robot import MyRobot
-from .target import Target
+from ..Robot.my_robot import MyRobot
+from ..target import Target
 
 import time
 import math

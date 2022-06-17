@@ -6,9 +6,9 @@ from torchvision import transforms
 from pyrep import PyRep
 from pyrep.objects.vision_sensor import VisionSensor
 
-from Demos.my_robot import MyRobot
-from Demos.target import Target
-from Demos.robot_movement import RobotMovement
+from Robotics.Robot.my_robot import MyRobot
+from Robotics.target import Target
+from Robotics.Kinematics.robot_movement import RobotMovement
 from Learning.b_cloning.models import BaselineCNN, Aux_BaselineCNN, LSTM_BaselineCNN, LSTM_largerBaseCNN
 
 pr = PyRep()
