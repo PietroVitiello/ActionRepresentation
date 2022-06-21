@@ -1,0 +1,27 @@
+# Python 3.8
+
+certifi==2022.5.18.1
+cffi==1.14.2
+charset-normalizer==2.0.12
+cycler==0.11.0
+fonttools==4.33.3
+idna==3.3
+kiwisolver==1.4.2
+matplotlib==3.5.2
+numpy==1.22.3
+packaging==21.3
+pandas==1.4.2
+Pillow==9.1.0
+pycparser==2.21
+pyparsing==3.0.8
+PyRep==4.1.0.3
+python-dateutil==2.8.2
+pytz==2022.1
+PyYAML==6.0
+requests==2.27.1
+six==1.16.0
+torch==1.11.0+cu113
+torchaudio==0.11.0+cu113
+torchvision==0.12.0+cu113
+typing-extensions==4.2.0
+urllib3==1.26.9
