@@ -1,6 +1,5 @@
 from os.path import dirname, join, abspath
 from typing import Callable, Generator
-from matplotlib import cm
 from PIL import Image
 import numpy as np
 import pandas as pd
