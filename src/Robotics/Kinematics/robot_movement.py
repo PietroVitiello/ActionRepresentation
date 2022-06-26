@@ -1,6 +1,7 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
+import torch.nn as nn
+import torchvision.transforms as T
 from PIL import Image
 
 from pyrep import PyRep
@@ -27,7 +28,7 @@ class RobotMovement():
         self.target = target
         self.pr = pr
 
-        self.curve = Quadratic(self.bot.getTip(), self.target, 0.08) #0.0001
+        self.curve = Quadratic(self.bot.getTip(), self.target, 0.0001) #0.08) #0.0001
         if camera is not None:
             self.camera = camera
             self.camera.set_resolution([res, res])
@@ -75,7 +76,7 @@ class RobotMovement():
             q = self.bot.get_jointVelo(v)
             self.robot.set_joint_target_velocities(q)
             self.pr.step()
-            print(self.bot.gripper.get_joint_target_velocities())
+            # print(self.bot.gripper.get_joint_target_velocities())
             time -= 0.05
 
     def moveArm(self, time: float=2):
@@ -190,6 +191,52 @@ class RobotMovement():
             if self.check_cubeReached():
                 print(f"Cube Reached at step {i+1}")
                 break
+        self.curve.remove_dummies()
+
+    def graspingMovement_linear(self, time: float):
+
+        # grasped = False
+        # print(self.bot.gripper.get_joint_positions())
+        # while  not grasped:
+        #     grasped = self.bot.close_gripper()
+        #     self.pr.step()
+        #     print(self.bot.gripper.get_joint_positions())
+        #     print(grasped)
+        # print("Cube Grasped")
+
+        # while True:
+        #     # print(self.bot.gripper.get_joint_target_velocities())
+        #     print(self.bot.gripper.get_joint_positions())
+        #     self.pr.step()
+
+        while not self.check_cubeReached(0.01):
+            distance = self.bot.get_movementDir(self.target)
+            orientation = self.curve.linear_mid.get_orientation(relative_to=self.robot._ik_tip)
+            v = self.bot.get_linearVelo(distance, time)
+            w = self.bot.get_angularSpeed(orientation)
+            q = self.bot.get_jointVelo_constrained(v, w)
+            self.robot.set_joint_target_velocities(q)
+            self.pr.step()
+            time -= 0.05
+
+        print("Cube Reached")
+        
+        q = [0]*len(q)
+        self.robot.set_joint_target_velocities(q)
+        grasped = False
+        while not grasped:
+            grasped = self.bot.close_gripper()
+            self.pr.step()
+            # print(grasped)
+            # print(self.bot.gripper.get_joint_forces())
+        print("Cube Grasped")
+        self.stayStill(0.1)
+        # print(f"Last force: {self.bot.gripper.get_joint_forces()}")
+
+        destination = self.bot.getTip().get_position()
+        destination[2] += 0.3
+        self.displaceArm(destination)
+
         self.curve.remove_dummies()
 
     # def humanMovement(self, time: float):
@@ -309,7 +356,7 @@ class RobotMovement():
         # print(self.robot._ik_tip.get_position())
         return True if distance <= threshold else False
 
-    def autonomousMovement(self, model, transform):
+    def autonomousMovement(self, model: nn.Module, transform: T.Compose):
         #take the image from the robot
         img = self.camera.capture_rgb()
         img = Image.fromarray(np.uint8(img*255)).convert('RGB')
@@ -318,13 +365,13 @@ class RobotMovement():
         img = img.unsqueeze(0)
         #shove it into the model
         # print(model(img).shape)
-        v: torch.Tensor = model(img) #[0]
+        v: torch.Tensor = model(img)[0]
         v = v.detach().numpy()
         q = self.bot.get_jointVelo(v)
         self.robot.set_joint_target_velocities(q)
         self.pr.step()
 
-    def autonomousMovement_constrained(self, model, transform):
+    def autonomousMovement_constrained(self, model: nn.Module, transform: T.Compose):
         #take the image from the robot
         img = self.camera.capture_rgb()
         img = Image.fromarray(np.uint8(img*255)).convert('RGB')
@@ -338,54 +385,23 @@ class RobotMovement():
         self.robot.set_joint_target_velocities(q)
         self.pr.step()
 
-    def graspingMovement(self, time: float):
-
-        # grasped = False
-        # print(self.bot.gripper.get_joint_positions())
-        # while  not grasped:
-        #     grasped = self.bot.close_gripper()
-        #     self.pr.step()
-        #     print(self.bot.gripper.get_joint_positions())
-        #     print(grasped)
-        # print("Cube Grasped")
-
-        # while True:
-        #     # print(self.bot.gripper.get_joint_target_velocities())
-        #     print(self.bot.gripper.get_joint_positions())
-        #     self.pr.step()
-
-        while not self.check_cubeReached(0.01):
-            distance = self.bot.get_movementDir(self.target)
-            orientation = self.curve.linear_mid.get_orientation(relative_to=self.robot._ik_tip)
-            v = self.bot.get_linearVelo(distance, time)
-            w = self.bot.get_angularSpeed(orientation)
-            q = self.bot.get_jointVelo_constrained(v, w)
-            self.robot.set_joint_target_velocities(q)
-            self.pr.step()
-            time -= 0.05
-
-        print("Cube Reached")
-        
-        q = [0]*len(q)
+    def autonomousStop(self, model: nn.Module, transform: T.Compose):
+        #take the image from the robot
+        img = self.camera.capture_rgb()
+        img = Image.fromarray(np.uint8(img*255)).convert('RGB')
+        img: torch.Tensor = transform(img)
+        img = img.unsqueeze(0)
+        #shove it into the model
+        # print(model(img).shape)
+        out: torch.Tensor = model(img)[0]
+        out = out.detach().numpy()
+        v = out[:-1]
+        stop = out[-1]
+        q = self.bot.get_jointVelo(v)
         self.robot.set_joint_target_velocities(q)
-        grasped = False
-        while not grasped:
-            grasped = self.bot.close_gripper()
-            self.pr.step()
-            print(grasped)
-            print(self.bot.gripper.get_joint_forces())
-        print("Cube Grasped")
-        # self.stayStill(0.1)
-        print(f"Last force: {self.bot.gripper.get_joint_forces()}")
-
-        destination = self.bot.getTip().get_position()
-        destination[2] += 0.3
-        self.displaceArm(destination)
-
-        self.curve.remove_dummies()
-
-
-
+        self.pr.step()
+        print(stop)
+        return stop
 
 
 # pr = PyRep()

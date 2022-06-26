@@ -17,6 +17,7 @@ class Train():
         lr = 0.001,
         weight_decay = 1e-7,
         loss = 'MSE',
+        stopping_loss = 'BCE',
         use_gpu = True
     ) -> None:
 
@@ -36,6 +37,7 @@ class Train():
 
         self.optimiser = get_optimiser(optimiser, self.model, self.lr, self.wd)
         self.loss = get_loss(loss)
+        self.stopping_loss = get_loss(stopping_loss)
 
     def train_eeVel(self):
         print_every = 10
@@ -109,5 +111,32 @@ class Train():
 
                 if (t+1) % print_every == 0:
                     print(f"Epoch: {epoch+1}, Iteration {t+1}, loss = {loss:.6f}")
+
+    def train_stopping(self):
+        print_every = 10
+        dtype = torch.float32
+        self.model.train()
+
+        for epoch in range(self.epochs):
+            print("\n\n")
+            for t, (x, labels) in enumerate(self.dataloader):
+
+                x = x.to(device=self.device,dtype=dtype)
+                labels = torch.cat(labels, dim=1)
+                labels = labels.to(device=self.device,dtype=dtype)
+
+                out = self.model(x)
+                # print(out[:,0].shape)
+                # print(out[:,:-1].shape)
+                loss = self.loss(out[:,:-1], labels[:,:-1])
+                stop_loss = self.stopping_loss(out[:,-1], labels[:,-1])
+                loss = loss + stop_loss
+
+                self.optimiser.zero_grad()
+                loss.backward()
+                self.optimiser.step()
+
+                if t % print_every == 0:
+                    print(f"Epoch: {epoch+1}, Iteration {t}, loss = {loss:.6f}")
 
     

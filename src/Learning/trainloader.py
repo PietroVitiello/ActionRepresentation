@@ -23,6 +23,7 @@ class SimDataset(Dataset):
         eePos = np.array([float(item) for item in self.df['eePos'][index].split(",")])
         eeOri = np.array([float(item) for item in self.df['eeOri'][index].split(",")])
         cPos = np.array([float(item) for item in self.df['cPos'][index].split(",")])
+        stop = np.array([self.df['stop'][index]], dtype=float)
 
         image = Image.open(self.dataset_path + filename)
         if self.transform is not None:

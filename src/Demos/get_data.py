@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import os
 
-# from pyrep import PyRep
+from pyrep import PyRep
 # from pyrep.robots.arms.lbr_iiwa_14_r820 import LBRIwaa14R820
 # from pyrep.robots.arms.panda import Panda
 # from pyrep.robots.end_effectors.mico_gripper import MicoGripper
@@ -35,11 +35,16 @@ def generate_dataset(
     distance_cubeReached
 ):
 
-    SCENE_FILE = "Simulations/coppelia_robot_arm.ttt"
+    SCENE_FILE = join(dirname(abspath(__file__)), "Simulations/baxter_robot_arm.ttt")
     SAVING_DIR = join(dirname(abspath(__file__)), f"Dataset/{file_name}") #followDummy_fixed_2
 
+    pr = PyRep()
+    pr.launch(SCENE_FILE, headless=True)
+    pr.start()
+    pr.step_ui()
+
     bot = choseBot(bot_type)
-    gen = DataGenerator(SCENE_FILE, bot, 64)
+    gen = DataGenerator(pr, bot, 64)
     gen.restrictTargetBound()
 
     # n_demos = 100 #total number of demonstrations
@@ -52,7 +57,7 @@ def generate_dataset(
     # n_steps = 95
 
     desired_time = n_steps * 0.05
-    gen_process = choseTrjGenrator(gen, trj_type, desired_time, distance_cubeReached)
+    distance_cubeReached, gen_process = choseTrjGenrator(gen, trj_type, desired_time, distance_cubeReached)
 
     #dataframe
     col_name = ["imLoc","j_targetVel","jVel","jPos","ee_targetVel","eeVel","eePos","eeOri","cPos","stop"]
@@ -61,6 +66,7 @@ def generate_dataset(
     for ep in range(n_episodes):
         for r in range(n_runs):
             print(f"Episode: {ep+1}\t Run: {r+1}")
+            distance_cubeReached, gen_process = choseTrjGenrator(gen, trj_type, desired_time, distance_cubeReached)
             s = 0
             for data in gen_process:
                 location = f"/images/episode_{ep}/run_{r}"
@@ -95,6 +101,8 @@ def generate_dataset(
 
     gen.terminate()
 
+    return distance_cubeReached
+
 def choseBot(bot_name: str) -> MyRobot:
     if bot_name=="Mico":
         return MicoBot()
@@ -106,13 +114,15 @@ def choseBot(bot_name: str) -> MyRobot:
 
 def choseTrjGenrator(gen: DataGenerator, trj_type: str, time: float, distance2cube: float) -> Generator:
     if trj_type=="HumanTrj":
-        return gen.getHumanTrjGenerator(time, distance2cube)
+        return distance2cube, gen.getHumanTrjGenerator(time, distance2cube)
     elif trj_type=="HumanTrj_fixedSteps":
-        return gen.humanTrjGenerator_fixedSteps(time)
+        return None, gen.humanTrjGenerator_fixedSteps(time)
     elif trj_type=="HumanTrj_imperfect":
-        return gen.getHumanTrjGenerator_imperfect (time, distance2cube)
+        return distance2cube, gen.getHumanTrjGenerator_imperfect (time, distance2cube)
     elif trj_type=="HumanTrj_stop":
-        return gen.getHumanTrjGenerator_stop(time)
+        return *gen.getHumanTrjGenerator_stop(time),
+    elif trj_type=="LinearTrj":
+        return distance2cube, gen.getLinearTrjGenerator(time)
     else:
         raise Exception("The chosen generation process does not exist")
 

@@ -77,7 +77,7 @@ class SimpleCNN(nn.Module):
 
 
 class Aux_BaselineCNN(nn.Module):
-    def __init__(self, num_aux_outputs, num_outputs=6):
+    def __init__(self, num_outputs=6, num_aux_outputs=9):
         super(Aux_BaselineCNN, self).__init__()
 
         self.conv1 = self.conv_layer(3, 64)

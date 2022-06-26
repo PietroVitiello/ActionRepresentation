@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 from os.path import dirname, join, abspath
 
@@ -19,7 +18,6 @@ import time
 import math
 
 pr = PyRep()
-plt.ion()
 
 SCENE_FILE = join(dirname(abspath(__file__)), "Demos/Simulations/baxter_robot_arm.ttt")
 pr.launch(SCENE_FILE, headless=False)
@@ -90,7 +88,7 @@ for _ in range(10):
     # input("Next step")
     rmove.stayStill(1)
     # rmove.moveArmCurved(10)
-    rmove.graspingMovement(5)
+    rmove.graspingMovement_linear(5)
 
 pr.stop()
 pr.shutdown()

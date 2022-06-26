@@ -22,13 +22,8 @@ import math
 
 class DataGenerator():
 
-    def __init__(self, sim: str, bot: MyRobot, res: int= 64) -> None:
-        self.pr = PyRep()
-
-        SCENE_FILE = join(dirname(abspath(__file__)), sim)
-        self.pr.launch(SCENE_FILE, headless=True)
-        self.pr.start()
-        self.pr.step_ui()
+    def __init__(self, pr: PyRep, bot: MyRobot, res: int= 64) -> None:
+        self.pr = pr
 
         self.bot = bot #MyRobot()
         self.target = Target()
@@ -134,6 +129,17 @@ class DataGenerator():
 
         self.curve.remove_dummies()
 
+    def linearTrjGenerator(self, distance2cube: float=0.03):
+        while self.check_cubeReached(distance2cube) is False:
+            distance = self.bot.get_movementDir(self.target)
+            orientation = self.curve.linear_mid.get_orientation(relative_to=self.bot.robot._ik_tip)
+            v = self.bot.get_linearVelo(distance, self.time)
+            w = self.bot.get_angularSpeed(orientation)
+            q = self.bot.get_jointVelo_constrained(v, w)
+            self.bot.robot.set_joint_target_velocities(q)
+            yield np.hstack((v, w)), *self.get_CurrentData()
+            self.simStep()
+
     # def humanTrjGenerator(self):
     #     self.curve.find_middlePoint()
     #     dmove = DummyMovement(self.target, self.time)
@@ -233,9 +239,13 @@ class DataGenerator():
         q = [0]*len(q)
         self.bot.robot.set_joint_target_velocities(q)
         self.stop = 1
+        self.curve.remove_dummies()
         yield v, *self.get_CurrentData()
 
-        self.curve.remove_dummies()
+    def getLinearTrjGenerator(self, time: float=2, distance2cube: float=0.03) -> Generator:
+        self.setTime(time)
+        self.curve.resetCurve()
+        return self.linearTrjGenerator(distance2cube)
 
     def getHumanTrjGenerator_imperfect(self, time: float=2, distance2cube: float=0.03) -> Generator:
         self.setTime(time)

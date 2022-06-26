@@ -19,6 +19,8 @@ def get_optimiser(
 def get_loss(loss) -> nn.modules.loss:
     if loss == 'MSE':
         return nn.MSELoss()
+    if loss == 'BCE':
+        return nn.BCELoss()
     else:
         raise Exception("The proposed loss is not available. Try a different one!")
 

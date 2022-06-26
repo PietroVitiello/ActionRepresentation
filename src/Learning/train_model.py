@@ -10,7 +10,6 @@ from .utils.argParser_pipeline import model_choice, train_model
 def model_training(
     data_folder,
     saved_model_name,
-    model_name = "BaselineCNN",
     epochs = 100,
     batch_size = 64,
     training_method = 'eeVel',
@@ -19,8 +18,11 @@ def model_training(
     lr = 0.001,
     weight_decay = 1e-7,
     loss = 'MSE',
-    recon_size = 16,
-    
+    stopping_loss = 'BCE',
+    model_name = "BaselineCNN",
+    num_outputs = 6,
+    num_aux_outputs = 9,
+    recon_size = 16
 ):
     dataset_path = join(dirname(abspath(__file__)), f"../Demos/Dataset/{data_folder}/")
     
@@ -42,8 +44,8 @@ def model_training(
 
     # ---------------- Training ---------------- #
     torch.cuda.empty_cache()
-    model = model_choice(model_name, 3, 9, recon_size)
-    training = Train(model, trainLoader, epochs, batch_size, optimiser, lr, weight_decay, loss, use_gpu)
+    model = model_choice(model_name, num_outputs, num_aux_outputs, recon_size)
+    training = Train(model, trainLoader, epochs, batch_size, optimiser, lr, weight_decay, loss, stopping_loss, use_gpu)
     train_model(training, training_method)
 
     # save the model

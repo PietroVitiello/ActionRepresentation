@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 from os.path import dirname, join, abspath
 

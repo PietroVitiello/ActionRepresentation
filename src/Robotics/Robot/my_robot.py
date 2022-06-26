@@ -14,7 +14,6 @@ from ..target import Target
 from .mico_gripper import MicoGripperComplete
 from ..Kinematics.quadratic import Quadratic
 
-import matplotlib.pyplot as plt
 import numpy as np
 import math
 import time as t
@@ -34,7 +33,7 @@ class MyRobot():
         self.gripper_state = self.gripper.get_configuration_tree()
         robot_conf, gripper_conf = self.get_DefaultConfiguration()
         self.set_initialConf(robot_conf, gripper_conf)
-        print(f"Aperture: {self.gripper.get_joint_positions()}")
+        # print(f"Aperture: {self.gripper.get_joint_positions()}")
 
     @abstractmethod
     def get_DefaultConfiguration(self) -> Tuple[List[float], List[float]]:
