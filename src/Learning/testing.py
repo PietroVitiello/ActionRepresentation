@@ -72,6 +72,7 @@ class Test():
             self.rmove.curve.remove_dummies()
 
         print(f"The robot was able to reach {num_reached} targets out of {self.num_episodes}")
+        return num_reached
 
     def test_eeVel_LSTM(self):
         num_reached = 0
@@ -96,6 +97,7 @@ class Test():
             self.rmove.curve.remove_dummies()
 
         print(f"The robot was able to reach {num_reached} targets out of {self.num_episodes}")
+        return num_reached
 
     def test_eeVelGrasp(self):
         num_reached = 0
@@ -134,5 +136,5 @@ class Test():
 
             self.rmove.curve.remove_dummies()
 
-
         print(f"The robot was able to grasp {num_reached} targets out of {self.num_episodes}")
+        return num_reached

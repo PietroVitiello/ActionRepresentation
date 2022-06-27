@@ -1,11 +1,10 @@
 import torch
-from torch.utils.data import DataLoader
 from torchvision import transforms
 from os.path import dirname, join, abspath
 
 from .trainloader import SimDataset
 from .training import Train
-from .utils.argParser_pipeline import model_choice, train_model
+from .utils.utils_pipeline import getTrainLoader, model_choice, train_model, uselessParams
 
 def model_training(
     data_folder,
@@ -40,17 +39,22 @@ def model_training(
 
     # ---------------- Dataset ---------------- #
     trainSet = SimDataset(dataset_path, transform)
-    trainLoader = DataLoader(trainSet, batch_size=batch_size, shuffle=False, num_workers=1)
+    trainLoader = getTrainLoader(trainSet, batch_size=batch_size, model=model_name)
 
     # ---------------- Training ---------------- #
     torch.cuda.empty_cache()
     model = model_choice(model_name, num_outputs, num_aux_outputs, recon_size)
-    training = Train(model, trainLoader, epochs, batch_size, optimiser, lr, weight_decay, loss, stopping_loss, use_gpu)
+    training = Train(model, trainLoader, use_gpu, epochs, batch_size, optimiser, lr, weight_decay, loss, stopping_loss, recon_size)
     train_model(training, training_method)
+    print("Training Done \n")
 
     # save the model
+    print(f"Saving the model as {saved_model_name}")
     save_dir = join(dirname(abspath(__file__)), f'TrainedModels/{saved_model_name}.pt')
     torch.save(model.state_dict(), save_dir)
+    print(f"Done\n")
+
+    return uselessParams(training_method)
 
 
 

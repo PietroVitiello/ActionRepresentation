@@ -4,31 +4,34 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import torchvision.transforms as T
 
-from .utils.argParser_train import get_loss, get_optimiser, getReconProcessing
+from .utils.utils_train import get_loss, get_optimiser, getReconProcessing
 
 class Train():
 
     def __init__(self,
         model: torch.nn.Module,
         dataset: DataLoader,
-        epochs = 100,
-        batch_size = 64,
-        optimiser = 'Adamax',
-        lr = 0.001,
-        weight_decay = 1e-7,
-        loss = 'MSE',
-        stopping_loss = 'BCE',
-        use_gpu = True
+        use_gpu: bool,
+        epochs: int,
+        batch_size: int,
+        optimiser: str,
+        lr: float,
+        weight_decay: float = 1e-7,
+        loss: str = 'MSE',
+        stopping_loss: str = 'BCE',
+        recon_size: int = 16
     ) -> None:
 
         self.epochs = epochs
         self.batch_size = batch_size
         self.lr = lr
         self.wd = weight_decay
+        self.recon_size = recon_size
 
         if use_gpu and torch.cuda.is_available():
             self.device = torch.device('cuda:0')
-            print("Using GPU to train on")
+            print("GPU acceleration enabled")
+            print(f"Training on {torch.cuda.get_device_name()}\n")
         else:
             self.device = torch.device('cpu')
 
@@ -85,11 +88,11 @@ class Train():
                 if t % print_every == 0:
                     print(f"Epoch: {epoch+1}, Iteration {t}, loss = {loss:.6f}")
 
-    def train_AE(self, recon_size):
+    def train_AE(self):
         print_every = 10
         dtype = torch.float32
         self.model.train()
-        processing: T.Compose = getReconProcessing(recon_size)
+        processing: T.Compose = getReconProcessing(self.recon_size)
 
         for epoch in range(self.epochs):
             print("\n\n")

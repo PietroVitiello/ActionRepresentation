@@ -3,14 +3,14 @@ from Demos.get_data import generate_dataset
 
 cubeReaching_generators = [""]
 
-def useConfig():
+def runConfig():
     # if trj_type in 
     configs = {}
+    configs["bot_type"] = bot_type
+    configs["trj_type"] = trj_type
     configs["n_episodes"] = n_episodes
     configs["n_runs"] = n_runs
     configs["n_steps"] = n_steps
-    configs["bot_type"] = bot_type
-    configs["trj_type"] = trj_type
     configs["constrained"] = True #change
     
     print(f"Generating {n_episodes*n_runs} Demonstrations \n")
@@ -28,13 +28,14 @@ def useConfig():
     configs["distance_cubeReached"] = d2c
     print("Uploading configuration details")
     saveConfig(configs)
+    print("Configurations saved in 'Demos/Dataset/descriptions.yaml'")
 
 def saveConfig(configs):
     with open("Demos/Dataset/descriptions.yaml", 'r+') as file:
         yaml.safe_load(file)
         file.write("\n")
         dataset = {f"{file_name}": configs}
-        yaml.dump(dataset, file)
+        yaml.dump(dataset, file, sort_keys=False)
 
 file_name = "followDummy_3"
 n_episodes = 100
@@ -44,4 +45,4 @@ bot_type = "Baxter"
 trj_type = "LinearTrj"
 distance_cubeReached = 0.01
 
-useConfig()
+runConfig()

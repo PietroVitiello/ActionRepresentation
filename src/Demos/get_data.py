@@ -6,19 +6,6 @@ import pandas as pd
 import os
 
 from pyrep import PyRep
-# from pyrep.robots.arms.lbr_iiwa_14_r820 import LBRIwaa14R820
-# from pyrep.robots.arms.panda import Panda
-# from pyrep.robots.end_effectors.mico_gripper import MicoGripper
-# from pyrep.const import ObjectType, PrimitiveShape
-# from pyrep.objects.vision_sensor import VisionSensor
-# from pyrep.objects.shape import Shape
-# from quadratic import Quadratic
-
-# from my_robot import MyRobot
-# from target import Target
-
-# import time
-# import math
 
 from Demos.data_generator import DataGenerator
 from Robotics.Robot.micoBot import MicoBot
@@ -122,7 +109,7 @@ def choseTrjGenrator(gen: DataGenerator, trj_type: str, time: float, distance2cu
     elif trj_type=="HumanTrj_stop":
         return *gen.getHumanTrjGenerator_stop(time),
     elif trj_type=="LinearTrj":
-        return distance2cube, gen.getLinearTrjGenerator(time)
+        return distance2cube, gen.getLinearTrjGenerator(time, distance2cube)
     else:
         raise Exception("The chosen generation process does not exist")
 
