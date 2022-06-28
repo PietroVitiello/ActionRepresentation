@@ -22,13 +22,13 @@ import math
 
 class RobotMovement():
 
-    def __init__(self, robot: MyRobot, target: Target, pr: PyRep, camera: VisionSensor =None, res: int=64) -> None:
+    def __init__(self, robot: MyRobot, target: Target, pr: PyRep, max_deviation: float=0.04, camera: VisionSensor =None, res: int=64) -> None:
         self.bot = robot
         self.robot = self.bot.getRobot()
         self.target = target
         self.pr = pr
 
-        self.curve = Quadratic(self.bot.getTip(), self.target, 0.0001) #0.08) #0.0001
+        self.curve = Quadratic(self.bot.getTip(), self.target, max_deviation) #0.08) #0.0001
         if camera is not None:
             self.camera = camera
             self.camera.set_resolution([res, res])
@@ -174,9 +174,9 @@ class RobotMovement():
         self.curve.remove_dummies()
         dmove.remove_dummy()
 
-    def humanMovement(self, time: float):
+    def curvedMovement_followDummy(self, time: float):
         #only velocity
-        theta = self.curve.find_middlePoint()
+        _ = self.curve.find_middlePoint()
         n_steps = np.round(time / 0.05).astype(int)
 
         distance_vec = self.bot.get_movementDir(self.target)
@@ -192,6 +192,29 @@ class RobotMovement():
                 print(f"Cube Reached at step {i+1}")
                 break
         self.curve.remove_dummies()
+
+    def humanMovement(self, time: float):
+        _ = self.curve.find_middlePoint()
+        dmove = DummyMovement(self.target, time, tip=self.bot.getTip())
+        n_steps = np.round(time / 0.05).astype(int)
+
+        distance = self.bot.get_movementDir(self.target)
+        direction = distance / np.linalg.norm(distance)
+        v_lin = (self.curve.get_arcLen()/time) * direction
+
+        for i in range(n_steps):
+            orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
+            v = self.curve.getVelocity2Target(v_lin)
+            w = self.bot.get_angularSpeed(orientation)
+            q = self.bot.get_jointVelo_constrained(v, w)
+            self.robot.set_joint_target_velocities(q)
+            self.pr.step()
+            dmove.step()
+            if self.check_cubeReached():
+                print(f"Cube Reached at step {i+1}")
+                break
+        self.curve.remove_dummies()
+        dmove.remove_dummy()
 
     def graspingMovement_linear(self, time: float):
 
@@ -239,6 +262,85 @@ class RobotMovement():
 
         self.curve.remove_dummies()
 
+    def check_cubeReached(self, threshold=0.04) -> bool:
+        distance = self.target.get_position() - self.robot._ik_tip.get_position()
+        distance = np.linalg.norm(distance)
+        # print("distance: ", distance)
+        # print(self.robot._ik_tip.get_position())
+        return True if distance <= threshold else False
+
+    def autonomousMovement(self, model: nn.Module, transform: T.Compose):
+        #take the image from the robot
+        img = self.camera.capture_rgb()
+        img = Image.fromarray(np.uint8(img*255)).convert('RGB')
+        # img = Image.fromarray((img * 255).astype(np.uint8)).resize((64, 64)).convert('RGB')
+        img: torch.Tensor = transform(img)
+        img = img.unsqueeze(0)
+        #shove it into the model
+        # print(model(img).shape)
+        v: torch.Tensor = model(img)[0]
+        v = v.detach().numpy()
+        q = self.bot.get_jointVelo(v)
+        self.robot.set_joint_target_velocities(q)
+        self.pr.step()
+
+    def autonomousMovement_constrained(self, model: nn.Module, transform: T.Compose):
+        #take the image from the robot
+        img = self.camera.capture_rgb()
+        img = Image.fromarray(np.uint8(img*255)).convert('RGB')
+        # img = Image.fromarray((img * 255).astype(np.uint8)).resize((64, 64)).convert('RGB')
+        img: torch.Tensor = transform(img)
+        img = img.unsqueeze(0)
+        #shove it into the model
+        v: torch.Tensor = model(img)[0]
+        v = v.detach().numpy()
+        q = self.bot.get_jointVelo_constrained(v[:3], v[3:])
+        self.robot.set_joint_target_velocities(q)
+        self.pr.step()
+
+    def autonomousStop(self, model: nn.Module, transform: T.Compose):
+        #take the image from the robot
+        img = self.camera.capture_rgb()
+        img = Image.fromarray(np.uint8(img*255)).convert('RGB')
+        img: torch.Tensor = transform(img)
+        img = img.unsqueeze(0)
+        #shove it into the model
+        # print(model(img).shape)
+        out: torch.Tensor = model(img)[0]
+        out = out.detach().numpy()
+        v = out[:-1]
+        stop = out[-1]
+        q = self.bot.get_jointVelo(v)
+        self.robot.set_joint_target_velocities(q)
+        self.pr.step()
+        print(stop)
+        return stop
+
+    # def humanMovement(self, time: float):
+    #     theta = self.curve.find_middlePoint()
+    #     dmove = DummyMovement(self.target, time) 
+    #     n_steps = np.round(time / 0.05).astype(int)
+
+    #     distance_vec = self.bot.get_movementDir(self.target)
+    #     direction = distance_vec / np.linalg.norm(distance_vec)
+    #     v_lin = (self.curve.get_arcLen()/time) * direction
+
+    #     for i in range(n_steps):
+    #         if i % 3 != 0:
+    #             v = self.curve.getVelocity2Target(v_lin)
+    #             q = self.bot.get_jointVelo(v)
+    #         else:
+    #             self.curve.getVelocity2Target(v_lin)
+    #             orientation = self.curve.get_FaceTargetOrientation()
+    #             w = self.bot.get_angularSpeed(orientation)
+    #             q = self.bot.get_jointVelo_4orientation(w)
+    #         self.robot.set_joint_target_velocities(q)
+    #         self.pr.step()
+    #         if self.check_cubeReached():
+    #             print(f"Cube Reached at step {i+1}")
+    #             break
+    #     self.curve.remove_dummies()
+
     # def humanMovement(self, time: float):
     #     theta = self.curve.find_middlePoint()
     #     dmove = DummyMovement(self.target, time)
@@ -251,14 +353,20 @@ class RobotMovement():
     #     # print("cavolfiore: ", 13/n_steps)
 
     #     for i in range(n_steps):
-    #         # orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
-    #         orientation = self.curve.get_FaceTargetOrientation()
-    #         # v = self.curve.get_tangentVelocity(v_lin)
-    #         # v = self.curve.get_enhancedTangentVelocity(v_lin, time)
-    #         v = self.curve.getVelocity2Target(v_lin)
-    #         w = self.bot.get_angularSpeed(orientation)
-    #         # w = np.array([0,0,0])
-    #         q = self.bot.get_jointVelo_constrained(v, w)
+    #         if i % 3 ==0:
+    #             v = self.curve.getVelocity2Target(v_lin)
+    #             q = self.bot.get_jointVelo(v)
+    #         else:
+    #             # orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
+    #             orientation = self.curve.get_FaceTargetOrientation()
+    #             # v = self.curve.get_tangentVelocity(v_lin)
+    #             # v = self.curve.get_enhancedTangentVelocity(v_lin, time)
+    #             v = self.curve.getVelocity2Target(v_lin)
+    #             print(v)
+    #             # input()
+    #             w = self.bot.get_angularSpeed(orientation)
+    #             # w = np.array([0,0,0])
+    #             q = self.bot.get_jointVelo_constrained(v, w)
     #         # q = self.bot.get_jointVelo(v)
     #         if self.check_cubeReached():
     #             print(f"Cube Reached at step {i+1}")
@@ -348,116 +456,3 @@ class RobotMovement():
     #         # print("step: ", i)
     #     self.curve.remove_dummies()
     #     dmove.remove_dummy()
-
-    def check_cubeReached(self, threshold=0.04) -> bool:
-        distance = self.target.get_position() - self.robot._ik_tip.get_position()
-        distance = np.linalg.norm(distance)
-        # print("distance: ", distance)
-        # print(self.robot._ik_tip.get_position())
-        return True if distance <= threshold else False
-
-    def autonomousMovement(self, model: nn.Module, transform: T.Compose):
-        #take the image from the robot
-        img = self.camera.capture_rgb()
-        img = Image.fromarray(np.uint8(img*255)).convert('RGB')
-        # img = Image.fromarray((img * 255).astype(np.uint8)).resize((64, 64)).convert('RGB')
-        img: torch.Tensor = transform(img)
-        img = img.unsqueeze(0)
-        #shove it into the model
-        # print(model(img).shape)
-        v: torch.Tensor = model(img)[0]
-        v = v.detach().numpy()
-        q = self.bot.get_jointVelo(v)
-        self.robot.set_joint_target_velocities(q)
-        self.pr.step()
-
-    def autonomousMovement_constrained(self, model: nn.Module, transform: T.Compose):
-        #take the image from the robot
-        img = self.camera.capture_rgb()
-        img = Image.fromarray(np.uint8(img*255)).convert('RGB')
-        # img = Image.fromarray((img * 255).astype(np.uint8)).resize((64, 64)).convert('RGB')
-        img: torch.Tensor = transform(img)
-        img = img.unsqueeze(0)
-        #shove it into the model
-        v: torch.Tensor = model(img)[0]
-        v = v.detach().numpy()
-        q = self.bot.get_jointVelo_constrained(v[:3], v[3:])
-        self.robot.set_joint_target_velocities(q)
-        self.pr.step()
-
-    def autonomousStop(self, model: nn.Module, transform: T.Compose):
-        #take the image from the robot
-        img = self.camera.capture_rgb()
-        img = Image.fromarray(np.uint8(img*255)).convert('RGB')
-        img: torch.Tensor = transform(img)
-        img = img.unsqueeze(0)
-        #shove it into the model
-        # print(model(img).shape)
-        out: torch.Tensor = model(img)[0]
-        out = out.detach().numpy()
-        v = out[:-1]
-        stop = out[-1]
-        q = self.bot.get_jointVelo(v)
-        self.robot.set_joint_target_velocities(q)
-        self.pr.step()
-        print(stop)
-        return stop
-
-
-# pr = PyRep()
-# plt.ion()
-
-# SCENE_FILE = join(dirname(abspath(__file__)), "Simulations/coppelia_robot_arm_copy.ttt")
-# pr.launch(SCENE_FILE, headless=False)
-# pr.start()
-# pr.step_ui()
-
-# # arm = get_arm()
-# bot = MyRobot()
-# target = Target()
-# camera = VisionSensor("Vision_sensor")
-
-# # target.set_position([0, 1, 0.1])
-
-# # bot.find_jointVelo(target, 40)
-
-# # target.random_pos()
-# # bot.trajetoryNoise(target)
-# # bot.stayStill(pr, 100)
-
-# for _ in range(5):
-#     target.random_pos()
-#     bot.resetInitial()
-#     bot.stayStill(pr, 1)
-#     bot.moveArm_constrained(pr, target, 4)
-
-# # for _ in range(5):
-# #     target.random_pos()
-# #     # target.set_position([0.45, 0.55, 0.025])
-# #     bot.resetInitial()
-# #     bot.stayStill(pr, 1)
-# #     bot.moveArmCurved(pr, target, 3)
-
-# # for _ in range(10):
-# #     target.random_pos()
-# #     bot.resetInitial()
-# #     bot.stayStill(pr, 1)
-# #     bot.trajetoryNoise(pr, target, 5)
-
-# # initialConf = [0, math.radians(-40), 0, math.radians(-130), 0, math.radians(60), 0]
-# # bot.robot.set_joint_positions(initialConf)
-# # bot.stayStill(pr, 1000)
-
-# # i=0
-# # while i<10e6:
-# #     print(i)
-# #     i+=1
-
-# # bot.move_inDir(pr, np.array([0, 0, 1]), 20)
-
-# # bot.stayStill(pr, 1)
-# # bot.nana(pr, target)
-
-# pr.stop()
-# pr.shutdown()
-

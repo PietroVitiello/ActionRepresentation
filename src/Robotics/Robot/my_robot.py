@@ -105,8 +105,9 @@ class MyRobot():
         ee = self.robot._ik_tip
         current_or = ee.get_orientation()
         # current_or = self.gripper.get_orientation()
-        return target_or / 1
-        return (target_or - current_or) / 5 #to get it to move in one time step
+        # return target_or / 1
+        return target_or / 0.05
+        # return (target_or - current_or) / 5 #to get it to move in one time step
 
     def get_jointVelo(self, v: np.ndarray) -> np.ndarray:
         self.robot.set_ik_element_properties(constraint_alpha_beta=False, constraint_gamma=False)

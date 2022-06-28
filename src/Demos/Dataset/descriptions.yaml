@@ -1,0 +1,17 @@
+floow_stopping_1:
+  bot_type: Baxter
+  constrained: False
+  distance_cubeReached: 0.01
+  n_episodes: 100
+  n_runs: 1
+  n_steps: 100
+  trj_type: HumanTrj_stop
+
+followDummy_3:
+  bot_type: Baxter
+  constrained: true
+  distance_cubeReached: 0.01
+  n_episodes: 100
+  n_runs: 1
+  n_steps: 100
+  trj_type: LinearTrj

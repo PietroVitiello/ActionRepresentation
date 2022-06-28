@@ -18,11 +18,13 @@ import math
 
 class DummyMovement():
 
-    def __init__(self, target: Target, time: float, theta: float=None) -> None:
+    def __init__(self, target: Target, time: float, tip: Dummy=None, theta: float=None) -> None:
         self.target = target
-        self.time = time * 0.9
+        self.time = time * 0.8 #0.9
         self.dummy = None
-        if theta is None:
+        if tip is not None: 
+            self.generateDummy_inFront(tip)
+        elif theta is None:
             self.random_generateDummy()
         else:
             self.generateDummy_alongDir(theta)
@@ -45,6 +47,16 @@ class DummyMovement():
         rel_pos = np.array([x, y*y_sign, 0])*distance
         self.dummy = Dummy.create(0.001) #(0.001)
         self.dummy.set_position(self.target.get_position() + rel_pos)
+
+    def generateDummy_inFront(self, tip: Dummy):
+        x_dir = tip.get_matrix()[:,0]
+        target_elevation = self.target.get_position()[2]
+        tip_pos = tip.get_position()
+        vectors_needed = (target_elevation - tip_pos[2]) / x_dir[2]
+        displacement = x_dir[:2] * vectors_needed
+        projected_pos = tip_pos[:2] + displacement
+        self.dummy = Dummy.create(0.05) #(0.001)
+        self.dummy.set_position([*projected_pos, target_elevation])
 
     def remove_dummy(self):
         self.dummy.remove()

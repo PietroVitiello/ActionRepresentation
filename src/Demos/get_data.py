@@ -13,13 +13,15 @@ from Robotics.Robot.baxterBot import BaxterBot
 from Robotics.Robot.my_robot import MyRobot
 
 def generate_dataset(
-    file_name,
-    n_episodes,
-    n_runs,
-    n_steps,
-    bot_type,
-    trj_type,
-    distance_cubeReached
+    file_name: str,
+    n_episodes: int,
+    n_runs: int,
+    n_steps: int,
+    bot_type: str,
+    max_deviation: float,
+    always_maxDev: float,
+    trj_type: str,
+    distance_cubeReached: float
 ):
 
     SCENE_FILE = join(dirname(abspath(__file__)), "Simulations/baxter_robot_arm.ttt")
@@ -31,7 +33,7 @@ def generate_dataset(
     pr.step_ui()
 
     bot = choseBot(bot_type)
-    gen = DataGenerator(pr, bot, 64)
+    gen = DataGenerator(pr, bot, 64, max_deviation, always_maxDev)
     gen.restrictTargetBound()
 
     # n_demos = 100 #total number of demonstrations
@@ -44,7 +46,7 @@ def generate_dataset(
     # n_steps = 95
 
     desired_time = n_steps * 0.05
-    distance_cubeReached, gen_process = choseTrjGenrator(gen, trj_type, desired_time, distance_cubeReached)
+    distance_cubeReached, constrained, gen_process = choseTrjGenrator(gen, trj_type, desired_time, distance_cubeReached)
 
     #dataframe
     col_name = ["imLoc","j_targetVel","jVel","jPos","ee_targetVel","eeVel","eePos","eeOri","cPos","stop"]
@@ -88,7 +90,7 @@ def generate_dataset(
 
     gen.terminate()
 
-    return distance_cubeReached
+    return distance_cubeReached, constrained
 
 def choseBot(bot_name: str) -> MyRobot:
     if bot_name=="Mico":
@@ -101,15 +103,17 @@ def choseBot(bot_name: str) -> MyRobot:
 
 def choseTrjGenrator(gen: DataGenerator, trj_type: str, time: float, distance2cube: float) -> Generator:
     if trj_type=="HumanTrj":
-        return distance2cube, gen.getHumanTrjGenerator(time, distance2cube)
+        return distance2cube, *gen.getHumanTrjGenerator(time, distance2cube)
+    elif trj_type=="HumanTrj_followDummy":
+        return distance2cube, *gen.getHumanTrjGenerator_followDummy(time, distance2cube)
     elif trj_type=="HumanTrj_fixedSteps":
-        return None, gen.humanTrjGenerator_fixedSteps(time)
+        return None, *gen.humanTrjGenerator_fixedSteps(time)
     elif trj_type=="HumanTrj_imperfect":
-        return distance2cube, gen.getHumanTrjGenerator_imperfect (time, distance2cube)
+        return distance2cube, *gen.getHumanTrjGenerator_imperfect (time, distance2cube)
     elif trj_type=="HumanTrj_stop":
         return *gen.getHumanTrjGenerator_stop(time),
     elif trj_type=="LinearTrj":
-        return distance2cube, gen.getLinearTrjGenerator(time, distance2cube)
+        return distance2cube, *gen.getLinearTrjGenerator(time, distance2cube)
     else:
         raise Exception("The chosen generation process does not exist")
 

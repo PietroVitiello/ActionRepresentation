@@ -11,21 +11,26 @@ def runConfig():
     configs["n_episodes"] = n_episodes
     configs["n_runs"] = n_runs
     configs["n_steps"] = n_steps
-    configs["constrained"] = True #change
+    configs["max_deviation"] = max_deviation
+    configs["always_maxDev"] = always_maxDev
     
     print(f"Generating {n_episodes*n_runs} Demonstrations \n")
-    d2c = generate_dataset(
-            file_name,
-            n_episodes,
-            n_runs,
-            n_steps,
-            bot_type,
-            trj_type,
-            distance_cubeReached
-        )
+    changed_data = generate_dataset(
+                    file_name,
+                    n_episodes,
+                    n_runs,
+                    n_steps,
+                    bot_type,
+                    max_deviation,
+                    always_maxDev,
+                    trj_type,
+                    distance_cubeReached
+                )
     print("\nDone")
 
-    configs["distance_cubeReached"] = d2c
+    configs["distance_cubeReached"] = changed_data[0]
+    configs["constrained"] = changed_data[1]
+
     print("Uploading configuration details")
     saveConfig(configs)
     print("Configurations saved in 'Demos/Dataset/descriptions.yaml'")
@@ -41,8 +46,11 @@ file_name = "followDummy_3"
 n_episodes = 100
 n_runs = 1
 n_steps = 100
-bot_type = "Baxter"
 trj_type = "LinearTrj"
 distance_cubeReached = 0.01
+
+bot_type = "Baxter"
+max_deviation = 0.04
+always_maxDev = True
 
 runConfig()

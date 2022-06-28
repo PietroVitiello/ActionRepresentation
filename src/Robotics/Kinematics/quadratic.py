@@ -8,12 +8,13 @@ from ..target import Target
 
 class Quadratic():
 
-    def __init__(self, tip: Dummy, target: Shape, max_deviation=0.05) -> None:
+    def __init__(self, tip: Dummy, target: Shape, max_deviation: float=0.05, always_maxDev: bool=True) -> None:
         self.ik_tip = tip
         self.ik_target = target
         self.tip = tip.get_position()
         self.target = target.get_position()
         self.max_deviation = max_deviation
+        self.always_maxDev = always_maxDev # whether to always generate trajectories with max deviation
 
         self.distance_vec = self.target - self.tip
         self.distance = np.linalg.norm(self.distance_vec)
@@ -30,9 +31,9 @@ class Quadratic():
         # print(self.ik_tip.get_position())
         # self.target_pos = np.array([15,15,15])
         # print(self.ik_tip.get_position())
-        # n = Dummy.create(0.07)
-        # n.set_position(self.tip)
-        # self.verga = n
+        n = Dummy.create(0.07)
+        n.set_position(self.tip)
+        self.verga = n
         # self.all_dummies.append(self.verga)
 
     def setTarget(self, target: Union[Target, Dummy]):
@@ -57,7 +58,7 @@ class Quadratic():
         self.target = self.ik_target.get_position()
 
         self.target_pos = self.tip
-        # self.verga.set_position(self.tip)
+        self.verga.set_position(self.tip)
 
         self.distance_vec = self.target - self.tip
         self.distance = np.linalg.norm(self.distance_vec)
@@ -127,9 +128,10 @@ class Quadratic():
         # theta = - np.pi
         self.linear_mid.rotate([theta, 0, 0])
 
-        # self.apex = np.random.uniform(0, self.max_deviation)
-        self.apex = self.max_deviation
-        # print(f"apex: {self.apex}")
+        if self.always_maxDev:
+            self.apex = self.max_deviation
+        else:
+            self.apex = np.random.uniform(0, self.max_deviation)
         self.ortho = self.get_axis()
         self.eq = self.find_quadratic()
 
@@ -185,7 +187,7 @@ class Quadratic():
                              [-np.sin(theta), 0, np.cos(theta)]])
         rel_v = R @ rotation @ (np.array([1,0,0])*np.linalg.norm(v))
         self.target_pos = self.target_pos + (rel_v*0.05)
-        # self.verga.set_position(self.target_pos)
+        self.verga.set_position(self.target_pos)
         return (self.target_pos - self.ik_tip.get_position()) / 0.05
 
     # def getVelocity2Target(self, v: np.ndarray):

@@ -42,15 +42,15 @@ target.set_restrictedBoundaries()
 # bot.trajetoryNoise(target)
 # rmove.stayStill(100)
 
-# for _ in range(10):
-#     # print("\n\n\n\n")
-#     target.random_pos()
-#     bot.resetInitial(pr)
-#     rmove.resetCurve()
-#     # input("Next step")
-#     rmove.stayStill(1)
-#     # rmove.moveArmCurved(10)
-#     rmove.humanMovement(5)
+for _ in range(10):
+    # print("\n\n\n\n")
+    target.random_pos()
+    bot.resetInitial(pr)
+    rmove.resetCurve()
+    # input("Next step")
+    rmove.stayStill(1)
+    # rmove.moveArmCurved(10)
+    rmove.humanMovement(5)
 
 # for _ in range(5):
 #     target.random_pos()
@@ -80,15 +80,15 @@ target.set_restrictedBoundaries()
 # bot.nana(pr, target)
 
 ################ Grasping ################
-for _ in range(10):
-    # print("\n\n\n\n")
-    target.random_pos()
-    bot.resetInitial(pr)
-    rmove.resetCurve()
-    # input("Next step")
-    rmove.stayStill(1)
-    # rmove.moveArmCurved(10)
-    rmove.graspingMovement_linear(5)
+# for _ in range(10):
+#     # print("\n\n\n\n")
+#     target.random_pos()
+#     bot.resetInitial(pr)
+#     rmove.resetCurve()
+#     # input("Next step")
+#     rmove.stayStill(1)
+#     # rmove.moveArmCurved(10)
+#     rmove.graspingMovement_linear(5)
 
 pr.stop()
 pr.shutdown()
