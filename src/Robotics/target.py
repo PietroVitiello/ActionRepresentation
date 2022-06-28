@@ -9,9 +9,9 @@ class Target(Shape):
     def __init__(self) -> None:
         _type = PrimitiveShape.CUBOID
         _options = 24 - 16#static, responsable
-        _size = [0.05, 0.05, 0.05]
+        self._size = [0.05, 0.05, 0.05]
         _mass = 1.
-        handle = sim.simCreatePureShape(_type.value, _options, _size, _mass, None)
+        handle = sim.simCreatePureShape(_type.value, _options, self._size, _mass, None)
         super().__init__(handle)
         self.set_color([1.0, 0.1, 0.1])
         self.set_renderable(True)
@@ -22,10 +22,18 @@ class Target(Shape):
 
         # self.set_dynamic(False)
 
+    def get_size(self):
+        return self._size
+
     def set_posBoundaries(self, min, max):
         self.position_min, self.position_max = min, max
 
+    def set_restrictedBoundaries(self):
+        self.position_min = [-0.35, 0.55, 0.025]
+        self.position_max = [0.35, 0.85, 0.025]
+
     def random_pos(self):
         pos = list(np.random.uniform(self.position_min, self.position_max))
+        # pos = [0, 0.75, 0.025]
         self.set_position(pos)
         self.set_orientation(self.initailOrientation)

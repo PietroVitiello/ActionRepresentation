@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 from os.path import dirname, join, abspath
 
@@ -9,47 +8,56 @@ from pyrep.robots.end_effectors.mico_gripper import MicoGripper
 from pyrep.const import ObjectType, PrimitiveShape
 from pyrep.objects.vision_sensor import VisionSensor
 from pyrep.objects.shape import Shape
-from quadratic import Quadratic
 
-from my_robot import MyRobot
-from target import Target
+from Robotics.Kinematics.quadratic import Quadratic
+from Robotics.Robot.baxterBot import BaxterBot
+from Robotics.target import Target
+from Robotics.Kinematics.robot_movement import RobotMovement
 
 import time
 import math
 
 pr = PyRep()
-plt.ion()
 
-SCENE_FILE = join(dirname(abspath(__file__)), "Simulations/coppelia_robot_arm.ttt")
+SCENE_FILE = join(dirname(abspath(__file__)), "Demos/Simulations/baxter_robot_arm.ttt")
 pr.launch(SCENE_FILE, headless=False)
 pr.start()
 pr.step_ui()
 
 # arm = get_arm()
-bot = MyRobot()
+bot = BaxterBot()
 target = Target()
 camera = VisionSensor("Vision_sensor")
+rmove = RobotMovement(bot, target, pr)
+
+target.set_restrictedBoundaries()
 
 # target.set_position([0, 1, 0.1])
 
 # bot.find_jointVelo(target, 40)
 
+################ Reaching ################
+
 # target.random_pos()
 # bot.trajetoryNoise(target)
-# bot.stayStill(pr, 100)
+# rmove.stayStill(100)
 
-# for _ in range(10):
+for _ in range(10):
+    # print("\n\n\n\n")
+    target.random_pos()
+    bot.resetInitial(pr)
+    rmove.resetCurve()
+    # input("Next step")
+    rmove.stayStill(1)
+    # rmove.moveArmCurved(10)
+    rmove.humanMovement(5)
+
+# for _ in range(5):
 #     target.random_pos()
+#     # target.set_position([0.45, 0.55, 0.025])
 #     bot.resetInitial()
 #     bot.stayStill(pr, 1)
-#     bot.moveArm(pr, target, 5)
-
-for _ in range(6):
-    target.random_pos()
-    # target.set_position([0.45, 0.55, 0.025])
-    bot.resetInitial()
-    bot.stayStill(pr, 1)
-    bot.moveArmCurved(pr, target, 5)
+#     bot.moveArmCurved(pr, target, 3)
 
 # for _ in range(10):
 #     target.random_pos()
@@ -70,6 +78,17 @@ for _ in range(6):
 
 # bot.stayStill(pr, 1)
 # bot.nana(pr, target)
+
+################ Grasping ################
+# for _ in range(10):
+#     # print("\n\n\n\n")
+#     target.random_pos()
+#     bot.resetInitial(pr)
+#     rmove.resetCurve()
+#     # input("Next step")
+#     rmove.stayStill(1)
+#     # rmove.moveArmCurved(10)
+#     rmove.graspingMovement_linear(5)
 
 pr.stop()
 pr.shutdown()

@@ -1,2 +1,7 @@
 __pycache__
-/Dataset/**
+
+**/Dataset/**
+!**/Dataset/*.yaml
+
+**/TrainedModels/**
+!**/TrainedModels/*.yaml

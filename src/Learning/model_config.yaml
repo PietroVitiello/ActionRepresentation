@@ -1,0 +1,101 @@
+SpatialAE_fc_follow_1:
+  batch_size: 64
+  data_folder: followDummy_fixed_2
+  learning_rate: 0.001
+  loss: MSE
+  model_name: SpatialAE_fc
+  n_epochs: 100
+  num_aux_outputs: 9
+  num_outputs: 3
+  optimiser: Adamax
+  reconstruction_size: 16
+  stopping_loss: BCE
+  training_method: stop
+  use_gpu: true
+  weight_decay: 1.0e-07
+  Testing:
+    Cube_Reached:
+      - 0
+#NOTE: Was very bad, the robot arm missed the cube basically all the time. Often the cube went outside of the fov of the camera
+
+Stopping_base_follow_1:
+  batch_size: 64
+  data_folder: follow_stopping_1
+  learning_rate: 0.001
+  loss: MSE
+  model_name: Stopping_base
+  n_epochs: 100
+  num_aux_outputs: 9
+  num_outputs: 3
+  optimiser: Adamax
+  reconstruction_size: 16
+  stopping_loss: BCE
+  training_method: stop
+  use_gpu: true
+  weight_decay: 1.0e-07
+  Testing:
+    Cube_Reached:
+      - 0
+#NOTE: Just did not work. Values of sopping never increased above 0.3
+
+Aux_BaselineCNN_baxFollow_1:
+  batch_size: 64
+  data_folder: followDummy_3
+  learning_rate: 0.001
+  loss: MSE
+  model_name: Aux_BaselineCNN
+  n_epochs: 100
+  num_aux_outputs: 9
+  num_outputs: 6
+  optimiser: Adamax
+  reconstruction_size: 16
+  stopping_loss: BCE
+  training_method: eeVel_aux
+  use_gpu: true
+  weight_decay: 1.0e-07
+  Testing:
+    Cube_Reached:
+      - 31
+#NOTE: Very good. Only once did the arm not reached the cube, because it went above it and missed it. Once the cube is not in the fov (because it misses
+#      it when it gets close) the arm does not know what to do (LSTM?)
+
+SpatialAE_fc_follow_2:
+  batch_size: 64
+  data_folder: followDummy_3
+  learning_rate: 0.001
+  loss: MSE
+  model_name: SpatialAE_fc
+  n_epochs: 100
+  num_aux_outputs: 9
+  num_outputs: 6
+  optimiser: Adamax
+  reconstruction_size: 16
+  stopping_loss: BCE
+  training_method: AE
+  use_gpu: true
+  weight_decay: 1.0e-07
+  Testing:
+    Cube_Reached:
+     - 22
+     - 18
+#NOTE: Quite good. However it is less precise when it gets closer to the cube. It has not learnt well how to approach the cube yet. It may need some modification
+
+StrengthSpatialAE_fc_follow_2:
+  batch_size: 64
+  data_folder: followDummy_3
+  learning_rate: 0.001
+  loss: MSE
+  model_name: StrengthSpatialAE_fc
+  n_epochs: 100
+  num_aux_outputs: 9
+  num_outputs: 6
+  optimiser: Adamax
+  reconstruction_size: 16
+  stopping_loss: BCE
+  training_method: AE
+  use_gpu: true
+  weight_decay: 1.0e-07
+  Testing:
+    Cube_Reached:
+      - 11
+#NOTE: Much worse then before, although the model above was trained with decoder(x) not x=decoder(x)
