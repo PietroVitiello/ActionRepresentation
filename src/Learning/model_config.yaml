@@ -80,7 +80,7 @@ SpatialAE_fc_follow_2:
      - 18
 #NOTE: Quite good. However it is less precise when it gets closer to the cube. It has not learnt well how to approach the cube yet. It may need some modification
 
-StrengthSpatialAE_fc_follow_2:
+StrengthSpatialAE_fc_follow_1:
   batch_size: 64
   data_folder: followDummy_3
   learning_rate: 0.001
@@ -99,3 +99,40 @@ StrengthSpatialAE_fc_follow_2:
     Cube_Reached:
       - 11
 #NOTE: Much worse then before, although the model above was trained with decoder(x) not x=decoder(x)
+
+Aux_BaselineCNN_1:
+  model_name: Aux_BaselineCNN
+  data_folder: HumanLikeDemos_1
+  training_method: eeVel_aux
+  n_epochs: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 0
+    Attempts: null
+#NOTE: So bad, it does not even move in the right direction. Sometimes it bugs
+
+Aux_BaselineCNN_2:
+  model_name: Aux_BaselineCNN
+  data_folder: HumanLikeDemos_1
+  training_method: eeVel_aux
+  n_epochs: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0004
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached: []
+    Attempts: null
+#NOTE:

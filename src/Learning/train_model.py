@@ -38,7 +38,7 @@ def model_training(
         )
 
     # ---------------- Dataset ---------------- #
-    trainSet = SimDataset(dataset_path, transform)
+    trainSet = SimDataset(dataset_path, transform, dataset_mode="aux")
     trainLoader = getTrainLoader(trainSet, batch_size=batch_size, model=model_name)
 
     # ---------------- Training ---------------- #

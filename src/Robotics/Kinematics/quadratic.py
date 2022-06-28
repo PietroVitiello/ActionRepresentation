@@ -65,7 +65,7 @@ class Quadratic():
 
         linear_mid_pos = (self.target + self.tip)/2
         self.linear_mid = Dummy.create(0.001)
-        sim.simSetObjectInt32Parameter(self.linear_mid.get_handle(), 10, 11)
+        # sim.simSetObjectInt32Parameter(self.linear_mid.get_handle(), 10, 11)
         self.set_linearMid(linear_mid_pos)
 
         self.ortho, self.apex, self.eq = None, None, None

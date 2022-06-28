@@ -15,7 +15,7 @@ def model_testing(
 ):
     pr = PyRep()
 
-    SCENE_FILE = join(dirname(abspath(__file__)), "Demos/Simulations/baxter_robot_arm.ttt")
+    SCENE_FILE = join(dirname(abspath(__file__)), "../Demos/Simulations/baxter_robot_arm.ttt")
     pr.launch(SCENE_FILE, headless=False)
     pr.start()
     pr.step_ui()

@@ -40,7 +40,7 @@ def runConfig():
 
     print("Uploading configuration details")
     saveConfig(configs)
-    print("Configurations saved in 'Learning/TrainedModels/model_config.yaml'")
+    print("Configurations saved in 'Learning/TrainedModels/model_config.yaml'\n")
     
 
 def saveConfig(configs):
@@ -60,13 +60,13 @@ def keepUseful(configs:dict, useless: list):
         
 
 #Saving and Training info
-data_folder = "followDummy_3"
-saved_model_name = "StrengthSpatialAE_fc_follow_4"
-model_name = "BaselineCNN"
-training_method = 'eeVel'
+data_folder = "HumanLikeDemos_1"
+saved_model_name = "Aux_BaselineCNN_3"
+model_name = "Aux_BaselineCNN"
+training_method = 'eeVel_aux'
 
 #Training process
-epochs = 100
+epochs = 150
 batch_size = 64
 use_gpu = True
 
@@ -76,7 +76,7 @@ num_aux_outputs = 9
 
 #Optimiser
 optimiser = 'Adamax'
-lr = 0.001
+lr = 0.0007 #0.001
 weight_decay = 1e-7
 
 #Loss

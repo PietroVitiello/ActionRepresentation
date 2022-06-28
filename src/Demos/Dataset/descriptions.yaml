@@ -15,3 +15,14 @@ followDummy_3:
   n_runs: 1
   n_steps: 100
   trj_type: LinearTrj
+
+HumanLikeDemos_1:
+  bot_type: Baxter
+  trj_type: HumanTrj
+  n_episodes: 100
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.04
+  always_maxDev: true
+  distance_cubeReached: 0.01
+  constrained: true

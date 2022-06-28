@@ -42,11 +42,11 @@ def saveConfig(configs):
         dataset = {f"{file_name}": configs}
         yaml.dump(dataset, file, sort_keys=False)
 
-file_name = "followDummy_3"
+file_name = "HumanLikeGrasp_1"
 n_episodes = 100
 n_runs = 1
 n_steps = 100
-trj_type = "LinearTrj"
+trj_type = "HumanGrasp"
 distance_cubeReached = 0.01
 
 bot_type = "Baxter"

@@ -262,12 +262,63 @@ class RobotMovement():
 
         self.curve.remove_dummies()
 
-    def check_cubeReached(self, threshold=0.04) -> bool:
+    def graspingMovement_human(self, time: float):
+
+        _ = self.curve.find_middlePoint()
+        dmove = DummyMovement(self.target, time, tip=self.bot.getTip())
+
+        distance = self.bot.get_movementDir(self.target)
+        direction = distance / np.linalg.norm(distance)
+        v_lin = (self.curve.get_arcLen()/time) * direction
+
+        while not self.check_cubeReached(0.025):
+            orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
+            v = self.curve.getVelocity2Target(v_lin)
+            w = self.bot.get_angularSpeed(orientation)
+            q = self.bot.get_jointVelo_constrained(v, w)
+            self.robot.set_joint_target_velocities(q)
+            self.pr.step()
+            dmove.step()
+            time -= 0.05
+            # input()
+
+        print("Cube Reached")
+        
+        q = [0]*len(q)
+        self.robot.set_joint_target_velocities(q)
+        grasped = False
+        while not grasped:
+            grasped = self.bot.close_gripper()
+            self.pr.step()
+            # print(grasped)
+            # print(self.bot.gripper.get_joint_forces())
+        print("Cube Grasped")
+        self.stayStill(0.1)
+        # print(f"Last force: {self.bot.gripper.get_joint_forces()}")
+
+        destination = self.bot.getTip().get_position()
+        destination[2] += 0.3
+        self.displaceArm(destination)
+
+        self.curve.remove_dummies()
+        dmove.remove_dummy()
+
+    def check_cubeInDistance(self, target_dist=0.04) -> bool:
         distance = self.target.get_position() - self.robot._ik_tip.get_position()
         distance = np.linalg.norm(distance)
-        # print("distance: ", distance)
-        # print(self.robot._ik_tip.get_position())
-        return True if distance <= threshold else False
+        return True if distance <= target_dist else False
+
+    def check_cubeReached(self, threshold=0.04) -> bool:
+        distance = self.target.get_position(relative_to=self.bot.getTip())
+        front_distance = distance[0]
+        print(f"Front distance: {front_distance}")
+        lateral_distance = np.abs(distance[1])
+        if lateral_distance >= 0.015: #check that cube is between gripper fingers
+            return False
+        elif front_distance <= threshold: #check that cube is inside gripper
+            return True
+        else:
+            print("Was within fingers")
 
     def autonomousMovement(self, model: nn.Module, transform: T.Compose):
         #take the image from the robot

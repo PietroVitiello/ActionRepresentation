@@ -94,13 +94,16 @@ def uselessParams(mode: str):
 
 
 def getModelData(model_filename: str):
-    with open("TrainedModels/model_config.yaml", 'r') as file:
+    with open("Learning/TrainedModels/model_config.yaml", 'r') as file:
         configs = yaml.safe_load(file)
     model_data = configs[model_filename]
     model_name = model_data["model_name"]
     num_outputs = model_data["num_outputs"]
     num_aux_outputs = model_data["num_aux_outputs"]
-    recon_size = model_data["reconstruction_size"]
+    try:
+        recon_size = model_data["reconstruction_size"]
+    except KeyError:
+        recon_size = None
     constrained = False if num_outputs<6 else True
     return model_name, constrained, (num_outputs, num_aux_outputs, recon_size)
 

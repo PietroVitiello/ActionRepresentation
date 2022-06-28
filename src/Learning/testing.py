@@ -32,7 +32,7 @@ class Test():
         self.bot = BaxterBot()
         self.target = Target()
         camera = VisionSensor("Vision_sensor")
-        self.rmove = RobotMovement(self.bot, self.target, self.pr, camera, res=camera_res)
+        self.rmove = RobotMovement(self.bot, self.target, self.pr, camera=camera, res=camera_res)
         self.target.set_restrictedBoundaries()
 
         self.transform = transform
