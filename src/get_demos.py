@@ -13,10 +13,12 @@ def runConfig():
     configs["n_steps"] = n_steps
     configs["max_deviation"] = max_deviation
     configs["always_maxDev"] = always_maxDev
+    configs["boundary_restriction"] = boundary_restriction
     
     print(f"Generating {n_episodes*n_runs} Demonstrations \n")
     changed_data = generate_dataset(
                     file_name,
+                    boundary_restriction,
                     n_episodes,
                     n_runs,
                     n_steps,
@@ -42,15 +44,17 @@ def saveConfig(configs):
         dataset = {f"{file_name}": configs}
         yaml.dump(dataset, file, sort_keys=False)
 
-file_name = "HumanLikeGrasp_1"
+file_name = "HumanLikeDemos_2"
+trj_type = "HumanTrj"
+distance_cubeReached = 0.02
+boundary_restriction = "moderate"
+
 n_episodes = 100
 n_runs = 1
 n_steps = 100
-trj_type = "HumanGrasp"
-distance_cubeReached = 0.01
 
 bot_type = "Baxter"
-max_deviation = 0.04
+max_deviation = 0.03
 always_maxDev = True
 
 runConfig()

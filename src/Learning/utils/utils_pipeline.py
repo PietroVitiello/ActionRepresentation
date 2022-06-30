@@ -92,12 +92,14 @@ def uselessParams(mode: str):
         raise Exception("Training modality selected has not been recognized")
     return useless_keys
 
+###################### Testing 
 
 def getModelData(model_filename: str):
     with open("Learning/TrainedModels/model_config.yaml", 'r') as file:
         configs = yaml.safe_load(file)
     model_data = configs[model_filename]
     model_name = model_data["model_name"]
+    dataset_name = model_data["data_folder"]
     num_outputs = model_data["num_outputs"]
     num_aux_outputs = model_data["num_aux_outputs"]
     try:
@@ -105,7 +107,16 @@ def getModelData(model_filename: str):
     except KeyError:
         recon_size = None
     constrained = False if num_outputs<6 else True
-    return model_name, constrained, (num_outputs, num_aux_outputs, recon_size)
+    return model_name, constrained, dataset_name, (num_outputs, num_aux_outputs, recon_size)
+
+def getRestriction(restriction: str, dataset_name: str):
+    if restriction == "same":
+        with open("Demos/Dataset/descriptions.yaml", 'r') as file:
+            configs = yaml.safe_load(file)
+        dataset_data = configs[dataset_name]
+        restriction = dataset_data["boundary_restriction"]
+    return restriction
+
 
 def testMethod(test: Test, model_name: str, constrained: bool):
     LSTM_models = ["LSTM_largerBaseCNN", "LSTM_BaselineCNN"]

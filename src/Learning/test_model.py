@@ -5,13 +5,14 @@ import torchvision.transforms as T
 
 from pyrep import PyRep
 
-from .utils.utils_pipeline import model_choice, getModelData, testMethod
+from .utils.utils_pipeline import model_choice, getModelData, testMethod, getRestriction
 from .testing import Test
 
 def model_testing(
     model_filename,
     num_episodes = 32,
-    max_n_steps = 140
+    max_n_steps = 140,
+    restriction_type = "same"
 ):
     pr = PyRep()
 
@@ -22,7 +23,7 @@ def model_testing(
 
     # device = torch.device('cpu')
 
-    model_name, constrained, model_params = getModelData(model_filename)
+    model_name, constrained, dataset_name, model_params = getModelData(model_filename)
     model = model_choice(model_name, *model_params)
     model.load_state_dict(torch.load(f"Learning/TrainedModels/{model_filename}.pt"))
     model.eval()
@@ -37,10 +38,12 @@ def model_testing(
         ]
     )
 
-    test = Test(pr, model, transform, camera_res=64, num_episodes=num_episodes, max_n_steps=max_n_steps)
+    restriction_type = getRestriction(restriction_type, dataset_name)
+
+    test = Test(pr, model, transform, restriction_type, camera_res=64, num_episodes=num_episodes, max_n_steps=max_n_steps)
     reached = testMethod(test, model_name, constrained)
 
     pr.stop()
     pr.shutdown()
 
-    return reached
+    return reached, restriction_type

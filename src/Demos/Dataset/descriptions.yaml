@@ -26,3 +26,17 @@ HumanLikeDemos_1:
   always_maxDev: true
   distance_cubeReached: 0.01
   constrained: true
+#NOTE: First version with the algorithm that checks the quality of the grasp (but did not delete folders)
+
+HumanLikeDemos_2:
+  bot_type: Baxter
+  trj_type: HumanTrj
+  n_episodes: 100
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  distance_cubeReached: 0.02
+  constrained: true
+#NOTE: First version with the fully working algorithm that checks the quality of the grasp

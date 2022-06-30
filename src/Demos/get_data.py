@@ -1,4 +1,5 @@
 from os.path import dirname, join, abspath
+import shutil
 from typing import Callable, Generator
 from PIL import Image
 import numpy as np
@@ -14,6 +15,7 @@ from Robotics.Robot.my_robot import MyRobot
 
 def generate_dataset(
     file_name: str,
+    boundary_restiction: str,
     n_episodes: int,
     n_runs: int,
     n_steps: int,
@@ -25,16 +27,16 @@ def generate_dataset(
 ):
 
     SCENE_FILE = join(dirname(abspath(__file__)), "Simulations/baxter_robot_arm.ttt")
-    SAVING_DIR = join(dirname(abspath(__file__)), f"Dataset/{file_name}") #followDummy_fixed_2
+    SAVING_DIR = join(dirname(abspath(__file__)), f"Dataset/{file_name}")
 
     pr = PyRep()
-    pr.launch(SCENE_FILE, headless=False)
+    pr.launch(SCENE_FILE, headless=True)
     pr.start()
     pr.step_ui()
 
     bot = choseBot(bot_type)
     gen = DataGenerator(pr, bot, 64, max_deviation, always_maxDev)
-    gen.restrictTargetBound()
+    gen.restrictTargetBound(boundary_restiction)
 
     desired_time = n_steps * 0.05
     distance_cubeReached, constrained, gen_process = choseTrjGenrator(gen, trj_type, desired_time, distance_cubeReached)
@@ -44,8 +46,11 @@ def generate_dataset(
     df = pd.DataFrame(columns = col_name)
     temp_df = pd.DataFrame(columns = col_name)
 
-    for ep in range(n_episodes):
-        for r in range(n_runs):
+    ep = 0
+    while ep < n_episodes:
+        r = 0
+        taskFail_counter = 0
+        while r < n_runs:
             print(f"\nEpisode: {ep+1}\t Run: {r+1}", end="         ")
             _, _, gen_process = choseTrjGenrator(gen, trj_type, desired_time, distance_cubeReached)
             s = 0
@@ -78,10 +83,26 @@ def generate_dataset(
                 s += 1
             
             if task_completed:
-                pd.concat((df, temp_df), axis=0)
-                temp_df = pd.DataFrame(columns = col_name)
+                df = pd.concat((df, temp_df), axis=0)
+                taskFail_counter = 0
+                r += 1
+            else:
+                taskFail_counter += 1
+                if taskFail_counter == 5:
+                    try:
+                        shutil.rmtree(SAVING_DIR + f"/images/episode_{ep}")
+                    except IsADirectoryError:
+                        pass
+                    r = n_runs
+                    ep -= 1
+                    print("\033[31mCube position is likely invalid, generating new cube\033[37m", end="")
+                else:
+                    shutil.rmtree(SAVING_DIR + f"/images/episode_{ep}/run_{r}")
+                    print("\033[31mTask not completed, repeating run\033[37m", end="")
 
+            temp_df = pd.DataFrame(columns = col_name) #empty temp_df
             gen.resetRun()
+        ep += 1
         gen.resetEpisode()
 
     print("") #Just so that the following prints are in next line
@@ -98,7 +119,7 @@ def generate_dataset(
 
 
 
-
+'''
 
 
 def generate_dataset(
@@ -183,6 +204,8 @@ def generate_dataset(
 
     return distance_cubeReached, constrained
 
+'''
+
 def choseBot(bot_name: str) -> MyRobot:
     if bot_name=="Mico":
         return MicoBot()
@@ -197,13 +220,13 @@ def choseTrjGenrator(gen: DataGenerator, trj_type: str, time: float, distance2cu
         return distance2cube, *gen.getHumanTrjGenerator(time, distance2cube)
     if trj_type=="HumanGrasp":
         return *gen.getHumanTrjGraspGenerator(time),
-    elif trj_type=="HumanTrj_followDummy":
+    elif trj_type=="FollowDummy":
         return distance2cube, *gen.getHumanTrjGenerator_followDummy(time, distance2cube)
-    elif trj_type=="HumanTrj_fixedSteps":
+    elif trj_type=="FollowDummy_fixedSteps":
         return None, *gen.humanTrjGenerator_fixedSteps(time)
     elif trj_type=="HumanTrj_imperfect":
         return distance2cube, *gen.getHumanTrjGenerator_imperfect (time, distance2cube)
-    elif trj_type=="HumanTrj_stop":
+    elif trj_type=="FollowDummy_stop":
         return *gen.getHumanTrjGenerator_stop(time),
     elif trj_type=="LinearTrj":
         return distance2cube, *gen.getLinearTrjGenerator(time, distance2cube)

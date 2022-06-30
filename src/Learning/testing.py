@@ -21,6 +21,7 @@ class Test():
         pr: PyRep,
         model: nn.Module,
         transform: T.Compose,
+        restriction_type: str,
         camera_res=64,
         num_episodes = 32,
         max_n_steps = 140,
@@ -33,7 +34,7 @@ class Test():
         self.target = Target()
         camera = VisionSensor("Vision_sensor")
         self.rmove = RobotMovement(self.bot, self.target, self.pr, camera=camera, res=camera_res)
-        self.target.set_restrictedBoundaries()
+        self.target.set_restrictedBoundaries(restriction_type)
 
         self.transform = transform
         self.model = model
@@ -61,9 +62,12 @@ class Test():
             step_n = 0
             while reached == False and step_n<self.max_n_steps:
                 move(self.model, self.transform)
-                reached = self.rmove.check_cubeReached(0.04)
+                reached = self.rmove.check_cubeReached(0.025)
                 step_n += 1
-
+                # print(step_n+1)
+                # print(reached)
+                # print(self.max_n_steps)
+                # print(step_n<self.max_n_steps)
             if reached:
                 print("Cube reached!\n")
                 num_reached += 1

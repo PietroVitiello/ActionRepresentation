@@ -53,7 +53,7 @@ class RobotMovement():
             self.robot.set_joint_target_velocities(q)
             self.pr.step()
 
-    def orientArm(self, orientation: np.ndarray, time: float):
+    def orientArm_inPlace(self, orientation: np.ndarray, time: float):
         v = np.array([0, 0, 0])
         n_steps = np.round(time / 0.05).astype(int)
 
@@ -64,6 +64,19 @@ class RobotMovement():
             orientation = dummy.get_orientation(relative_to=self.robot._ik_tip)
             w = self.bot.get_angularSpeed(orientation)
             q = self.bot.get_jointVelo_constrained(v, w)
+            self.robot.set_joint_target_velocities(q)
+            self.pr.step()
+            time -= 0.05
+
+    def orientArm(self, orientation: np.ndarray, time: float):
+        n_steps = np.round(time / 0.05).astype(int)
+        dummy = Dummy.create()
+        dummy.set_orientation(orientation, relative_to=self.robot._ik_tip)
+
+        for i in range(n_steps):
+            orientation = dummy.get_orientation(relative_to=self.robot._ik_tip)
+            w = self.bot.get_angularSpeed(orientation)
+            q = self.bot.get_jointVelo_4orientation(w)
             self.robot.set_joint_target_velocities(q)
             self.pr.step()
             time -= 0.05
@@ -195,6 +208,12 @@ class RobotMovement():
 
     def humanMovement(self, time: float):
         _ = self.curve.find_middlePoint()
+        faceCube_orientation = self.curve.get_FaceTargetOrientation()
+        orientation_time = 0.20
+        self.orientArm(faceCube_orientation, time=orientation_time)
+        time -= orientation_time
+
+        _ = self.curve.find_middlePoint()
         dmove = DummyMovement(self.target, time, tip=self.bot.getTip())
         n_steps = np.round(time / 0.05).astype(int)
 
@@ -215,6 +234,29 @@ class RobotMovement():
                 break
         self.curve.remove_dummies()
         dmove.remove_dummy()
+
+    # def humanMovement(self, time: float):
+    #     _ = self.curve.find_middlePoint()
+    #     dmove = DummyMovement(self.target, time, tip=self.bot.getTip())
+    #     n_steps = np.round(time / 0.05).astype(int)
+
+    #     distance = self.bot.get_movementDir(self.target)
+    #     direction = distance / np.linalg.norm(distance)
+    #     v_lin = (self.curve.get_arcLen()/time) * direction
+
+    #     for i in range(n_steps):
+    #         orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
+    #         v = self.curve.getVelocity2Target(v_lin)
+    #         w = self.bot.get_angularSpeed(orientation)
+    #         q = self.bot.get_jointVelo_constrained(v, w)
+    #         self.robot.set_joint_target_velocities(q)
+    #         self.pr.step()
+    #         dmove.step()
+    #         if self.check_cubeReached():
+    #             print(f"Cube Reached at step {i+1}")
+    #             break
+    #     self.curve.remove_dummies()
+    #     dmove.remove_dummy()
 
     def graspingMovement_linear(self, time: float):
 
@@ -311,14 +353,15 @@ class RobotMovement():
     def check_cubeReached(self, threshold=0.04) -> bool:
         distance = self.target.get_position(relative_to=self.bot.getTip())
         front_distance = distance[0]
-        print(f"Front distance: {front_distance}")
+        # print(f"Front distance: {front_distance}")
         lateral_distance = np.abs(distance[1])
         if lateral_distance >= 0.015: #check that cube is between gripper fingers
             return False
-        elif front_distance <= threshold: #check that cube is inside gripper
+        elif front_distance >= 0 and front_distance <= threshold: #check that cube is inside gripper
             return True
         else:
-            print("Was within fingers")
+            # print("Was within fingers")
+            return False
 
     def autonomousMovement(self, model: nn.Module, transform: T.Compose):
         #take the image from the robot

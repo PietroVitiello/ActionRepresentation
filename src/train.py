@@ -49,6 +49,7 @@ def saveConfig(configs):
         file.write("\n")
         configs["Testing"] = {}
         configs["Testing"]["Cube_Reached"] = []
+        configs["Testing"]["Boundary_Restriction"] = []
         configs["Testing"]["Attempts"] = None
         model_config = {f"{saved_model_name}": configs}
         yaml.dump(model_config, file, sort_keys=False)
@@ -60,13 +61,13 @@ def keepUseful(configs:dict, useless: list):
         
 
 #Saving and Training info
-data_folder = "HumanLikeDemos_1"
+data_folder = "HumanLikeDemos_2"
 saved_model_name = "Aux_BaselineCNN_3"
 model_name = "Aux_BaselineCNN"
 training_method = 'eeVel_aux'
 
 #Training process
-epochs = 150
+epochs = 100
 batch_size = 64
 use_gpu = True
 
@@ -76,7 +77,7 @@ num_aux_outputs = 9
 
 #Optimiser
 optimiser = 'Adamax'
-lr = 0.0007 #0.001
+lr = 0.001 #0.0007 #0.001
 weight_decay = 1e-7
 
 #Loss

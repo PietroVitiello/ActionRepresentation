@@ -37,8 +37,8 @@ class DataGenerator():
     def setCameraRes(self, res: int) -> None:
         self.camera.set_resolution([res, res])
 
-    def restrictTargetBound(self):
-        self.target.set_restrictedBoundaries()
+    def restrictTargetBound(self, restriction_type: str):
+        self.target.set_restrictedBoundaries(restriction_type)
 
     def terminate(self) -> None:
         self.pr.stop()
@@ -74,10 +74,20 @@ class DataGenerator():
         
         return (im, joint_target_vel, joint_vel, joint_pos, ee_vel, ee_pos, ee_orientation, rel_cubePos, self.stop)
 
-    def check_cubeReached(self, threshold=0.04) -> bool:
+    def check_cubeInDistance(self, threshold_dist=0.04) -> bool:
         distance = self.target.get_position() - self.bot.robot._ik_tip.get_position()
         distance = np.linalg.norm(distance)
-        return True if distance <= threshold else False
+        return True if distance <= threshold_dist else False
+        
+    def check_cubeReached(self, threshold=0.04) -> bool:
+        distance = self.target.get_position(relative_to=self.bot.getTip())
+        front_distance =  distance[0]
+        lateral_distance = np.abs(distance[1])
+        if lateral_distance >= 0.015: #check that cube is between gripper fingers
+            return False
+        elif front_distance >= 0 and front_distance <= threshold: #check that cube is inside gripper
+            return True
+        return False
 
     def grasp(self, dof: int=6):
         v = np.array([0]*dof)
@@ -176,19 +186,60 @@ class DataGenerator():
             w = self.bot.get_angularSpeed(orientation)
             q = self.bot.get_jointVelo_constrained(v, w)
             self.bot.robot.set_joint_target_velocities(q)
+
+            # yield np.hstack((v, w)), *self.get_CurrentData()
+            eeVel = np.hstack((v, w))
+            data = self.get_CurrentData()
+            self.simStep()
+            dmove.step()
+            yield (self.check_cubeReached(distance2cube), (eeVel, *data))
+
+            if self.check_cubeReached(distance2cube):
+                print(f"\033[32mCube Reached at step {i+1}\033[37m", end="")
+                break
+        self.curve.remove_dummies()
+        dmove.remove_dummy()
+
+    def humanTrjGrasp_generator(self, distance2cube: float):
+        self.curve.find_middlePoint()
+        dmove = DummyMovement(self.target, self.time, tip=self.bot.getTip())
+        n_steps = np.round(self.time / 0.05).astype(int)
+
+        distance = self.bot.get_movementDir(self.target)
+        direction = distance / np.linalg.norm(distance)
+        v_lin = (self.curve.get_arcLen()/self.time) * direction
+
+        for i in range(n_steps):
+        # while self.check_cubeReached(distance2cube) is False:
+            orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
+            v = self.curve.getVelocity2Target(v_lin)
+            w = self.bot.get_angularSpeed(orientation)
+            q = self.bot.get_jointVelo_constrained(v, w)
+            self.bot.robot.set_joint_target_velocities(q)
             yield np.hstack((v, w)), *self.get_CurrentData()
             self.simStep()
             dmove.step()
+
+            # print(self.check_cubeReached(distance2cube))
+
             if self.check_cubeReached(distance2cube):
-                print(f"Cube Reached at step {i+1}", end="")
+                print(f"\nCube Reached at step {i+1}")
                 break
-        v = np.array([0]*6)
+        # print(f"Cube Reached", end="")
         q = [0]*len(q)
         self.bot.robot.set_joint_target_velocities(q)
         self.stop = 1
+
+        for data in self.grasp(dof=6):
+            yield data
+        print("Cube Grasped")
+
+        self.stayStill(0.3)
+        for data in self.lift_grasped():
+            yield data
+        
         self.curve.remove_dummies()
         dmove.remove_dummy()
-        yield v, *self.get_CurrentData()
 
     # def humanTrjGenerator(self):
     #     self.curve.find_middlePoint()
@@ -236,7 +287,7 @@ class DataGenerator():
         self.curve.remove_dummies()
         dmove.remove_dummy()
 
-    def humanTrjGenerator_followDummy(self, distance2cube: float=0.03):
+    def followDummyGenerator(self, distance2cube: float=0.03):
         self.curve.find_middlePoint()
         # dmove = DummyMovement(self.target, self.time)
 
@@ -253,7 +304,7 @@ class DataGenerator():
         self.curve.remove_dummies()
         # dmove.remove_dummy()
 
-    def humanTrjGenerator_fixedSteps(self):
+    def followDummyGenerator_fixedSteps(self):
         self.curve.find_middlePoint()
         # dmove = DummyMovement(self.target, self.time)
         n_steps = np.round(self.time / 0.05).astype(int)
@@ -271,7 +322,7 @@ class DataGenerator():
         self.curve.remove_dummies()
         # dmove.remove_dummy()
 
-    def humanTrjGenerator_stop(self):
+    def followDummyGenerator_stop(self):
         self.curve.find_middlePoint()
 
         distance = self.bot.get_movementDir(self.target)
@@ -292,47 +343,6 @@ class DataGenerator():
         self.curve.remove_dummies()
         yield v, *self.get_CurrentData()
 
-    def humanTrjGrasp_generator(self, distance2cube: float):
-        self.curve.find_middlePoint()
-        dmove = DummyMovement(self.target, self.time, tip=self.bot.getTip())
-        n_steps = np.round(self.time / 0.05).astype(int)
-
-        distance = self.bot.get_movementDir(self.target)
-        direction = distance / np.linalg.norm(distance)
-        v_lin = (self.curve.get_arcLen()/self.time) * direction
-
-        for i in range(n_steps):
-        # while self.check_cubeReached(distance2cube) is False:
-            orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
-            v = self.curve.getVelocity2Target(v_lin)
-            w = self.bot.get_angularSpeed(orientation)
-            q = self.bot.get_jointVelo_constrained(v, w)
-            self.bot.robot.set_joint_target_velocities(q)
-            yield np.hstack((v, w)), *self.get_CurrentData()
-            self.simStep()
-            dmove.step()
-
-            # print(self.check_cubeReached(distance2cube))
-
-            if self.check_cubeReached(distance2cube):
-                print(f"\nCube Reached at step {i+1}")
-                break
-        # print(f"Cube Reached", end="")
-        q = [0]*len(q)
-        self.bot.robot.set_joint_target_velocities(q)
-        self.stop = 1
-
-        for data in self.grasp(dof=6):
-            yield data
-        print("Cube Grasped")
-
-        self.stayStill(0.3)
-        for data in self.lift_grasped():
-            yield data
-        
-        self.curve.remove_dummies()
-        dmove.remove_dummy()
-
     ############### Get Generators ###############
 
     def getLinearTrjGenerator(self, time: float=2, distance2cube: float=0.03) -> Generator:
@@ -347,37 +357,37 @@ class DataGenerator():
         constrained = True #whether ee has also orientation constraint
         return constrained, self.humanTrjGenerator(distance2cube)
 
-    def getHumanTrjGenerator_imperfect(self, time: float=2, distance2cube: float=0.03) -> Generator:
-        self.setTime(time)
-        self.curve.resetCurve()
-        constrained = True #whether ee has also orientation constraint
-        return constrained, self.imperfect_humanTrjGenerator(distance2cube)
-
-    def getHumanTrjGenerator_followDummy(self, time: float=2, distance2cube: float=0.03) -> Generator:
-        self.setTime(time)
-        self.curve.resetCurve()
-        constrained = False #whether ee has also orientation constraint
-        return constrained, self.humanTrjGenerator(distance2cube)
-
-    def getHumanTrjGenerator_fixedSteps(self, time: float=2) -> Generator:
-        self.setTime(time)
-        self.curve.resetCurve()
-        constrained = False #whether ee has also orientation constraint
-        return constrained, self.humanTrjGenerator_fixedSteps()
-
-    def getHumanTrjGenerator_stop(self, time: float=2) -> Generator:
-        self.setTime(time)
-        self.curve.resetCurve()
-        distance2cube = 0.01
-        constrained = False #whether ee has also orientation constraint
-        return distance2cube, constrained, self.humanTrjGenerator_stop()
-
     def getHumanTrjGraspGenerator(self, time: float=2) -> Generator:
         self.setTime(time)
         self.curve.resetCurve()
         distance2cube = 0.025
         constrained = True #whether ee has also orientation constraint
         return distance2cube, constrained, self.humanTrjGrasp_generator(distance2cube)
+
+    def getHumanTrjGenerator_imperfect(self, time: float=2, distance2cube: float=0.03) -> Generator:
+        self.setTime(time)
+        self.curve.resetCurve()
+        constrained = True #whether ee has also orientation constraint
+        return constrained, self.imperfect_humanTrjGenerator(distance2cube)
+
+    def getFollowDummyGenerator(self, time: float=2, distance2cube: float=0.03) -> Generator:
+        self.setTime(time)
+        self.curve.resetCurve()
+        constrained = False #whether ee has also orientation constraint
+        return constrained, self.followDummyGenerator(distance2cube)
+
+    def getFollowDummyGenerator_fixedSteps(self, time: float=2) -> Generator:
+        self.setTime(time)
+        self.curve.resetCurve()
+        constrained = False #whether ee has also orientation constraint
+        return constrained, self.followDummyGenerator_fixedSteps()
+
+    def getFollowDummyGenerator_stop(self, time: float=2) -> Generator:
+        self.setTime(time)
+        self.curve.resetCurve()
+        distance2cube = 0.01
+        constrained = False #whether ee has also orientation constraint
+        return distance2cube, constrained, self.followDummyGenerator_stop()
 
     def getGenerator(self, move_type: str, constraint: str, time: float=2) -> Generator:
         if move_type == 'human-like':

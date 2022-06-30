@@ -87,6 +87,7 @@ class Quadratic():
         dummy.rotate([0, 0, gamma])
         dummy.rotate([0, beta, 0])
         orientation = dummy.get_orientation(relative_to=self.ik_tip)
+        # orientation = dummy.get_orientation()
         dummy.remove()
         return orientation
 
