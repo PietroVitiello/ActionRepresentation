@@ -92,3 +92,4 @@ class SimDataset(Dataset):
 
     def filter_stopData(self):
         self.df = self.df.drop(self.df[self.df.loc[:,"stop"] == 1].index)
+        self.df.reset_index(inplace=True)

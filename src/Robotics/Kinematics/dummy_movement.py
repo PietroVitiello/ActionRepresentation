@@ -24,18 +24,20 @@ class DummyMovement():
         self.dummy = None
         if tip is not None: 
             self.generateDummy_inFront(tip)
+            self.time = 0.6 * time
         elif theta is None:
             self.random_generateDummy()
         else:
-            self.generateDummy_alongDir(theta)
+            self.generateDummy_alongDir(theta + np.pi/2)
 
     def generateDummy_alongDir(self, theta):
-        distance = np.random.uniform(0.1, 0.15)
-        y = np.cos(theta)
-        x = np.sin(theta)
-        # distance = 0.7
+        # distance = np.random.uniform(0.1, 0.15)
+        x = np.cos(theta)
+        y = np.sin(theta)
+        distance = 0.15
+
         rel_pos = np.array([x, y, 0])*distance
-        self.dummy = Dummy.create(0.001) #(0.001)
+        self.dummy = Dummy.create(0.05)#(0.001)
         self.dummy.set_position(self.target.get_position() + rel_pos)
 
     def random_generateDummy(self):
@@ -45,7 +47,7 @@ class DummyMovement():
         distance = np.random.uniform(0.1, 0.15)
         # distance = 0.7
         rel_pos = np.array([x, y*y_sign, 0])*distance
-        self.dummy = Dummy.create(0.001) #(0.001)
+        self.dummy = Dummy.create(0.001)
         self.dummy.set_position(self.target.get_position() + rel_pos)
 
     def generateDummy_inFront(self, tip: Dummy):
@@ -55,7 +57,7 @@ class DummyMovement():
         vectors_needed = (target_elevation - tip_pos[2]) / x_dir[2]
         displacement = x_dir[:2] * vectors_needed
         projected_pos = tip_pos[:2] + displacement
-        self.dummy = Dummy.create(0.05) #(0.001)
+        self.dummy = Dummy.create(0.001)
         self.dummy.set_position([*projected_pos, target_elevation])
 
     def remove_dummy(self):

@@ -28,7 +28,7 @@ pr.step_ui()
 bot = BaxterBot()
 target = Target()
 camera = VisionSensor("Vision_sensor")
-rmove = RobotMovement(bot, target, pr)
+rmove = RobotMovement(bot, target, pr, max_deviation=0.08)
 
 target.set_restrictedBoundaries()
 
@@ -42,15 +42,17 @@ target.set_restrictedBoundaries()
 # bot.trajetoryNoise(target)
 # rmove.stayStill(100)
 
-for _ in range(10):
+for _ in range(30):
     # print("\n\n\n\n")
     target.random_pos()
     bot.resetInitial(pr)
     rmove.resetCurve()
     # input("Next step")
     rmove.stayStill(1)
-    # rmove.moveArmCurved(10)
-    rmove.humanMovement(5)
+    # rmove.moveArm_constrained(5)
+    # rmove.humanMovement(5)
+    rmove.imperfect_humanMovement(5)
+    # rmove.demoMovement(5)
 
 # for _ in range(5):
 #     target.random_pos()

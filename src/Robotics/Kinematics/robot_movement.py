@@ -158,7 +158,7 @@ class RobotMovement():
             self.pr.step()
         self.curve.remove_dummies()
 
-    def imperfect_humanMovement(self, time: float):
+    def demoMovement(self, time: float):
         self.curve.find_middlePoint()
         dmove = DummyMovement(self.target, time)
         n_steps = np.round(time / 0.05).astype(int)
@@ -167,15 +167,71 @@ class RobotMovement():
         direction = distance_vec / np.linalg.norm(distance_vec)
         v_lin = (self.curve.get_arcLen()/time) * direction
 
-        # print("cavolfiore: ", 13/n_steps)
+        n_steps_imp = int(np.floor(n_steps*0.80))
+        n_steps = n_steps - n_steps_imp
 
-        for i in range(n_steps):
+        for i in range(n_steps_imp):
             orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
-            # v = self.curve.get_tangentVelocity(v_lin)
-            v = self.curve.get_enhancedTangentVelocity(v_lin, time)
+            v = self.curve.get_tangentVelocity(v_lin)
+            # v = self.curve.get_enhancedTangentVelocity(v_lin, time)
             w = self.bot.get_angularSpeed(orientation)
             q = self.bot.get_jointVelo_constrained(v, w)
             # q = self.bot.get_jointVelo(v)
+            # if self.check_cubeReached():
+            #     i = n_steps + 1
+            #     print("Cube Reached")
+            #     q = np.zeros(q.shape)
+            self.robot.set_joint_target_velocities(q)
+            self.pr.step()
+            dmove.step()
+
+        time = time*0.15
+
+        for i in range(n_steps):
+            distance_vec = self.bot.get_movementDir(self.target)
+            orientation = self.curve.linear_mid.get_orientation(relative_to=self.robot._ik_tip)
+            v = self.bot.get_linearVelo(distance_vec, time)
+            w = self.bot.get_angularSpeed(orientation)
+            q = self.bot.get_jointVelo_constrained(v, w)
+            self.robot.set_joint_target_velocities(q)
+            # t.sleep(0.5)
+            input()
+            self.pr.step()
+            time -= 0.05
+            if self.check_cubeReached():
+                print(f"Cube Reached at step {i+1}")
+                break
+
+        # for i in range(n_steps):
+        #     orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
+        #     v = self.curve.getVelocity2Target(v_lin)
+        #     w = self.bot.get_angularSpeed(orientation, time=0.05)
+        #     q = self.bot.get_jointVelo_constrained(v, w)
+        #     self.robot.set_joint_target_velocities(q)
+        #     self.pr.step()
+        #     dmove.step()
+            # if self.check_cubeReached():
+            #     print(f"Cube Reached at step {i+1}")
+            #     break
+
+        self.curve.remove_dummies()
+        dmove.remove_dummy()
+
+    def imperfect_humanMovement(self, time: float):
+        theta = self.curve.find_middlePoint()
+        dmove = DummyMovement(self.target, time, theta=theta)
+        n_steps = np.round(time / 0.05).astype(int)
+
+        distance_vec = self.bot.get_movementDir(self.target)
+        direction = distance_vec / np.linalg.norm(distance_vec)
+        v_lin = (self.curve.get_arcLen()/time) * direction
+
+        for i in range(n_steps):
+            orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
+            v = self.curve.get_tangentVelocity(v_lin)
+            # v = self.curve.get_enhancedTangentVelocity(v_lin, time)
+            w = self.bot.get_angularSpeed(orientation)
+            q = self.bot.get_jointVelo_constrained(v, w)
             if self.check_cubeReached():
                 i = n_steps + 1
                 print("Cube Reached")
@@ -183,7 +239,6 @@ class RobotMovement():
             self.robot.set_joint_target_velocities(q)
             self.pr.step()
             dmove.step()
-            print("step: ", i+1)
         self.curve.remove_dummies()
         dmove.remove_dummy()
 
@@ -206,13 +261,36 @@ class RobotMovement():
                 break
         self.curve.remove_dummies()
 
-    def humanMovement(self, time: float):
-        _ = self.curve.find_middlePoint()
-        faceCube_orientation = self.curve.get_FaceTargetOrientation()
-        orientation_time = 0.20
-        self.orientArm(faceCube_orientation, time=orientation_time)
-        time -= orientation_time
+    # def humanMovement(self, time: float):
+        # _ = self.curve.find_middlePoint()
+        # faceCube_orientation = self.curve.get_FaceTargetOrientation()
+        # orientation_time = 0.20
+        # self.orientArm(faceCube_orientation, time=orientation_time)
+        # time -= orientation_time
 
+        # _ = self.curve.find_middlePoint()
+        # dmove = DummyMovement(self.target, time, tip=self.bot.getTip())
+        # n_steps = np.round(time / 0.05).astype(int)
+
+        # distance = self.bot.get_movementDir(self.target)
+        # direction = distance / np.linalg.norm(distance)
+        # v_lin = (self.curve.get_arcLen()/time) * direction
+
+        # for i in range(n_steps):
+        #     orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
+        #     v = self.curve.getVelocity2Target(v_lin)
+        #     w = self.bot.get_angularSpeed(orientation)
+        #     q = self.bot.get_jointVelo_constrained(v, w)
+        #     self.robot.set_joint_target_velocities(q)
+        #     self.pr.step()
+        #     dmove.step()
+        #     if self.check_cubeReached():
+        #         print(f"Cube Reached at step {i+1}")
+        #         break
+        # self.curve.remove_dummies()
+        # dmove.remove_dummy()
+
+    def humanMovement(self, time: float):
         _ = self.curve.find_middlePoint()
         dmove = DummyMovement(self.target, time, tip=self.bot.getTip())
         n_steps = np.round(time / 0.05).astype(int)
@@ -224,7 +302,7 @@ class RobotMovement():
         for i in range(n_steps):
             orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
             v = self.curve.getVelocity2Target(v_lin)
-            w = self.bot.get_angularSpeed(orientation)
+            w = self.bot.get_angularSpeed(orientation, time=0.05)
             q = self.bot.get_jointVelo_constrained(v, w)
             self.robot.set_joint_target_velocities(q)
             self.pr.step()
@@ -234,29 +312,6 @@ class RobotMovement():
                 break
         self.curve.remove_dummies()
         dmove.remove_dummy()
-
-    # def humanMovement(self, time: float):
-    #     _ = self.curve.find_middlePoint()
-    #     dmove = DummyMovement(self.target, time, tip=self.bot.getTip())
-    #     n_steps = np.round(time / 0.05).astype(int)
-
-    #     distance = self.bot.get_movementDir(self.target)
-    #     direction = distance / np.linalg.norm(distance)
-    #     v_lin = (self.curve.get_arcLen()/time) * direction
-
-    #     for i in range(n_steps):
-    #         orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
-    #         v = self.curve.getVelocity2Target(v_lin)
-    #         w = self.bot.get_angularSpeed(orientation)
-    #         q = self.bot.get_jointVelo_constrained(v, w)
-    #         self.robot.set_joint_target_velocities(q)
-    #         self.pr.step()
-    #         dmove.step()
-    #         if self.check_cubeReached():
-    #             print(f"Cube Reached at step {i+1}")
-    #             break
-    #     self.curve.remove_dummies()
-    #     dmove.remove_dummy()
 
     def graspingMovement_linear(self, time: float):
 
@@ -392,7 +447,7 @@ class RobotMovement():
         self.robot.set_joint_target_velocities(q)
         self.pr.step()
 
-    def autonomousStop(self, model: nn.Module, transform: T.Compose):
+    def autonomousStop(self, model: nn.Module, transform: T.Compose, constrained: bool=False):
         #take the image from the robot
         img = self.camera.capture_rgb()
         img = Image.fromarray(np.uint8(img*255)).convert('RGB')
@@ -400,14 +455,18 @@ class RobotMovement():
         img = img.unsqueeze(0)
         #shove it into the model
         # print(model(img).shape)
-        out: torch.Tensor = model(img)[0]
-        out = out.detach().numpy()
-        v = out[:-1]
-        stop = out[-1]
-        q = self.bot.get_jointVelo(v)
+        v, stop = model(img)
+        # print(out.shape)
+        v = v[0].detach().numpy()
+        stop = stop[0].detach().numpy()
+        # print(v)
+        if constrained:
+            q = self.bot.get_jointVelo_constrained(v[:3], v[3:])
+        else:
+            q = self.bot.get_jointVelo(v)
         self.robot.set_joint_target_velocities(q)
         self.pr.step()
-        print(stop)
+        # print(stop)
         return stop
 
     # def humanMovement(self, time: float):

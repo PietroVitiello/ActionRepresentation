@@ -100,13 +100,13 @@ class MyRobot():
         # R = self.robot.get_matrix()[:3,:3]
         return v #np.matmul(np.linalg.inv(R), v)
 
-    def get_angularSpeed(self, target_or: np.ndarray) -> np.ndarray:
+    def get_angularSpeed(self, target_or: np.ndarray, time: float=1) -> np.ndarray:
         # ee = self.robot.joints[-1]
         ee = self.robot._ik_tip
-        current_or = ee.get_orientation()
+        # current_or = ee.get_orientation()
         # current_or = self.gripper.get_orientation()
-        # return target_or / 1
-        return target_or / 0.05
+        return target_or / time
+        # return target_or / 0.05
         # return (target_or - current_or) / 5 #to get it to move in one time step
 
     def get_jointVelo(self, v: np.ndarray) -> np.ndarray:

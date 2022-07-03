@@ -15,7 +15,7 @@ SpatialAE_fc_follow_1:
   weight_decay: 1.0e-07
   Testing:
     Cube_Reached:
-      - 0
+    - 0
 #NOTE: Was very bad, the robot arm missed the cube basically all the time. Often the cube went outside of the fov of the camera
 
 Stopping_base_follow_1:
@@ -35,7 +35,7 @@ Stopping_base_follow_1:
   weight_decay: 1.0e-07
   Testing:
     Cube_Reached:
-      - 0
+    - 0
 #NOTE: Just did not work. Values of sopping never increased above 0.3
 
 Aux_BaselineCNN_baxFollow_1:
@@ -55,7 +55,7 @@ Aux_BaselineCNN_baxFollow_1:
   weight_decay: 1.0e-07
   Testing:
     Cube_Reached:
-      - 31
+    - 31
 #NOTE: Very good. Only once did the arm not reached the cube, because it went above it and missed it. Once the cube is not in the fov (because it misses
 #      it when it gets close) the arm does not know what to do (LSTM?)
 
@@ -76,8 +76,8 @@ SpatialAE_fc_follow_2:
   weight_decay: 1.0e-07
   Testing:
     Cube_Reached:
-     - 22
-     - 18
+    - 22
+    - 18
 #NOTE: Quite good. However it is less precise when it gets closer to the cube. It has not learnt well how to approach the cube yet. It may need some modification
 
 StrengthSpatialAE_fc_follow_1:
@@ -97,8 +97,46 @@ StrengthSpatialAE_fc_follow_1:
   weight_decay: 1.0e-07
   Testing:
     Cube_Reached:
-      - 11
+    - 11
 #NOTE: Much worse then before, although the model above was trained with decoder(x) not x=decoder(x)
+
+Aux_BaselineCNN_1_wrong:
+  model_name: Aux_BaselineCNN
+  data_folder: HumanLikeDemos_1
+  training_method: eeVel_aux
+  n_epochs: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 0
+    Attempts: 32
+#NOTE: So bad, it does not even move in the right direction. Sometimes it bugs
+
+Aux_BaselineCNN_2_wrong:
+  model_name: Aux_BaselineCNN
+  data_folder: HumanLikeDemos_1
+  training_method: eeVel_aux
+  n_epochs: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0004
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 7
+    Attempts: 32
+#NOTE: Much better than before, it moves in the right direction but it hardly reaches the target (maybe too slow?)
 
 Aux_BaselineCNN_1:
   model_name: Aux_BaselineCNN
@@ -115,24 +153,70 @@ Aux_BaselineCNN_1:
   num_aux_outputs: 9
   Testing:
     Cube_Reached:
-    - 0
-    Attempts: null
-#NOTE: So bad, it does not even move in the right direction. Sometimes it bugs
+    - 28
+    - 29
+    Attempts: 32
+#NOTE: Very good model! Dataset seems to be working. This uses the orientation as well and you can see the robot turning the orientation to face the cube!
+#      This being said sometimes it messes up strangely (usually when the cube is to its left or very lateral). I definitely have to adjust the spawnable space
+#      of the cube in testing and probably also in trining
 
 Aux_BaselineCNN_2:
   model_name: Aux_BaselineCNN
   data_folder: HumanLikeDemos_1
   training_method: eeVel_aux
-  n_epochs: 100
+  n_epochs: 30
   batch_size: 64
   use_gpu: true
   optimiser: Adamax
-  learning_rate: 0.0004
+  learning_rate: 0.001
   weight_decay: 1.0e-07
   loss: MSE
   num_outputs: 6
   num_aux_outputs: 9
   Testing:
-    Cube_Reached: []
-    Attempts: null
-#NOTE:
+    Cube_Reached:
+    - 22
+    Attempts: 32
+#NOTE: Seemed better at first but it turned out to be slightly more unstable
+
+Aux_BaselineCNN_3:
+  model_name: Aux_BaselineCNN
+  data_folder: HumanLikeDemos_2
+  training_method: eeVel_aux
+  n_epochs: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 24
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE: Not good, it did some very strange movements with the arm
+
+Aux_BaselineCNN_4:
+  model_name: Aux_BaselineCNN
+  data_folder: linearDemo_2
+  training_method: eeVel_aux
+  n_epochs: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 32
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE: Flawless, it is just like the demonstrations however it uses linear trajectories!

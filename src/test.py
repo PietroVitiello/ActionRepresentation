@@ -24,7 +24,7 @@ def editConfig(cube_reached, restriction):
 
 
 
-model_filename = "Aux_BaselineCNN_3"
+model_filename = "Stop_AuxBaselineCNN_5"
 restriction_type = "same"
 
 num_episodes = 32

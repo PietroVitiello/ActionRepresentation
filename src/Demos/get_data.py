@@ -95,10 +95,10 @@ def generate_dataset(
                         pass
                     r = n_runs
                     ep -= 1
-                    print("\033[31mCube position is likely invalid, generating new cube\033[37m", end="")
+                    print(f"\033[31mCube position [{gen.target.get_position()[:2]}] is likely invalid, generating new cube\033[38;5;231m", end="")
                 else:
                     shutil.rmtree(SAVING_DIR + f"/images/episode_{ep}/run_{r}")
-                    print("\033[31mTask not completed, repeating run\033[37m", end="")
+                    print("\033[31mTask not completed, repeating run\033[38;5;231m", end="")
 
             temp_df = pd.DataFrame(columns = col_name) #empty temp_df
             gen.resetRun()
@@ -221,15 +221,17 @@ def choseTrjGenrator(gen: DataGenerator, trj_type: str, time: float, distance2cu
     if trj_type=="HumanGrasp":
         return *gen.getHumanTrjGraspGenerator(time),
     elif trj_type=="FollowDummy":
-        return distance2cube, *gen.getHumanTrjGenerator_followDummy(time, distance2cube)
+        return distance2cube, *gen.getFollowDummyGenerator(time, distance2cube)
     elif trj_type=="FollowDummy_fixedSteps":
-        return None, *gen.humanTrjGenerator_fixedSteps(time)
+        return None, *gen.getFollowDummyGenerator_fixedSteps(time)
     elif trj_type=="HumanTrj_imperfect":
         return distance2cube, *gen.getHumanTrjGenerator_imperfect (time, distance2cube)
     elif trj_type=="FollowDummy_stop":
-        return *gen.getHumanTrjGenerator_stop(time),
+        return *gen.getFollowDummyGenerator_stop(time),
     elif trj_type=="LinearTrj":
         return distance2cube, *gen.getLinearTrjGenerator(time, distance2cube)
+    if trj_type=="LinearGrasp":
+        return *gen.getLinearGraspGenerator(time),
     else:
         raise Exception("The chosen generation process does not exist")
 

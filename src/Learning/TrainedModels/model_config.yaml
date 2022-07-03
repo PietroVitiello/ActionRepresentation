@@ -199,3 +199,158 @@ Aux_BaselineCNN_3:
     - moderate
     Attempts: 32
 #NOTE: Not good, it did some very strange movements with the arm
+
+Aux_BaselineCNN_4:
+  model_name: Aux_BaselineCNN
+  data_folder: linearDemo_2
+  training_method: eeVel_aux
+  n_epochs: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 32
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE: Flawless, it is just like the demonstrations however it uses linear trajectories!
+
+Stop_AuxBaselineCNN_1:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: linearGrasp_1
+  training_method: aux_stopIndividual
+  n_epochs: 100
+  n_epochs_stopping: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE: It did not move at all, could it be that the weights were not fixed? I then implemented the fix weights
+
+Stop_AuxBaselineCNN_2:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: linearGrasp_1
+  training_method: aux_stopIndividual
+  n_epochs: 13
+  n_epochs_stopping: 14
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE: The model had not learnt how to reach the cube
+
+Stop_AuxBaselineCNN_3:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: linearGrasp_1
+  training_method: aux_stopIndividual
+  n_epochs: 100
+  n_epochs_stopping: 14
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 6
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE: It did grasp some cubes. Sometimes it stops in mid air. However the main problem is that the reaching is not very good
+
+Stop_AuxBaselineCNN_test:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: linearGrasp_1
+  training_method: aux_stopIndividual
+  n_epochs: 100
+  n_epochs_stopping: 0
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 1
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE: The arm reached the cube perfectly. Therefore I assume that it is the stopping training that affects the reaching as well
+
+Stop_AuxBaselineCNN_4:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: linearGrasp_1
+  training_method: aux_stopIndividual
+  n_epochs: 100
+  n_epochs_stopping: 10
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 1
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE: I added the fc layers for reaching in the fix params but it does not work. The reaching model gets compromised
+
+Stop_AuxBaselineCNN_5:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: linearGrasp_1
+  training_method: aux_stopIndividual
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 30
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE: It works amazingly!!

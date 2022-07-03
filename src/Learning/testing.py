@@ -103,7 +103,7 @@ class Test():
         print(f"The robot was able to reach {num_reached} targets out of {self.num_episodes}")
         return num_reached
 
-    def test_eeVelGrasp(self):
+    def test_eeVelGrasp(self, constrained):
         num_reached = 0
         for episode in range(self.num_episodes):
             print(f"Beginning episode {episode+1}")
@@ -113,7 +113,7 @@ class Test():
             stop = 0
             step_n = 0
             while stop < 0.96 and step_n<self.max_n_steps:
-                stop = self.rmove.autonomousStop(self.model, self.transform)
+                stop = self.rmove.autonomousStop(self.model, self.transform, constrained)
                 step_n += 1
 
             print("Arm Thinks the Cube is Reached")

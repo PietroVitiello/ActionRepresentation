@@ -44,8 +44,8 @@ def saveConfig(configs):
         dataset = {f"{file_name}": configs}
         yaml.dump(dataset, file, sort_keys=False)
 
-file_name = "HumanLikeDemos_2"
-trj_type = "HumanTrj"
+file_name = "linearGrasp_1"
+trj_type = "LinearGrasp"
 distance_cubeReached = 0.02
 boundary_restriction = "moderate"
 

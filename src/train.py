@@ -7,6 +7,7 @@ def runConfig():
     configs["data_folder"] = data_folder
     configs["training_method"] = training_method
     configs["n_epochs"] = epochs
+    configs["n_epochs_stopping"] = epochs_stopping
     configs["batch_size"] = batch_size
     configs["use_gpu"] = use_gpu
     configs["optimiser"] = optimiser
@@ -23,6 +24,7 @@ def runConfig():
                     data_folder,
                     saved_model_name,
                     epochs,
+                    epochs_stopping,
                     batch_size,
                     training_method,
                     use_gpu,
@@ -61,10 +63,10 @@ def keepUseful(configs:dict, useless: list):
         
 
 #Saving and Training info
-data_folder = "HumanLikeDemos_2"
-saved_model_name = "Aux_BaselineCNN_3"
-model_name = "Aux_BaselineCNN"
-training_method = 'eeVel_aux'
+data_folder = "linearGrasp_1"
+saved_model_name = "Stop_AuxBaselineCNN_5"
+model_name = "Stop_AuxBaselineCNN"
+training_method = 'aux_stopIndividual'
 
 #Training process
 epochs = 100
@@ -77,7 +79,7 @@ num_aux_outputs = 9
 
 #Optimiser
 optimiser = 'Adamax'
-lr = 0.001 #0.0007 #0.001
+lr = 0.0007 #0.0007 #0.001
 weight_decay = 1e-7
 
 #Loss
@@ -86,6 +88,9 @@ stopping_loss = 'BCE'
 
 #For Auto Encoder
 recon_size = 16
+
+#For individual stopping
+epochs_stopping = 30
 
 
 runConfig()

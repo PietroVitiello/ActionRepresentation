@@ -1,7 +1,7 @@
 from pyrep.robots.end_effectors.gripper import Gripper
 import numpy as np
 
-ALLOWED_MOVEMENT = 0.000001 #0.0001
+ALLOWED_MOVEMENT = 0.00001 #0.0001
 POSITION_ERROR = 0.008
 
 class CustomBaxter(Gripper):
