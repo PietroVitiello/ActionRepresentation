@@ -350,7 +350,11 @@ Stop_AuxBaselineCNN_5:
   Testing:
     Cube_Reached:
     - 30
+    - 29
+    - 30
     Boundary_Restriction:
+    - moderate
+    - moderate
     - moderate
     Attempts: 32
 #NOTE: It works amazingly!!

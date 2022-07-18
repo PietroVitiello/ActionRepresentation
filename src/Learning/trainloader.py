@@ -1,3 +1,4 @@
+from typing_extensions import reveal_type
 from torch.utils.data import DataLoader, Dataset
 import pandas as pd
 import numpy as np
@@ -66,11 +67,7 @@ class SimDataset(Dataset):
     def getitem_stop(self, index):
         filename = self.df["imLoc"][index]
 
-        jointTarget = np.array([float(item) for item in self.df['j_targetVel'][index].split(",")])
-        jointVel = np.array([float(item) for item in self.df['jVel'][index].split(",")])
-        joint_pos = np.array([float(item) for item in self.df['jPos'][index].split(",")])
         eeTarget = np.array([float(item) for item in self.df['ee_targetVel'][index].split(",")])
-        eeVel = np.array([float(item) for item in self.df['eeVel'][index].split(",")])
         eePos = np.array([float(item) for item in self.df['eePos'][index].split(",")])
         eeOri = np.array([float(item) for item in self.df['eeOri'][index].split(",")])
         cPos = np.array([float(item) for item in self.df['cPos'][index].split(",")])
@@ -90,6 +87,29 @@ class SimDataset(Dataset):
             image = self.transform(image)
         return image, stop
 
+    def getitem_MI(self, index):
+        filename = self.df["imLoc"][index]
+        step_n = self.get_stepNumber(filename)
+
+        eeTarget = np.array([float(item) for item in self.df['ee_targetVel'][index].split(",")])
+        eePos = np.array([float(item) for item in self.df['eePos'][index].split(",")])
+        eeOri = np.array([float(item) for item in self.df['eeOri'][index].split(",")])
+        cPos = np.array([float(item) for item in self.df['cPos'][index].split(",")])
+
+        image = Image.open(self.dataset_path + filename)
+        if self.transform is not None:
+            image = self.transform(image)
+
+        if step_n != 0:
+            pass
+        else:
+            pass
+
+        return image, (eeTarget, eePos, eeOri, cPos)
+
     def filter_stopData(self):
         self.df = self.df.drop(self.df[self.df.loc[:,"stop"] == 1].index)
         self.df.reset_index(inplace=True)
+
+    def get_stepNumber(self, filename: str) -> int:
+        pass
