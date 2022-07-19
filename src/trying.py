@@ -1,6 +1,12 @@
 import numpy as np
 from os.path import dirname, join, abspath
 
+from PIL import Image, ImageOps
+from torchvision import transforms as T
+import torchvision.transforms.functional as ttf
+import torch
+from torch.utils.data import DataLoader
+
 from pyrep import PyRep
 from pyrep.robots.arms.lbr_iiwa_14_r820 import LBRIwaa14R820
 from pyrep.robots.arms.panda import Panda
@@ -17,69 +23,59 @@ from Robotics.Robot.custom_baxter import CustomBaxter
 from Robotics.target import Target
 from Robotics.Kinematics.robot_movement import RobotMovement
 
-from PIL import Image, ImageOps
-from torchvision import transforms as T
-
 import time
 import math
 
-# frame0 = Image.open("Demos/Dataset/linearGrasp_1/images/episode_0/run_0/step_2.jpg")
-# frame1 = Image.open("Demos/Dataset/linearGrasp_1/images/episode_0/run_0/step_3.jpg")
+from Learning.TrainLoaders.TL_MI import TL_motionImage
+from Learning.utils.motion_image import get_motionImage
 
-# frame0.show()
-# frame1.show()
+# data_folder = "linearDemo_2"
+# data_folder = f"Demos/Dataset/{data_folder}/"
 
-# frame0 = T.Resize((32, 32))(frame0)
-# frame1 = T.Resize((32, 32))(frame1)
-# # # frame0.show()
+# mean = torch.Tensor([0.485, 0.456, 0.406])
+# std = torch.Tensor([0.229, 0.224, 0.225])
+# transform = T.Compose(
+#             [
+#                 T.ToTensor(),
+#                 T.Normalize(mean.tolist(), std.tolist())
+#             ]
+#         )
 
-# # frame0 = ImageOps.grayscale(frame0)
-# # frame1 = ImageOps.grayscale(frame1)
+# data = TL_motionImage(data_folder, transform, delta_steps=5)
+# data = DataLoader(data, 64)
+# mis = []
+# for nana in data:
+#     mis.append(nana[0][-1])
 
-# frame0 = np.asarray(frame0)
-# # print(frame0[:,:,:])
-# frame1 = np.asarray(frame1)
+# ttf.to_pil_image(mis[10]).show()
 
-# # motion_image = frame1 - frame0
-# # # motion_image[:,:,[2,1]] = 0
-# # print(motion_image)
-# # motion_image[motion_image<200] = 0
-# # motion_image = Image.fromarray(motion_image[:,:,:])
-# # motion_image.show()
-
-# # frame0[:,:,[2,1]] = 0
-# print(frame0)
-# threshold = 40
-# frame0[frame0>threshold] = 44
-# frame0[frame0<threshold] = 255
-# frame0[frame0==44] = 0
-# print(frame0)
-
-# motion_image = Image.fromarray(frame0)
-# motion_image.show()
-
-
-frame0 = Image.open("Demos/Dataset/linearGrasp_1/images/episode_0/run_0/step_2.jpg")
-frame1 = Image.open("Demos/Dataset/linearGrasp_1/images/episode_0/run_0/step_7.jpg")
-
-frame0 = T.Resize((32, 32))(frame0)
-frame1 = T.Resize((32, 32))(frame1)
+frame0 = Image.open("Demos/Dataset/linearGrasp_1/images/episode_0/run_0/step_90.jpg")
+frame1 = Image.open("Demos/Dataset/linearGrasp_1/images/episode_0/run_0/step_95.jpg")
 
 frame0.show()
 frame1.show()
 
-frame0 = np.asarray(frame0, dtype=np.int16)
-frame1 = np.asarray(frame1, dtype=np.int16)
+im = get_motionImage(frame0, frame1, resized_side=None, mi_threshold=150)
+im.show()
 
-motion_image = frame1 - frame0
-motion_image *= 5
-motion_image[motion_image<100] = 0
-motion_image[motion_image>255] = 255
-# motion_image[:,:,[1,0]] = 0
-# motion_image[motion_image<200] = 0
-motion_image = motion_image.astype(np.uint8)
-motion_image = Image.fromarray(motion_image[:,:,:])
-motion_image.show()
+# frame0 = T.Resize((32, 32))(frame0)
+# frame1 = T.Resize((32, 32))(frame1)
+
+# frame0.show()
+# frame1.show()
+
+# frame0 = np.asarray(frame0, dtype=np.int16)
+# frame1 = np.asarray(frame1, dtype=np.int16)
+
+# motion_image = frame1 - frame0
+# motion_image *= 5
+# motion_image[motion_image<100] = 0
+# motion_image[motion_image>255] = 255
+# # motion_image[:,:,[1,0]] = 0
+# # motion_image[motion_image<200] = 0
+# motion_image = motion_image.astype(np.uint8)
+# motion_image = Image.fromarray(motion_image[:,:,:])
+# motion_image.show()
 
 
 

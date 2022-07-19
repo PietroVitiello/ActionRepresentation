@@ -38,7 +38,7 @@ def turnGreyscale(frame0: Image.Image, frame1: Image.Image) -> Tuple[Image.Image
 def generate_motionImage(
         frame0: np.ndarray,
         frame1: np.ndarray,
-        scaling_factor: float = 5.0,
+        scaling_factor: int = 5,
         threshold: int = 0
     ) -> np.ndarray:
 
@@ -50,13 +50,20 @@ def generate_motionImage(
     return motion_image
 
 
-def get_motionImage(frame0: Image.Image, frame1: Image.Image, greyscale: bool = False, resized_side: int = None) -> Image.Image :
+def get_motionImage(
+        frame0: Image.Image,
+        frame1: Image.Image,
+        greyscale: bool = False,
+        resized_side: int = None,
+        mi_scaling: int = 5,
+        mi_threshold: int = 0
+        ) -> Image.Image :
     if greyscale:
         turnGreyscale(frame0, frame1)
     if resized_side is not None:
-        resizeImages(frame0, frame1, resized_side)
+        frame0, frame1 = resizeImages(frame0, frame1, resized_side)
     frame0, frame1 = im2arr(frame0, frame1)
-    motion_image = generate_motionImage(frame0, frame1)
+    motion_image = generate_motionImage(frame0, frame1, mi_scaling, mi_threshold)
     motion_image = arr2Im(motion_image)[0]
     return motion_image
     
