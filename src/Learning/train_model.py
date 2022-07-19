@@ -2,9 +2,10 @@ import torch
 from torchvision import transforms
 from os.path import dirname, join, abspath
 
-from .trainloader import SimDataset
+from .TrainLoaders.trainloader import SimDataset
 from .training import Train
-from .utils.utils_pipeline import getTrainLoader, model_choice, train_model, uselessParams
+from .utils.utils_pipeline import model_choice, train_model, uselessParams
+from .utils.utils_dataloader import getTrainLoader
 
 from torch.utils.data import DataLoader
 
@@ -41,7 +42,7 @@ def model_training(
         )
 
     # ---------------- Dataset ---------------- #
-    trainSet = SimDataset(dataset_path, transform, dataset_mode="aux", filter_stop=True)
+    trainSet = SimDataset.get(dataset_path, transform, dataset_mode="aux", filter_stop=True)
     # trainSet = SimDataset(dataset_path, transform, dataset_mode="aux")
     trainLoader = getTrainLoader(trainSet, batch_size=batch_size, model=model_name)
 

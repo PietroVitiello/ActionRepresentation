@@ -2,7 +2,8 @@ import torch
 import torch.nn as nn
 from torch.nn.parameter import Parameter
 
-from .backbones import SpatialSoftArgmax, SpatialSoftArgmax_strength, SpatialAE_sceneUnderstanding_backbone
+from .backbones import SpatialAE_sceneUnderstanding_backbone
+from .activation_func import SpatialSoftArgmax, SpatialSoftArgmax_strength
 
 class SpatialAE_fc(nn.Module):
     def __init__(
