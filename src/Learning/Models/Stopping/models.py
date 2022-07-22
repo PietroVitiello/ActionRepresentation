@@ -44,17 +44,11 @@ class Stopping_base(nn.Module):
     def forward(self, x):
 
         x = self.conv1(x)
-        # print(F"Shape after 1: {x.shape}")
         x = self.conv2(x)
-        # print(F"Shape after 2: {x.shape}")
         x = self.conv3(x)
-        # print(F"Shape after 3: {x.shape}")
         x = self.conv4(x)
-        # print(F"Shape after 4: {x.shape}")
         x = self.conv5(x)
-        # print(F"Shape after 5: {x.shape}")
         x = self.conv6(x)
-        # print(F"Shape after 6: {x.shape}")
         
         x = x.view(x.size(0),-1)
         x = self.fc1(x)

@@ -201,4 +201,59 @@ class Train():
         for name, param in self.model.named_parameters():
             if param.requires_grad:print(name)
 
+    def train_MotionImage(self):
+        print_every = 10
+        dtype = torch.float32
+        self.model.train()
+
+        print("\nInitiating Training for Reaching")
+        for epoch in range(self.epochs):
+            for t, (x, labels) in enumerate(self.dataloader):
+                x = x.to(device=self.device, dtype=dtype)
+                mi_label = labels[-1]
+                labels = torch.cat(labels[:-1], dim=1)
+                labels = labels.to(device=self.device, dtype=dtype)
+
+                out, mi = self.model(x, train_stop=False)
+                recon_loss = self.loss(mi, mi_label)
+                loss = self.loss(out, labels)
+                loss += recon_loss
+
+                self.optimiser.zero_grad()
+                loss.backward()
+                self.optimiser.step()
+
+                if t % print_every == 0:
+                    print(f"Epoch: {epoch+1}, Iteration {t}, loss = {loss:.6f}")
+            print("\n\n")
+
+        print("\nReaching Training Ended\n")
+        self.model.freeze_backbone()
+        self.optimiser = optim.Adamax(
+            filter(lambda p: p.requires_grad, self.model.parameters()),
+            lr=self.lr,
+            weight_decay=self.wd
+        )
+        print("\nInitiating Training for Stopping")
+
+        for name, param in self.model.named_parameters():
+            if param.requires_grad:print(name)
+
+        for epoch in range(self.stopping_epochs):
+            for t, (x, stop_label) in enumerate(self.stopping_dataloader):
+
+                x = x.to(device=self.device, dtype=dtype)
+                stop_label = stop_label.to(device=self.device, dtype=dtype)
+
+                out = self.model(x, train_stop=True)
+                loss = self.stopping_loss(out, stop_label)
+
+                self.optimiser.zero_grad()
+                loss.backward()
+                self.optimiser.step()
+
+                if t % print_every == 0:
+                    print(f"Epoch: {epoch+1}, Iteration {t}, loss = {loss:.6f}")
+            print("\n\n")
+
     

@@ -31,7 +31,7 @@ def get_runNum(filename: str) -> int:
 
 def get_stepNum(filename: str) -> int:
     _, step_dir = filename.split("step_")
-    step_num, _ = step_dir.split("/", 1)
+    step_num, _ = step_dir.split(".", 1)
     return int(step_num)
 
 def get_numEpisodeRun(filename: str) -> Tuple[int, int]:

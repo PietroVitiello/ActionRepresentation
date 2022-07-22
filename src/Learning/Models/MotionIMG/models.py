@@ -3,6 +3,105 @@ import torch.nn as nn
 from torch.nn.parameter import Parameter
 
 from .modules import SpatialSoftArgmax, SpatialSoftArgmax_strength
+from .backbones import BaselineCNN_backbone, Motion_attention
+
+image_type = torch.Tensor
+
+class MotionImage_attention(nn.Module):
+    def __init__(self, num_outputs=6, num_aux_outputs=9) -> None:
+        super(MotionImage_attention, self).__init__()
+
+        self.cnn_backbone = BaselineCNN_backbone()
+        self.mi_attention = Motion_attention()
+
+        self.reach_fc = nn.Sequential(nn.Linear(256, 128),
+                                      nn.ReLU())
+
+        self.aux = nn.Linear(128, num_aux_outputs)
+        self.out = nn.Linear(128, num_outputs)
+
+        self.stop = nn.Sequential(nn.Linear(256, 64),
+                                  nn.ReLU(),
+                                  nn.Linear(64, 1),
+                                  nn.Sigmoid())
+
+    def freeze_backbone(self):
+        self.cnn_backbone.requires_grad_(False)
+        self.mi_attention.requires_grad_(False)
+        self.reach_fc.requires_grad_(False)
+        self.out.requires_grad_(False)
+        self.aux.requires_grad_(False)
+
+    def forward(self, x: image_type, train_stop: bool= None):
+        feature_map4x4, x_conv = self.cnn_backbone(x)
+        if self.training:
+            if train_stop == False:
+                mi_encoding, mi = self.mi_attention(feature_map4x4)
+                x = self.reach_fc(x_conv)
+                x = torch.mul(x, mi_encoding)
+                x_aux = self.aux(x)
+                x_out = self.out(x)
+                return torch.cat((x_out, x_aux), dim=1), mi
+            if train_stop == True:
+                x = self.cnn_backbone(x)
+                return self.stop(x)
+        else:
+            mi_encoding, _ = self.mi_attention(feature_map4x4)
+            reach_x = self.reach_fc(x)
+            x = torch.mul(x, mi_encoding)
+            reach_x = self.out(reach_x)
+            stop_signal = self.stop(x)
+            return (reach_x, stop_signal)
+        
+
+
+
+
+
+class Stop_AuxBaselineCNN(nn.Module):
+    def __init__(self, num_outputs=6, num_aux_outputs=9):
+        super(Stop_AuxBaselineCNN, self).__init__()
+
+        self.cnn_backbone = BaselineCNN_backbone()
+
+        self.reach_fc = nn.Sequential(nn.Linear(256, 128),
+                                      nn.ReLU())
+
+        self.aux = nn.Linear(128, num_aux_outputs)
+        self.out = nn.Linear(128, num_outputs)
+
+        self.stop = nn.Sequential(nn.Linear(256, 64),
+                                  nn.ReLU(),
+                                  nn.Linear(64, 1),
+                                  nn.Sigmoid())
+
+    def freeze_backbone(self):
+        self.cnn_backbone.requires_grad_(False)
+        self.reach_fc.requires_grad_(False)
+        self.out.requires_grad_(False)
+        self.aux.requires_grad_(False)
+
+    def forward(self, x, train_stop: bool=None):
+        if self.training:
+            if train_stop == False:
+                x = self.cnn_backbone(x)
+                x = self.reach_fc(x)
+                x_aux = self.aux(x)
+                x_out = self.out(x)
+                return torch.cat((x_out, x_aux), dim=1)
+            if train_stop == True:
+                # with torch.no_grad():
+                x: torch.Tensor = self.cnn_backbone(x)
+                # x.requires_grad = True
+                return self.stop(x)
+        else:
+            x = self.cnn_backbone(x)
+
+            reach_x = self.reach_fc(x)
+            reach_x = self.out(reach_x)
+            stop_signal = self.stop(x)
+            return (reach_x, stop_signal)
+
 
 class SpatialAE_fc(nn.Module):
     def __init__(

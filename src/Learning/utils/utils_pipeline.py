@@ -4,9 +4,10 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import yaml
 
-from ..BaselineCNN.models import BaselineCNN, Aux_BaselineCNN, LSTM_BaselineCNN, LSTM_largerBaseCNN
-from ..AutoEncoder.models import SpatialAE_fc, StrengthSpatialAE_fc
-from ..Stopping.models import Stopping_base, Stop_AuxBaselineCNN
+from ..Models.BaselineCNN.models import BaselineCNN, Aux_BaselineCNN, LSTM_BaselineCNN, LSTM_largerBaseCNN
+from ..Models.AutoEncoder.models import SpatialAE_fc, StrengthSpatialAE_fc
+from ..Models.Stopping.models import Stopping_base, Stop_AuxBaselineCNN
+from ..Models.MotionIMG.models import MotionImage_attention
 
 from ..training import Train
 from ..testing import Test
@@ -44,6 +45,8 @@ def model_choice(
         return Stopping_base(num_outputs, num_aux_outputs)
     elif model_name == "Stop_AuxBaselineCNN":
         return Stop_AuxBaselineCNN(num_outputs, num_aux_outputs)
+    elif model_name == "MotionImage_attention":
+        return MotionImage_attention(num_outputs, num_aux_outputs)
     else:
         raise Exception("There is no such model available")
 
@@ -58,6 +61,8 @@ def train_model(train: Train, mode):
         train.train_stopping()
     elif mode == 'aux_stopIndividual':
         train.train_auxStopIndividual()
+    elif mode == 'motion_image':
+        train.train_MotionImage()
     else:
         raise Exception("Training modality selected has not been recognized")
 
@@ -97,6 +102,8 @@ def uselessParams(mode: str):
     elif mode == 'stop':
         useless_keys.append("reconstruction_size")
     elif mode == 'aux_stopIndividual':
+        useless_keys.append("reconstruction_size")
+    elif mode == 'motion_image':
         useless_keys.append("reconstruction_size")
     else:
         raise Exception("Training modality selected has not been recognized")

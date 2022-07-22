@@ -64,9 +64,9 @@ def keepUseful(configs:dict, useless: list):
 
 #Saving and Training info
 data_folder = "linearGrasp_1"
-saved_model_name = "Stop_AuxBaselineCNN_5"
-model_name = "Stop_AuxBaselineCNN"
-training_method = 'aux_stopIndividual'
+saved_model_name = "MotionImage_attention_1"
+model_name = "MotionImage_attention"
+training_method = 'motion_image'
 
 #Training process
 epochs = 100

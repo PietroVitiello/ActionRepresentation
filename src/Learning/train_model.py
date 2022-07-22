@@ -42,11 +42,11 @@ def model_training(
         )
 
     # ---------------- Dataset ---------------- #
-    trainSet = SimDataset.get(dataset_path, transform, dataset_mode="aux", filter_stop=True)
+    trainSet = SimDataset().get(dataset_path, transform, dataset_mode="motionImage", filter_stop=True)
     # trainSet = SimDataset(dataset_path, transform, dataset_mode="aux")
     trainLoader = getTrainLoader(trainSet, batch_size=batch_size, model=model_name)
 
-    trainSet_stop = SimDataset(dataset_path, transform, dataset_mode="onlyStop")
+    trainSet_stop = SimDataset().get(dataset_path, transform, dataset_mode="onlyStop")
     trainLoader_stop = DataLoader(trainSet_stop, batch_size=batch_size, shuffle=True, num_workers=1)
 
     # ---------------- Training ---------------- #

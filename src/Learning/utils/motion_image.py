@@ -30,6 +30,11 @@ def resizeImages(frame0: Image.Image, frame1: Image.Image, new_side: int) -> Tup
     frame1 = resize_transform(frame1)
     return frame0, frame1
 
+def resizeImage(img: Image.Image, new_side: int) -> Tuple[Image.Image, Image.Image]:
+    resize_transform = T.Resize((new_side, new_side))
+    img = resize_transform(img)
+    return img
+
 def turnGreyscale(frame0: Image.Image, frame1: Image.Image) -> Tuple[Image.Image, Image.Image]:
     frame0 = ImageOps.grayscale(frame0)
     frame1 = ImageOps.grayscale(frame1)
@@ -60,11 +65,11 @@ def get_motionImage(
         ) -> Image.Image :
     if greyscale:
         turnGreyscale(frame0, frame1)
-    if resized_side is not None:
-        frame0, frame1 = resizeImages(frame0, frame1, resized_side)
     frame0, frame1 = im2arr(frame0, frame1)
     motion_image = generate_motionImage(frame0, frame1, mi_scaling, mi_threshold)
     motion_image = arr2Im(motion_image)[0]
+    if resized_side is not None:
+        motion_image = resizeImage(motion_image, resized_side)
     return motion_image
     
 
