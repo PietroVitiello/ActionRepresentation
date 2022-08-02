@@ -137,7 +137,7 @@ def getRestriction(restriction: str, dataset_name: str):
 
 def testMethod(test: Test, model_name: str, constrained: bool):
     LSTM_models = ["LSTM_largerBaseCNN", "LSTM_BaselineCNN"]
-    stopping_models = ["Stopping_base", "Stop_AuxBaselineCNN"]
+    stopping_models = ["Stopping_base", "Stop_AuxBaselineCNN", "MotionImage_attention"]
     if model_name in LSTM_models:
         return test.test_eeVel_LSTM()
     elif model_name in stopping_models:

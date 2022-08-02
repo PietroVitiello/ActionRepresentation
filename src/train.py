@@ -64,7 +64,7 @@ def keepUseful(configs:dict, useless: list):
 
 #Saving and Training info
 data_folder = "linearGrasp_1"
-saved_model_name = "MotionImage_attention_1"
+saved_model_name = "MotionImage_attention_4"
 model_name = "MotionImage_attention"
 training_method = 'motion_image'
 
@@ -79,8 +79,8 @@ num_aux_outputs = 9
 
 #Optimiser
 optimiser = 'Adamax'
-lr = 0.0007 #0.0007 #0.001
-weight_decay = 1e-7
+lr = 0.001 #0.0007 #0.001
+weight_decay = 5e-8 #1e-7
 
 #Loss
 loss = 'MSE'

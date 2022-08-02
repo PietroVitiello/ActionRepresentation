@@ -43,14 +43,55 @@ class MotionImage_attention(nn.Module):
                 x_out = self.out(x)
                 return torch.cat((x_out, x_aux), dim=1), mi
             if train_stop == True:
-                x = self.cnn_backbone(x)
-                return self.stop(x)
+                return self.stop(x_conv)
         else:
             mi_encoding, _ = self.mi_attention(feature_map4x4)
-            reach_x = self.reach_fc(x)
-            x = torch.mul(x, mi_encoding)
+            reach_x = self.reach_fc(x_conv)
+            reach_x = torch.mul(reach_x, mi_encoding)
             reach_x = self.out(reach_x)
-            stop_signal = self.stop(x)
+            stop_signal = self.stop(x_conv)
+            return (reach_x, stop_signal)
+
+class MotionImage_auxiliary(nn.Module):
+    def __init__(self, num_outputs=6, num_aux_outputs=9) -> None:
+        super(MotionImage_auxiliary, self).__init__()
+
+        self.cnn_backbone = BaselineCNN_backbone()
+        self.mi_attention = Motion_attention()
+
+        self.reach_fc = nn.Sequential(nn.Linear(256, 128),
+                                      nn.ReLU())
+
+        self.aux = nn.Linear(128, num_aux_outputs)
+        self.out = nn.Linear(128, num_outputs)
+
+        self.stop = nn.Sequential(nn.Linear(256, 64),
+                                  nn.ReLU(),
+                                  nn.Linear(64, 1),
+                                  nn.Sigmoid())
+
+    def freeze_backbone(self):
+        self.cnn_backbone.requires_grad_(False)
+        self.mi_attention.requires_grad_(False)
+        self.reach_fc.requires_grad_(False)
+        self.out.requires_grad_(False)
+        self.aux.requires_grad_(False)
+
+    def forward(self, x: image_type, train_stop: bool= None):
+        feature_map4x4, x_conv = self.cnn_backbone(x)
+        if self.training:
+            if train_stop == False:
+                _, mi = self.mi_attention(feature_map4x4)
+                x = self.reach_fc(x_conv)
+                x_aux = self.aux(x)
+                x_out = self.out(x)
+                return torch.cat((x_out, x_aux), dim=1), mi
+            if train_stop == True:
+                return self.stop(x_conv)
+        else:
+            reach_x = self.reach_fc(x_conv)
+            reach_x = self.out(reach_x)
+            stop_signal = self.stop(x_conv)
             return (reach_x, stop_signal)
         
 

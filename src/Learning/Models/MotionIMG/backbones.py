@@ -71,8 +71,11 @@ class Motion_decoder(nn.Module):
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         x = self.deconv1(x)
         x = self.deconv2(x)
-        motion_image = self.deconv3(x)
-        return x, motion_image
+        if self.training:
+            motion_image = self.deconv3(x)
+            return x, motion_image
+        else:
+            return x
 
 class Motion_attention(nn.Module):
     def __init__(self) -> None:
@@ -98,7 +101,11 @@ class Motion_attention(nn.Module):
         return conv
 
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
-        motion_encoding, mi = self.motion_decoder(x)
+        mi = None
+        if self.training:
+            motion_encoding, mi = self.motion_decoder(x)
+        else:
+            motion_encoding = self.motion_decoder(x)
         motion_encoding = self.conv(motion_encoding)
         motion_encoding = motion_encoding.view(motion_encoding.size(0),-1)
         return motion_encoding, mi

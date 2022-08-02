@@ -352,9 +352,103 @@ Stop_AuxBaselineCNN_5:
     - 30
     - 29
     - 30
+    - 30
     Boundary_Restriction:
+    - moderate
     - moderate
     - moderate
     - moderate
     Attempts: 32
 #NOTE: It works amazingly!!
+
+MotionImage_attention_1:
+  model_name: MotionImage_attention
+  data_folder: linearGrasp_1
+  training_method: motion_image
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 30
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE:
+
+MotionImage_attention_2:
+  model_name: MotionImage_attention
+  data_folder: linearGrasp_1
+  training_method: motion_image
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-06
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 24
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE:
+
+MotionImage_attention_3:
+  model_name: MotionImage_attention
+  data_folder: linearGrasp_1
+  training_method: motion_image
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 29
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE:
+
+MotionImage_attention_4:
+  model_name: MotionImage_attention
+  data_folder: linearGrasp_1
+  training_method: motion_image
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 5.0e-08
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 26
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE:

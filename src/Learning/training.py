@@ -211,20 +211,21 @@ class Train():
             for t, (x, labels) in enumerate(self.dataloader):
                 x = x.to(device=self.device, dtype=dtype)
                 mi_label = labels[-1]
+                mi_label = mi_label.to(device=self.device, dtype=dtype)
                 labels = torch.cat(labels[:-1], dim=1)
                 labels = labels.to(device=self.device, dtype=dtype)
 
                 out, mi = self.model(x, train_stop=False)
                 recon_loss = self.loss(mi, mi_label)
-                loss = self.loss(out, labels)
-                loss += recon_loss
+                action_loss = self.loss(out, labels)
+                loss = action_loss + recon_loss
 
                 self.optimiser.zero_grad()
                 loss.backward()
                 self.optimiser.step()
 
                 if t % print_every == 0:
-                    print(f"Epoch: {epoch+1}, Iteration {t}, loss = {loss:.6f}")
+                    print(f"Epoch: {epoch+1:3d}, Iteration {t:4d}, recon_loss = {recon_loss:.6f}, action_loss = {action_loss:.6f}, loss = {loss:.6f}")
             print("\n\n")
 
         print("\nReaching Training Ended\n")
