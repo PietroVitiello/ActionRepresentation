@@ -1,3 +1,5 @@
+from typing import List
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -30,3 +32,15 @@ def getReconProcessing(recon_size):
         T.Resize((recon_size, recon_size))
     ])
     return processing
+
+def undoTransform(mean: List[float], std: List[float]):
+    # ones = torch.ones(len(std))
+    std = torch.div(1, torch.tensor(std))
+    mean = -torch.tensor(mean)
+    transform = T.Compose(
+            [
+                T.Normalize([0]*len(mean), std.tolist()),
+                T.Normalize(mean.tolist(), [1]*len(mean))
+            ]
+        )
+    return transform

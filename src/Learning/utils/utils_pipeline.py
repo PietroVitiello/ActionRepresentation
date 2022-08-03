@@ -8,18 +8,10 @@ from ..Models.BaselineCNN.models import BaselineCNN, Aux_BaselineCNN, LSTM_Basel
 from ..Models.AutoEncoder.models import SpatialAE_fc, StrengthSpatialAE_fc
 from ..Models.Stopping.models import Stopping_base, Stop_AuxBaselineCNN
 from ..Models.MotionIMG.models import MotionImage_attention
+from ..Models.PureAE.models import Pure_SimpleAE, Pure_SimpleAE_mediumDec,Pure_SimpleAE_vlargeDec
 
 from ..training import Train
 from ..testing import Test
-
-###################### Dataset ######################
-
-def getTrainLoader(trainSet, batch_size, model) -> DataLoader:
-    LSTM_models = ["LSTM_largerBaseCNN", "LSTM_BaselineCNN"]
-    if model in LSTM_models:
-        return DataLoader(trainSet, batch_size=batch_size, shuffle=False, num_workers=1)
-    else:
-        return DataLoader(trainSet, batch_size=batch_size, shuffle=True, num_workers=1)
 
 ###################### Training ######################
 
@@ -47,6 +39,13 @@ def model_choice(
         return Stop_AuxBaselineCNN(num_outputs, num_aux_outputs)
     elif model_name == "MotionImage_attention":
         return MotionImage_attention(num_outputs, num_aux_outputs)
+
+    elif model_name == "Pure_SimpleAE":
+        return Pure_SimpleAE()
+    elif model_name == "Pure_SimpleAE_mediumDec":
+        return Pure_SimpleAE_mediumDec()
+    elif model_name == "Pure_SimpleAE_vlargeDec":
+        return Pure_SimpleAE_vlargeDec()
     else:
         raise Exception("There is no such model available")
 
@@ -63,6 +62,9 @@ def train_model(train: Train, mode):
         train.train_auxStopIndividual()
     elif mode == 'motion_image':
         train.train_MotionImage()
+
+    elif mode == 'pureAE':
+        train.train_PureAE()
     else:
         raise Exception("Training modality selected has not been recognized")
 
@@ -105,6 +107,12 @@ def uselessParams(mode: str):
         useless_keys.append("reconstruction_size")
     elif mode == 'motion_image':
         useless_keys.append("reconstruction_size")
+
+    elif mode == 'pureAE':
+        useless_keys.append("stopping_loss")
+        useless_keys.append("reconstruction_size")
+        useless_keys.append("num_outputs")
+        useless_keys.append("num_aux_outputs")
     else:
         raise Exception("Training modality selected has not been recognized")
     return useless_keys
@@ -133,7 +141,6 @@ def getRestriction(restriction: str, dataset_name: str):
         dataset_data = configs[dataset_name]
         restriction = dataset_data["boundary_restriction"]
     return restriction
-
 
 def testMethod(test: Test, model_name: str, constrained: bool):
     LSTM_models = ["LSTM_largerBaseCNN", "LSTM_BaselineCNN"]

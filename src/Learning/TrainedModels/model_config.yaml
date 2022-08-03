@@ -452,3 +452,21 @@ MotionImage_attention_4:
     - moderate
     Attempts: 32
 #NOTE:
+
+Pure_SimpleAE_mediumDec_1:
+  model_name: Pure_SimpleAE_mediumDec
+  data_folder: linearGrasp_1
+  training_method: pureAE
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts: null
+#NOTE: Not bad at all, the final training loss was between 0.09 and 0.06 although I should check validation loss as well

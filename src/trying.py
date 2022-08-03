@@ -29,37 +29,39 @@ import math
 from Learning.TrainLoaders.TL_MI import TL_motionImage
 from Learning.utils.motion_image import get_motionImage
 
-data_folder = "linearGrasp_1"
-data_folder = f"Demos/Dataset/{data_folder}/"
+# data_folder = "linearGrasp_1"
+# data_folder = f"Demos/Dataset/{data_folder}/"
 
-mean = torch.Tensor([0.485, 0.456, 0.406])
-std = torch.Tensor([0.229, 0.224, 0.225])
-transform = T.Compose(
-            [
-                T.ToTensor(),
-                T.Normalize(mean.tolist(), std.tolist())
-            ]
-        )
+# mean = torch.Tensor([0.485, 0.456, 0.406])
+# std = torch.Tensor([0.229, 0.224, 0.225])
+# transform = T.Compose(
+#             [
+#                 T.ToTensor(),
+#                 T.Normalize(mean.tolist(), std.tolist())
+#             ]
+#         )
 
-data = TL_motionImage(data_folder, transform, delta_steps=5, filter_stop=True)
-print(len(data))
-data = DataLoader(data, 64, shuffle=True)
-# mis = []
-for batch, nana in enumerate(data):
-    print(batch * 64)
+# data = TL_motionImage(data_folder, transform, delta_steps=5, filter_stop=True)
+# print(len(data))
+# data = DataLoader(data, 64, shuffle=True)
+# # mis = []
+# for batch, nana in enumerate(data):
+#     print(batch * 64)
     # mis.append(nana[0][-1])
 
 # ttf.to_pil_image(mis[10]).show()
 
-# frame0 = Image.open("Demos/Dataset/linearGrasp_1/images/episode_0/run_0/step_40.jpg")
-# frame1 = Image.open("Demos/Dataset/linearGrasp_1/images/episode_0/run_0/step_45.jpg")
+frame0 = Image.open("Demos/Dataset/linearGrasp_1/images/episode_0/run_0/step_40.jpg")
+frame1 = Image.open("Demos/Dataset/linearGrasp_1/images/episode_0/run_0/step_45.jpg")
 
-# # frame0.show()
-# frame1.show()
+frame0.show()
+frame1.show()
 
-# im = get_motionImage(frame0, frame1, resized_side=None, mi_threshold=150)
-# # im = T.Resize((32, 32))(im)
-# im.show()
+im = get_motionImage(frame0, frame1, resized_side=32, mi_threshold=150)
+# im = T.Resize((32, 32))(im)
+im = T.ToTensor()(im)
+im = T.ToPILImage()(im)
+im.show()
 
 # frame0 = T.Resize((32, 32))(frame0)
 # frame1 = T.Resize((32, 32))(frame1)

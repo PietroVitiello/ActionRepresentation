@@ -1,5 +1,7 @@
 from typing import Tuple
-from torch.utils.data import Dataset
+import torch
+from torch.utils.data import Dataset, DataLoader
+from torchvision import transforms as T
 import pandas as pd
 import numpy as np
 from PIL import Image
@@ -13,7 +15,7 @@ class TL_motionImage(Dataset):
         dataset_path,
         transform = None,
         filter_stop: bool = False,
-        delta_steps: int = 1
+        delta_steps: int = 5
     ) -> None:
 
         self.df = pd.read_csv(dataset_path + "data.csv")
@@ -50,9 +52,12 @@ class TL_motionImage(Dataset):
 
         image = Image.open(self.dataset_path + filename)
         future_image = Image.open(self.dataset_path + future_filename)
-        motion_image = get_motionImage(image, future_image, resized_side=32)
+        motion_image = get_motionImage(image, future_image, resized_side=32, mi_threshold=150)
 
-        if self.transform is not None:
+        if self.transform == None:
+            image = T.ToTensor()(image)
+            motion_image = T.ToTensor()(motion_image)
+        elif self.transform is not None:     
             image = self.transform(image)
             motion_image = self.transform(motion_image)
 
@@ -60,15 +65,17 @@ class TL_motionImage(Dataset):
 
     def get_valid_imagePair(self, index: int) -> Tuple[str, str]:
         filename = self.df["imLoc"][index]
-        try:
-            future_filename = self.df["imLoc"][index + self.future_delta_target]
-        except KeyError:
-            self.future_delta_target -= 1
-            future_filename = self.df["imLoc"][index + self.future_delta_target]
+        no_error = False
+        while no_error is False:
+            try:
+                future_filename = self.df["imLoc"][index + self.future_delta_target]
+                no_error = True
+            except KeyError:
+                self.future_delta_target -= 1
         
         while self.check_sameDemo(filename, future_filename) == False:
             self.future_delta_target -= 1
-            print(f"near the end {self.future_delta_target}")
+            # print(f"near the end {self.future_delta_target}")
             if self.future_delta_target == 0:
                 self.df = self.df.drop(index)
                 self.df.reset_index(inplace=True, drop=True)
@@ -98,4 +105,44 @@ class TL_motionImage(Dataset):
         df.reset_index(inplace=True)
         # print(df["index"])
         return df["index"]
+
+    def calculate_statistics(self):
+        dataloader = DataLoader(self, batch_size=120, num_workers=1)
+        for (x, labels) in dataloader:
+            try:
+                input_image = torch.cat((input_image, x), axis=0)
+                mi_image = torch.cat((mi_image, labels[-1]), axis=0)
+                data = torch.cat((data, torch.cat(labels[:-1], dim=1)), axis=0)
+            except NameError:
+                input_image = x
+                mi_image = labels[-1]
+                data = torch.cat(labels[:-1], dim=1)
+        input_std, input_mean = torch.std_mean(input_image, axis=[0,2,3])
+        print(f"input -->\tmean:{input_mean}, \tstd: {input_std}")
+        mi_std, mi_mean = torch.std_mean(mi_image, axis=[0,2,3])
+        print(f"mi -->   \tmean:{mi_mean}, \tstd: {mi_std}")
+        data_std, data_mean = torch.std_mean(data, axis=0)
+        print(f"data -->\tmean:{data_mean}, \tstd: {data_std}\n\n")
+        return (input_std, input_mean), (mi_std, mi_mean), (data_std, data_mean)
+
+    def get_transforms(self):
+        print("Calculating mean and standard deviation for data")
+        stats = self.calculate_statistics()
+        input_transform = T.Normalize(stats[0][1], stats[0][0])
+        mi_transform = T.Normalize(stats[1][1], stats[1][0])
+        data_transform = T.Normalize(stats[2][1], stats[2][0])
+        return input_transform, mi_transform, data_transform
+
+
+    # def calculate_mean_and_std(self, img, mi, data):
+    #     # def getImage(row):
+    #     #     filename = row["imLoc"]
+    #     #     image = Image.open(self.dataset_path + filename)
+    #     #     return T.ToTensor(image)
+
+    #     img = T.ToTensor(img)
+    #     mi = T.ToTensor(mi)
+        
+
+        
 

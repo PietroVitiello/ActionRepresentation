@@ -4,7 +4,8 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import torchvision.transforms as T
 
-from .utils.utils_train import get_loss, get_optimiser, getReconProcessing
+from .utils.utils_train import get_loss, get_optimiser, getReconProcessing, undoTransform
+# from .utils.utils_dataloader import undoTransform
 
 class Train():
 
@@ -12,6 +13,7 @@ class Train():
         model: torch.nn.Module,
         dataset: DataLoader,
         stopping_dataset: DataLoader,
+        transform: T,
         use_gpu: bool,
         epochs: int,
         stopping_epochs: int,
@@ -41,6 +43,7 @@ class Train():
         self.model = model.to(device=self.device)
         self.dataloader = dataset
         self.stopping_dataloader = stopping_dataset
+        self.transform = transform
 
         self.optimiser = get_optimiser(optimiser, self.model, self.lr, self.wd)
         self.loss = get_loss(loss)
@@ -256,5 +259,49 @@ class Train():
                 if t % print_every == 0:
                     print(f"Epoch: {epoch+1}, Iteration {t}, loss = {loss:.6f}")
             print("\n\n")
+
+    def train_PureAE(self):
+        print_every = 10
+        dtype = torch.float32
+        self.model.train()
+
+        input_transform, mi_transform, _ = self.transform
+
+        print("\nInitiating Training of AutoEncoder")
+        for epoch in range(self.epochs):
+            for t, (x, labels) in enumerate(self.dataloader):
+                x = x.to(device=self.device, dtype=dtype)
+                x = input_transform(x)
+                mi_label = labels[-1]
+                mi_label = mi_label.to(device=self.device, dtype=dtype)
+                mi_label = mi_transform(mi_label)
+
+                mi = self.model(x)
+                recon_loss = self.loss(mi, mi_label)
+
+                self.optimiser.zero_grad()
+                recon_loss.backward()
+                self.optimiser.step()
+
+                if t % print_every == 0:
+                    print(f"Epoch: {epoch+1:3d}, Iteration {t:4d}, recon_loss = {recon_loss:.6f}")
+            print("\n\n")
+        
+        with torch.no_grad():
+            for t, (x, labels) in enumerate(self.dataloader):
+                    if t % 20 == 0:
+                        T.ToPILImage()(x[30]).show()
+                        x = input_transform(x)
+                        x = x.to(device=self.device, dtype=dtype)                
+                        mi_label = labels[-1]
+                        T.ToPILImage()(mi_label[30]).show()
+                        mi_label = mi_transform(mi_label)
+                        mi_label = mi_label.to(device=self.device, dtype=dtype)
+
+                        mi = self.model(x)
+                        T.ToPILImage()(undoTransform([0.0293, 0.0234, 0.0242], [0.0571, 0.0410, 0.0410])(mi[30])).show()
+                        input()
+
+        
 
     
