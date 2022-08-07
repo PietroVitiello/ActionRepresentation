@@ -4,19 +4,16 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import yaml
 
-from ..BaselineCNN.models import BaselineCNN, Aux_BaselineCNN, LSTM_BaselineCNN, LSTM_largerBaseCNN
-from ..AutoEncoder.models import SpatialAE_fc, StrengthSpatialAE_fc
-from ..Stopping.models import Stopping_base
+from ..Models.BaselineCNN.models import BaselineCNN, Aux_BaselineCNN, LSTM_BaselineCNN, LSTM_largerBaseCNN
+from ..Models.AutoEncoder.models import SpatialAE_fc, StrengthSpatialAE_fc
+from ..Models.Stopping.models import Stopping_base, Stop_AuxBaselineCNN
+from ..Models.MotionIMG.models import MotionImage_attention
+from ..Models.PureAE.models import Pure_SimpleAE, Pure_SimpleAE_mediumDec,Pure_SimpleAE_vlargeDec
 
 from ..training import Train
 from ..testing import Test
 
-def getTrainLoader(trainSet, batch_size, model) -> DataLoader:
-    LSTM_models = ["LSTM_largerBaseCNN", "LSTM_BaselineCNN"]
-    if model in LSTM_models:
-        return DataLoader(trainSet, batch_size=batch_size, shuffle=False, num_workers=1)
-    else:
-        return DataLoader(trainSet, batch_size=batch_size, shuffle=True, num_workers=1)
+###################### Training ######################
 
 def model_choice(
     model_name,
@@ -38,6 +35,17 @@ def model_choice(
         return StrengthSpatialAE_fc(num_outputs, num_aux_outputs, recon_size)
     elif model_name == "Stopping_base":
         return Stopping_base(num_outputs, num_aux_outputs)
+    elif model_name == "Stop_AuxBaselineCNN":
+        return Stop_AuxBaselineCNN(num_outputs, num_aux_outputs)
+    elif model_name == "MotionImage_attention":
+        return MotionImage_attention(num_outputs, num_aux_outputs)
+
+    elif model_name == "Pure_SimpleAE":
+        return Pure_SimpleAE()
+    elif model_name == "Pure_SimpleAE_mediumDec":
+        return Pure_SimpleAE_mediumDec()
+    elif model_name == "Pure_SimpleAE_vlargeDec":
+        return Pure_SimpleAE_vlargeDec()
     else:
         raise Exception("There is no such model available")
 
@@ -50,6 +58,13 @@ def train_model(train: Train, mode):
         train.train_AE()
     elif mode == 'stop':
         train.train_stopping()
+    elif mode == 'aux_stopIndividual':
+        train.train_auxStopIndividual()
+    elif mode == 'motion_image':
+        train.train_MotionImage()
+
+    elif mode == 'pureAE':
+        train.train_PureAE()
     else:
         raise Exception("Training modality selected has not been recognized")
 
@@ -88,28 +103,51 @@ def uselessParams(mode: str):
         useless_keys.append("stopping_loss")
     elif mode == 'stop':
         useless_keys.append("reconstruction_size")
+    elif mode == 'aux_stopIndividual':
+        useless_keys.append("reconstruction_size")
+    elif mode == 'motion_image':
+        useless_keys.append("reconstruction_size")
+
+    elif mode == 'pureAE':
+        useless_keys.append("stopping_loss")
+        useless_keys.append("reconstruction_size")
+        useless_keys.append("num_outputs")
+        useless_keys.append("num_aux_outputs")
     else:
         raise Exception("Training modality selected has not been recognized")
     return useless_keys
 
+###################### Testing ######################
 
 def getModelData(model_filename: str):
-    with open("TrainedModels/model_config.yaml", 'r') as file:
+    with open("Learning/TrainedModels/model_config.yaml", 'r') as file:
         configs = yaml.safe_load(file)
     model_data = configs[model_filename]
     model_name = model_data["model_name"]
+    dataset_name = model_data["data_folder"]
     num_outputs = model_data["num_outputs"]
     num_aux_outputs = model_data["num_aux_outputs"]
-    recon_size = model_data["reconstruction_size"]
+    try:
+        recon_size = model_data["reconstruction_size"]
+    except KeyError:
+        recon_size = None
     constrained = False if num_outputs<6 else True
-    return model_name, constrained, (num_outputs, num_aux_outputs, recon_size)
+    return model_name, constrained, dataset_name, (num_outputs, num_aux_outputs, recon_size)
+
+def getRestriction(restriction: str, dataset_name: str):
+    if restriction == "same":
+        with open("Demos/Dataset/descriptions.yaml", 'r') as file:
+            configs = yaml.safe_load(file)
+        dataset_data = configs[dataset_name]
+        restriction = dataset_data["boundary_restriction"]
+    return restriction
 
 def testMethod(test: Test, model_name: str, constrained: bool):
     LSTM_models = ["LSTM_largerBaseCNN", "LSTM_BaselineCNN"]
-    stopping_models = ["Stopping_base"]
+    stopping_models = ["Stopping_base", "Stop_AuxBaselineCNN", "MotionImage_attention"]
     if model_name in LSTM_models:
         return test.test_eeVel_LSTM()
     elif model_name in stopping_models:
-        return test.test_eeVelGrasp()
+        return test.test_eeVelGrasp(constrained)
     else:
         return test.test_eeVel(constrained)

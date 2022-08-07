@@ -7,6 +7,7 @@ def runConfig():
     configs["data_folder"] = data_folder
     configs["training_method"] = training_method
     configs["n_epochs"] = epochs
+    configs["n_epochs_stopping"] = epochs_stopping
     configs["batch_size"] = batch_size
     configs["use_gpu"] = use_gpu
     configs["optimiser"] = optimiser
@@ -23,6 +24,7 @@ def runConfig():
                     data_folder,
                     saved_model_name,
                     epochs,
+                    epochs_stopping,
                     batch_size,
                     training_method,
                     use_gpu,
@@ -40,7 +42,7 @@ def runConfig():
 
     print("Uploading configuration details")
     saveConfig(configs)
-    print("Configurations saved in 'Learning/TrainedModels/model_config.yaml'")
+    print("Configurations saved in 'Learning/TrainedModels/model_config.yaml'\n")
     
 
 def saveConfig(configs):
@@ -49,6 +51,7 @@ def saveConfig(configs):
         file.write("\n")
         configs["Testing"] = {}
         configs["Testing"]["Cube_Reached"] = []
+        configs["Testing"]["Boundary_Restriction"] = []
         configs["Testing"]["Attempts"] = None
         model_config = {f"{saved_model_name}": configs}
         yaml.dump(model_config, file, sort_keys=False)
@@ -60,10 +63,10 @@ def keepUseful(configs:dict, useless: list):
         
 
 #Saving and Training info
-data_folder = "followDummy_3"
-saved_model_name = "StrengthSpatialAE_fc_follow_4"
-model_name = "BaselineCNN"
-training_method = 'eeVel'
+data_folder = "linearGrasp_1"
+saved_model_name = "Pure_SimpleAE_mediumDec_1"
+model_name = "Pure_SimpleAE_mediumDec"
+training_method = 'pureAE'
 
 #Training process
 epochs = 100
@@ -76,7 +79,7 @@ num_aux_outputs = 9
 
 #Optimiser
 optimiser = 'Adamax'
-lr = 0.001
+lr = 0.001                       ###0.001 #0.0007 #0.001
 weight_decay = 1e-7
 
 #Loss
@@ -85,6 +88,9 @@ stopping_loss = 'BCE'
 
 #For Auto Encoder
 recon_size = 16
+
+#For individual stopping
+epochs_stopping = 30
 
 
 runConfig()

@@ -1,7 +1,7 @@
 from pyrep.robots.end_effectors.gripper import Gripper
 import numpy as np
 
-ALLOWED_MOVEMENT = 0.0001
+ALLOWED_MOVEMENT = 0.00001 #0.0001
 POSITION_ERROR = 0.008
 
 class CustomBaxter(Gripper):
@@ -52,7 +52,7 @@ class CustomBaxter(Gripper):
         if reached_target or not_moving:
             self._prev_positions = [None] * self._num_joints
             self._prev_vels = [None] * self._num_joints
-            j.set_joint_force(30.0)
+            j.set_joint_force(35.0)
             j.set_joint_target_velocity(0.1) # to maintain grip
         else:
             done = False

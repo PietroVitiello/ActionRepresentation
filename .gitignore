@@ -5,3 +5,7 @@ __pycache__
 
 **/TrainedModels/**
 !**/TrainedModels/*.yaml
+
+/Images
+**/wandb
+src/Debugging

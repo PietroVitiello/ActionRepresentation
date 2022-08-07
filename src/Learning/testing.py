@@ -21,6 +21,7 @@ class Test():
         pr: PyRep,
         model: nn.Module,
         transform: T.Compose,
+        restriction_type: str,
         camera_res=64,
         num_episodes = 32,
         max_n_steps = 140,
@@ -32,8 +33,8 @@ class Test():
         self.bot = BaxterBot()
         self.target = Target()
         camera = VisionSensor("Vision_sensor")
-        self.rmove = RobotMovement(self.bot, self.target, self.pr, camera, res=camera_res)
-        self.target.set_restrictedBoundaries()
+        self.rmove = RobotMovement(self.bot, self.target, self.pr, camera=camera, res=camera_res)
+        self.target.set_restrictedBoundaries(restriction_type)
 
         self.transform = transform
         self.model = model
@@ -61,9 +62,12 @@ class Test():
             step_n = 0
             while reached == False and step_n<self.max_n_steps:
                 move(self.model, self.transform)
-                reached = self.rmove.check_cubeReached(0.04)
+                reached = self.rmove.check_cubeReached(0.025)
                 step_n += 1
-
+                # print(step_n+1)
+                # print(reached)
+                # print(self.max_n_steps)
+                # print(step_n<self.max_n_steps)
             if reached:
                 print("Cube reached!\n")
                 num_reached += 1
@@ -99,7 +103,7 @@ class Test():
         print(f"The robot was able to reach {num_reached} targets out of {self.num_episodes}")
         return num_reached
 
-    def test_eeVelGrasp(self):
+    def test_eeVelGrasp(self, constrained):
         num_reached = 0
         for episode in range(self.num_episodes):
             print(f"Beginning episode {episode+1}")
@@ -109,7 +113,7 @@ class Test():
             stop = 0
             step_n = 0
             while stop < 0.96 and step_n<self.max_n_steps:
-                stop = self.rmove.autonomousStop(self.model, self.transform)
+                stop = self.rmove.autonomousStop(self.model, self.transform, constrained)
                 step_n += 1
 
             print("Arm Thinks the Cube is Reached")

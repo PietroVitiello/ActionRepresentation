@@ -4,25 +4,28 @@ from Learning.test_model import model_testing
 ryaml = YAML()
 
 def runTest():
-    cube_reached = model_testing(
+    cube_reached, restriction = model_testing(
         model_filename,
         num_episodes,
-        max_n_steps
+        max_n_steps,
+        restriction_type
     )
-    editConfig(cube_reached)
+    editConfig(cube_reached, restriction)
 
-def editConfig(cube_reached):
+def editConfig(cube_reached, restriction):
     with open("Learning/TrainedModels/model_config.yaml", 'r') as file:
         configs = ryaml.load(file)
     with open("Learning/TrainedModels/model_config.yaml", 'w') as file:
-        configs["StrengthSpatialAE_fc_follow_4"]["Testing"]["Cube_Reached"].append(cube_reached)
-        configs["StrengthSpatialAE_fc_follow_4"]["Testing"]["Attempts"] = num_episodes
+        configs[model_filename]["Testing"]["Cube_Reached"].append(cube_reached)
+        configs[model_filename]["Testing"]["Boundary_Restriction"].append(restriction)
+        configs[model_filename]["Testing"]["Attempts"] = num_episodes
         ryaml.dump(configs, file)
 
 
 
 
-model_filename = "StrengthSpatialAE_fc_follow_2"
+model_filename = "Stop_AuxBaselineCNN_5"
+restriction_type = "same"
 
 num_episodes = 32
 max_n_steps = 140

@@ -2,14 +2,18 @@ import torch
 from torchvision import transforms
 from os.path import dirname, join, abspath
 
-from .trainloader import SimDataset
+from .TrainLoaders.trainloader import SimDataset
 from .training import Train
-from .utils.utils_pipeline import getTrainLoader, model_choice, train_model, uselessParams
+from .utils.utils_pipeline import model_choice, train_model, uselessParams
+from .utils.utils_dataloader import getTrainLoader, getTransformation
+
+from torch.utils.data import DataLoader
 
 def model_training(
     data_folder,
     saved_model_name,
     epochs = 100,
+    stopping_epochs = 100,
     batch_size = 64,
     training_method = 'eeVel',
     use_gpu = True,
@@ -26,25 +30,25 @@ def model_training(
     dataset_path = join(dirname(abspath(__file__)), f"../Demos/Dataset/{data_folder}/")
     
     #setup image transforms
-    mean = torch.Tensor([0.485, 0.456, 0.406])
-    std = torch.Tensor([0.229, 0.224, 0.225])
-
-    #need to transform and need to normalize after
-    transform = transforms.Compose(
-            [
-                transforms.ToTensor(),
-                transforms.Normalize(mean.tolist(), std.tolist())
-            ]
-        )
+    # mean = torch.Tensor([0.485, 0.456, 0.406])
+    # std = torch.Tensor([0.229, 0.224, 0.225])
+    # transform = getTransformation(mean, std)
+    transform = None
 
     # ---------------- Dataset ---------------- #
-    trainSet = SimDataset(dataset_path, transform)
+    trainSet = SimDataset().get(dataset_path, transform, dataset_mode="motionImage", filter_stop=True)
+    # trainSet = SimDataset(dataset_path, transform, dataset_mode="aux")
     trainLoader = getTrainLoader(trainSet, batch_size=batch_size, model=model_name)
+
+    trainSet_stop = SimDataset().get(dataset_path, transform, dataset_mode="onlyStop")
+    trainLoader_stop = DataLoader(trainSet_stop, batch_size=batch_size, shuffle=True, num_workers=1)
+
+    transform = trainSet.get_transforms()
 
     # ---------------- Training ---------------- #
     torch.cuda.empty_cache()
     model = model_choice(model_name, num_outputs, num_aux_outputs, recon_size)
-    training = Train(model, trainLoader, use_gpu, epochs, batch_size, optimiser, lr, weight_decay, loss, stopping_loss, recon_size)
+    training = Train(model, trainLoader, trainLoader_stop, transform, use_gpu, epochs, stopping_epochs, batch_size, optimiser, lr, weight_decay, loss, stopping_loss, recon_size)
     train_model(training, training_method)
     print("Training Done \n")
 
