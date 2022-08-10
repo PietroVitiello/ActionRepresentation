@@ -17,6 +17,7 @@ def model_training(
     batch_size = 64,
     training_method = 'eeVel',
     use_gpu = True,
+    use_validation: bool = True,
     optimiser = 'Adamax',
     lr = 0.001,
     weight_decay = 1e-7,
@@ -36,7 +37,7 @@ def model_training(
     transform = None
 
     # ---------------- Dataset ---------------- #
-    trainSet = SimDataset().get(dataset_path, transform, dataset_mode="motionImage", filter_stop=True)
+    trainSet = SimDataset.get(dataset_path, transform, dataset_mode="motionImage", filter_stop=True)
     # trainSet = SimDataset(dataset_path, transform, dataset_mode="aux")
     trainLoader = getTrainLoader(trainSet, batch_size=batch_size, model=model_name)
 

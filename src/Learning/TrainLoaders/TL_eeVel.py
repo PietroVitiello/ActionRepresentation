@@ -1,22 +1,23 @@
-from torch.utils.data import Dataset
+from trainloader import SimDataset
 import pandas as pd
 import numpy as np
 from PIL import Image
 
-class TL_eeVel(Dataset):
+class TL_eeVel(SimDataset):
     def __init__(
         self, 
         dataset_path,
         transform = None,
-        filter_stop: bool=False
+        filter_stop: bool=False,
+        considered_indices: np.ndarray = None
     ) -> None:
 
-        self.df = pd.read_csv(dataset_path + "data.csv")
-        self.transform = transform
-        self.dataset_path = dataset_path
-
-        if filter_stop:
-            self.filter_stopData()
+        super().__init__(
+            dataset_path,
+            transform,
+            filter_stop,
+            considered_indices
+        )
 
 
     def __len__(self):
