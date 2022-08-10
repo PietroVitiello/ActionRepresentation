@@ -60,3 +60,17 @@ linearGrasp_1:
   boundary_restriction: moderate
   distance_cubeReached: 0.025
   constrained: true
+
+linearGrasp_experiment_64:
+  bot_type: Baxter
+  trj_type: LinearGrasp
+  n_episodes: 500
+  n_val_episodes: 100
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.025
+  constrained: true

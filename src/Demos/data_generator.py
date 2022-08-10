@@ -72,9 +72,12 @@ class DataGenerator():
         ee_vel = np.concatenate(list(self.bot.robot.get_tip().get_velocity()), axis=0)
 
         cube_pos = self.target.get_position()
-        rel_cubePos = cube_pos - ee_pos
+        rel_cubePos = cube_pos - ee_pos #relative is hard to calculate in real setting (I discarded it)
         
         return (im, joint_target_vel, joint_vel, joint_pos, ee_vel, ee_pos, ee_orientation, rel_cubePos, self.stop)
+
+    def get_cube_pos(self):
+        return self.target.get_position()
 
     def check_cubeInDistance(self, threshold_dist=0.04) -> bool:
         distance = self.target.get_position() - self.bot.robot._ik_tip.get_position()

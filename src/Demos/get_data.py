@@ -23,7 +23,8 @@ def generate_dataset(
     max_deviation: float,
     always_maxDev: float,
     trj_type: str,
-    distance_cubeReached: float
+    distance_cubeReached: float,
+    image_size: int = 64
 ):
 
     SCENE_FILE = join(dirname(abspath(__file__)), "Simulations/baxter_robot_arm.ttt")
@@ -35,16 +36,17 @@ def generate_dataset(
     pr.step_ui()
 
     bot = choseBot(bot_type)
-    gen = DataGenerator(pr, bot, 64, max_deviation, always_maxDev)
+    gen = DataGenerator(pr, bot, image_size, max_deviation, always_maxDev)
     gen.restrictTargetBound(boundary_restiction)
 
     desired_time = n_steps * 0.05
     distance_cubeReached, constrained, gen_process = choseTrjGenrator(gen, trj_type, desired_time, distance_cubeReached)
 
     #dataframe
-    col_name = ["imLoc","j_targetVel","jVel","jPos","ee_targetVel","eeVel","eePos","eeOri","cPos","stop"]
+    col_name = ["demo_id","imLoc","j_targetVel","jVel","jPos","ee_targetVel","eeVel","eePos","eeOri","cPos","stop"]
     df = pd.DataFrame(columns = col_name)
     temp_df = pd.DataFrame(columns = col_name)
+    cube_positions = np.zeros((1, 3))
 
     ep = 0
     while ep < n_episodes:
@@ -52,11 +54,11 @@ def generate_dataset(
         taskFail_counter = 0
         while r < n_runs:
             print(f"\nEpisode: {ep+1}\t Run: {r+1}", end="         ")
+            demo_id = ep*n_runs + r
             _, _, gen_process = choseTrjGenrator(gen, trj_type, desired_time, distance_cubeReached)
             s = 0
             for data in gen_process:
                 location = f"/images/episode_{ep}/run_{r}"
-                # if not os.path.exists(SAVING_DIR + location):
                 os.makedirs(SAVING_DIR + location, exist_ok=True)
                 location += f"/step_{s}.jpg"
                 
@@ -73,17 +75,16 @@ def generate_dataset(
                 cube_pos = ",".join(cube_pos.astype(str))
 
                 im = Image.fromarray(np.uint8(im*255)).convert('RGB') #cm.gist_earth(im/255)*255)
-                # im = Image.fromarray(im)
                 im.save(SAVING_DIR + location)
-                # im.save("try.jpg")
 
-                row = [location, joint_target, joint_vel, joint_pos, ee_target, ee_vel, ee_pos, ee_orientation, cube_pos, stop]
+                row = [demo_id, location, joint_target, joint_vel, joint_pos, ee_target, ee_vel, ee_pos, ee_orientation, cube_pos, stop]
                 df_length = len(temp_df)
                 temp_df.loc[df_length] = row
                 s += 1
             
             if task_completed:
                 df = pd.concat((df, temp_df), axis=0)
+                cube_positions = np.vstack((cube_positions, np.expand_dims(gen.get_cube_pos(), axis=0)))
                 taskFail_counter = 0
                 r += 1
             else:
@@ -107,7 +108,11 @@ def generate_dataset(
 
     print("") #Just so that the following prints are in next line
 
+    cube_pos_df = pd.DataFrame(columns=['cube_x', 'cube_y', 'cube_z'])
+    cube_pos_df['cube_x'], cube_pos_df['cube_y'], cube_pos_df['cube_z'] = cube_positions[1:,:].T
+
     df.to_csv(SAVING_DIR + "/" + "data.csv")
+    cube_pos_df.to_csv(SAVING_DIR + "/" + "cube_positions.csv")
 
     gen.terminate()
 
