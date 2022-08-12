@@ -1,6 +1,7 @@
 from os.path import dirname, join, abspath
 from typing import Callable
 import numpy as np
+import pandas as pd
 import torch
 import torch.nn as nn
 import torchvision.transforms as T
@@ -25,6 +26,7 @@ class Test():
         camera_res=64,
         num_episodes = 32,
         max_n_steps = 140,
+        saved_positions: pd.DataFrame = None
     ) -> None:
 
         self.pr = pr
@@ -41,6 +43,15 @@ class Test():
 
         self.num_episodes = num_episodes
         self.max_n_steps = max_n_steps
+
+        self.saved_positions = saved_positions
+
+    def parse_saved_positions(self):
+        for row in self.saved_positions:
+            x = row["cube_x"]
+            y = row["cube_y"]
+            z = row["cube_z"]
+            yield np.array([x, y, z])
 
     def checkCubeGrasped(self):
         cube_elevation = self.target.get_position()[2]
@@ -108,6 +119,46 @@ class Test():
         for episode in range(self.num_episodes):
             print(f"Beginning episode {episode+1}")
             self.target.random_pos()
+            self.bot.resetInitial(self.pr)
+            self.rmove.stayStill(2)
+            stop = 0
+            step_n = 0
+            while stop < 0.96 and step_n<self.max_n_steps:
+                stop = self.rmove.autonomousStop(self.model, self.transform, constrained)
+                step_n += 1
+
+            print("Arm Thinks the Cube is Reached")
+
+            n_joints = self.bot.robot.get_joint_count()
+            q = [0]*n_joints
+            self.bot.robot.set_joint_target_velocities(q)
+            closed = False
+            print("Attempting to Grasp Cube")
+            while not closed:
+                closed = self.bot.close_gripper()
+                self.pr.step()
+
+            destination = self.bot.getTip().get_position()
+            destination[2] += 0.3
+            self.rmove.displaceArm(destination)
+            grasped = self.checkCubeGrasped()
+
+            if grasped:
+                print("Cube Grasped!\n")
+                num_reached += 1
+            else:
+                print("Cube not Grasped\n")
+
+            self.rmove.curve.remove_dummies()
+
+        print(f"The robot was able to grasp {num_reached} targets out of {self.num_episodes}")
+        return num_reached
+
+    def test_eeVelGrasp_savedPos(self, constrained):
+        num_reached = 0
+        for ep, position in enumerate(self.parse_saved_positions()):
+            print(f"Beginning episode {ep+1}")
+            self.target.set_position(position)
             self.bot.resetInitial(self.pr)
             self.rmove.stayStill(2)
             stop = 0

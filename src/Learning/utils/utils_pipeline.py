@@ -11,7 +11,7 @@ from ..Models.MotionIMG.models import MotionImage_attention
 from ..Models.PureAE.models import Pure_SimpleAE, Pure_SimpleAE_mediumDec,Pure_SimpleAE_vlargeDec
 
 from ..training import Train
-from ..testing import Test
+from ..Testing.testing import Test
 
 ###################### Training ######################
 
@@ -142,12 +142,15 @@ def getRestriction(restriction: str, dataset_name: str):
         restriction = dataset_data["boundary_restriction"]
     return restriction
 
-def testMethod(test: Test, model_name: str, constrained: bool):
+def testMethod(test: Test, model_name: str, constrained: bool, use_saved_locations: bool):
     LSTM_models = ["LSTM_largerBaseCNN", "LSTM_BaselineCNN"]
     stopping_models = ["Stopping_base", "Stop_AuxBaselineCNN", "MotionImage_attention"]
     if model_name in LSTM_models:
         return test.test_eeVel_LSTM()
     elif model_name in stopping_models:
-        return test.test_eeVelGrasp(constrained)
+        if use_saved_locations:
+            return test.test_eeVelGrasp_savedPos(constrained)
+        else:
+            return test.test_eeVelGrasp(constrained)
     else:
         return test.test_eeVel(constrained)
