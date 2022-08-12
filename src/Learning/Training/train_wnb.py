@@ -1,4 +1,5 @@
 import torch
+import wandb
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
@@ -8,10 +9,11 @@ from train import Training
 from ..utils.utils_train import get_loss, get_optimiser, getReconProcessing, undoTransform
 # from .utils.utils_dataloader import undoTransform
 
-class Train_AE(Training):
+class Train_AE_wandb(Training):
 
     def __init__(self,
         model: torch.nn.Module,
+        model_name: str,
         dataset: DataLoader,
         val_dataset: DataLoader,
         stopping_dataset: DataLoader,
@@ -48,6 +50,40 @@ class Train_AE(Training):
         self.stopping_loss = get_loss(stopping_loss)
         self.stopping_optimiser = None
 
+        self.run = wandb.init(reinit=True)
+        self.run.name = model_name
+        self.run.save()
+        self._wandb_config(optimiser, loss)
+
+    def _wandb_config(self, optimiser, loss):
+        self.run.config.epochs = self.epochs
+        self.run.config.batch_size = self.batch_size
+        self.run.config.lr = self.lr
+        self.run.config.weight_decay = self.wd
+        self.run.config.optimiser = optimiser
+        self.run.config.loss = loss
+
+    def _wandb_log_epoch(
+        self,
+        epoch,
+        recon_loss,
+        action_loss,
+        loss,
+        val_recon_loss,
+        val_action_loss,
+        val_loss
+    ):
+        self.run.log({
+            "epoch": epoch,
+            "recon_loss": recon_loss,
+            "action_loss": action_loss,
+            "loss": loss,
+            "val_recon_loss": val_recon_loss,
+            "val_action_loss": val_action_loss,
+            "val_loss": val_loss
+        })
+        
+
     def train_reaching(self):
         print_every = 10
         dtype = torch.float32
@@ -72,8 +108,11 @@ class Train_AE(Training):
 
                 if t % print_every == 0:
                     print(f"Epoch: {epoch+1:3d}, Iteration {t:4d}, recon_loss = {recon_loss:.6f}, action_loss = {action_loss:.6f}, loss = {loss:.6f}")
-            self.val_reaching_AE()
+            val_recon_loss, val_action_loss, val_loss = self.val_reaching_AE()
+            self._wandb_log_epoch(epoch, recon_loss, action_loss, loss,
+                                  val_recon_loss, val_action_loss, val_loss)
             print("\n\n")
+            self.run.finish()
 
     def freeze_reaching(self):
         self.model.freeze_backbone()

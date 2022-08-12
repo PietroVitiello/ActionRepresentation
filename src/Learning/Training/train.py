@@ -109,6 +109,7 @@ class Training():
 
         self.model.train(True)
         print(f"**Validation**\t recon_loss = {recon_loss:.6f}, action_loss = {action_loss:.6f}, loss = {loss:.6f}")
+        return recon_loss, action_loss, loss
 
     def val_stopping(self):
         self.model.eval()
@@ -139,10 +140,12 @@ class Training():
         pass
 
     @staticmethod
-    def get_Trainer(
+    def get_trainer(
         training_type: str,
         model: torch.nn.Module,
+        model_name: str,
         dataset: DataLoader,
+        val_dataset: DataLoader,
         stopping_dataset: DataLoader,
         transform: T,
         use_gpu: bool,
@@ -186,6 +189,26 @@ class Training():
             Train_AE(
                 model,
                 dataset,
+                val_dataset,
+                stopping_dataset,
+                transform,
+                use_gpu,
+                epochs,
+                stopping_epochs,
+                batch_size,
+                optimiser,
+                lr,
+                weight_decay,
+                loss,
+                stopping_loss,
+                recon_size
+            )
+        elif training_type == 'wandb':
+            Train_AE(
+                model,
+                model_name,
+                dataset,
+                val_dataset,
                 stopping_dataset,
                 transform,
                 use_gpu,
