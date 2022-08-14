@@ -4,7 +4,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import torchvision.transforms as T
 
-from train import Training
+from .train import Training
 from ..utils.utils_train import get_loss, get_optimiser, getReconProcessing, undoTransform
 # from .utils.utils_dataloader import undoTransform
 
@@ -32,7 +32,6 @@ class Train_AE(Training):
             model,
             dataset,
             val_dataset,
-            transform,
             use_gpu,
             epochs,
             batch_size,
@@ -42,11 +41,18 @@ class Train_AE(Training):
             loss
         )
         self.recon_size = recon_size
+        self.input_transform, self.recon_transform, self.output_transform = transform
 
         self.stopping_epochs = stopping_epochs
         self.stopping_dataloader = stopping_dataset
         self.stopping_loss = get_loss(stopping_loss)
         self.stopping_optimiser = None
+
+    # def output_transform(self, x: torch.Tensor):
+    #     x = x.unsqueeze(dim=-1)
+    #     print(x.shape)
+    #     x = self._output_transform(x)
+    #     return x.squeeze()
 
     def train_reaching(self):
         print_every = 10
@@ -56,9 +62,14 @@ class Train_AE(Training):
         for epoch in range(self.epochs):
             for t, (x, labels) in enumerate(self.dataloader):
                 x = x.to(device=self.device, dtype=dtype)
+                x = self.input_transform(x)
+
                 mi_label = labels[-1]
                 mi_label = mi_label.to(device=self.device, dtype=dtype)
+                mi_label = self.recon_transform(mi_label)
+
                 labels = torch.cat(labels[:-1], dim=1)
+                labels = self.output_transform(labels)
                 labels = labels.to(device=self.device, dtype=dtype)
 
                 out, mi = self.model(x, train_stop=False)
@@ -90,6 +101,7 @@ class Train_AE(Training):
         for epoch in range(self.stopping_epochs):
             for t, (x, stop_label) in enumerate(self.stopping_dataloader):
                 x = x.to(device=self.device, dtype=dtype)
+                x = self.input_transform(x)
                 stop_label = stop_label.to(device=self.device, dtype=dtype)
 
                 out = self.model(x, train_stop=True)

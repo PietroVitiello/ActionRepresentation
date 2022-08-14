@@ -5,7 +5,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import torchvision.transforms as T
 
-from train import Training
+from .train import Training
 from ..utils.utils_train import get_loss, get_optimiser, getReconProcessing, undoTransform
 # from .utils.utils_dataloader import undoTransform
 
@@ -34,7 +34,6 @@ class Train_AE_wandb(Training):
             model,
             dataset,
             val_dataset,
-            transform,
             use_gpu,
             epochs,
             batch_size,
@@ -44,13 +43,18 @@ class Train_AE_wandb(Training):
             loss
         )
         self.recon_size = recon_size
+        self.input_transform, self.recon_transform, self.output_transform = transform
 
         self.stopping_epochs = stopping_epochs
         self.stopping_dataloader = stopping_dataset
         self.stopping_loss = get_loss(stopping_loss)
         self.stopping_optimiser = None
 
-        self.run = wandb.init(reinit=True)
+        print("\nEstablishing connection with Weights and Biases")
+        self.run = wandb.init(
+            project="New-Robot-Action-Representation",
+            reinit=True
+        )
         self.run.name = model_name
         self.run.save()
         self._wandb_config(optimiser, loss)
@@ -83,18 +87,24 @@ class Train_AE_wandb(Training):
             "val_loss": val_loss
         })
         
-
     def train_reaching(self):
         print_every = 10
         dtype = torch.float32
 
-        print("\nInitiating Training for Reaching")
         for epoch in range(self.epochs):
+            epoch_recon_loss = 0
+            epoch_action_loss = 0
+            epoch_loss = 0
             for t, (x, labels) in enumerate(self.dataloader):
                 x = x.to(device=self.device, dtype=dtype)
+                x = self.input_transform(x)
+
                 mi_label = labels[-1]
                 mi_label = mi_label.to(device=self.device, dtype=dtype)
+                mi_label = self.recon_transform(mi_label)
+
                 labels = torch.cat(labels[:-1], dim=1)
+                labels = self.output_transform(labels)
                 labels = labels.to(device=self.device, dtype=dtype)
 
                 out, mi = self.model(x, train_stop=False)
@@ -106,13 +116,21 @@ class Train_AE_wandb(Training):
                 loss.backward()
                 self.optimiser.step()
 
+                #For logging purposes
+                epoch_recon_loss += recon_loss
+                epoch_action_loss += action_loss
+                epoch_loss += loss
+
                 if t % print_every == 0:
                     print(f"Epoch: {epoch+1:3d}, Iteration {t:4d}, recon_loss = {recon_loss:.6f}, action_loss = {action_loss:.6f}, loss = {loss:.6f}")
             val_recon_loss, val_action_loss, val_loss = self.val_reaching_AE()
-            self._wandb_log_epoch(epoch, recon_loss, action_loss, loss,
+            # print(epoch_recon_loss/(t+1))
+            # print(epoch_action_loss/(t+1))
+            # print(epoch_loss/(t+1))
+            self._wandb_log_epoch(epoch, epoch_recon_loss/(t+1), epoch_action_loss/(t+1), epoch_loss/(t+1),
                                   val_recon_loss, val_action_loss, val_loss)
             print("\n\n")
-            self.run.finish()
+        self.run.finish()
 
     def freeze_reaching(self):
         self.model.freeze_backbone()
@@ -129,6 +147,7 @@ class Train_AE_wandb(Training):
         for epoch in range(self.stopping_epochs):
             for t, (x, stop_label) in enumerate(self.stopping_dataloader):
                 x = x.to(device=self.device, dtype=dtype)
+                x = self.input_transform(x)
                 stop_label = stop_label.to(device=self.device, dtype=dtype)
 
                 out = self.model(x, train_stop=True)

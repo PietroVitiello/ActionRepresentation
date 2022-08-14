@@ -1,23 +1,26 @@
 from torch.utils.data import Dataset
+import torchvision.transforms as T
 import pandas as pd
 import numpy as np
 from PIL import Image
 
-class TL_onlyStop(Dataset):
+from .trainloader import SimDataset
+
+class TL_onlyStop(SimDataset):
     def __init__(
         self, 
         dataset_path,
         transform = None,
-        filter_stop: bool=False
+        filter_stop: bool=False,
+        considered_indices: np.ndarray = None
     ) -> None:
 
-        self.df = pd.read_csv(dataset_path + "data.csv")
-        self.transform = transform
-        self.dataset_path = dataset_path
-
-        if filter_stop:
-            self.filter_stopData()
-
+        super().__init__(
+            dataset_path,
+            transform,
+            filter_stop,
+            considered_indices
+        )
 
     def __len__(self):
         return len(self.df)
@@ -29,6 +32,8 @@ class TL_onlyStop(Dataset):
         image = Image.open(self.dataset_path + filename)
         if self.transform is not None:
             image = self.transform(image)
+        else:
+            image = T.ToTensor()(image)
         return image, stop
 
     def filter_stopData(self):

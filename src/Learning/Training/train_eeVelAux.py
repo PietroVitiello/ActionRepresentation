@@ -4,7 +4,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import torchvision.transforms as T
 
-from train import Training
+from .train import Training
 from ..utils.utils_train import get_loss, get_optimiser, getReconProcessing, undoTransform
 # from .utils.utils_dataloader import undoTransform
 
@@ -13,7 +13,6 @@ class Train_eeVelAux(Training):
     def __init__(self,
         model: torch.nn.Module,
         dataset: DataLoader,
-        transform: T,
         use_gpu: bool,
         epochs: int,
         batch_size: int,
@@ -26,7 +25,6 @@ class Train_eeVelAux(Training):
         super().__init__(
             model,
             dataset,
-            transform,
             use_gpu,
             epochs,
             batch_size,

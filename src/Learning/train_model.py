@@ -3,8 +3,8 @@ from torchvision import transforms
 from os.path import dirname, join, abspath
 
 from .TrainLoaders.trainloader import SimDataset
-from .training import Train
-from .utils.utils_pipeline import model_choice, train_model, uselessParams
+from .Training.train import Training
+from .utils.utils_pipeline import model_choice, uselessParams, return_data_stats, get_trainer, get_dataset_with_val #, train_model
 from .utils.utils_dataloader import getTrainLoader, getTransformation
 
 from torch.utils.data import DataLoader
@@ -17,7 +17,8 @@ def model_training(
     batch_size = 64,
     training_method = 'eeVel',
     use_gpu = True,
-    use_validation: bool = True,
+    n_demos = 100,
+    train_val_split: float = 0.8,
     optimiser = 'Adamax',
     lr = 0.001,
     weight_decay = 1e-7,
@@ -37,20 +38,29 @@ def model_training(
     transform = None
 
     # ---------------- Dataset ---------------- #
-    trainSet = SimDataset.get(dataset_path, transform, dataset_mode="motionImage", filter_stop=True)
-    # trainSet = SimDataset(dataset_path, transform, dataset_mode="aux")
-    trainLoader = getTrainLoader(trainSet, batch_size=batch_size, model=model_name)
+    # trainSet, val_dataset_reach = SimDataset.get_with_val(dataset_path, train_val_split, transform, dataset_mode="motionImage", filter_stop=True, n_demos=n_demos)
+    trainSet, val_dataset_reach = get_dataset_with_val(dataset_path, train_val_split, transform, dataset_mode="motionImage", filter_stop=True, n_demos=n_demos)
+    trainLoader = DataLoader(trainSet, batch_size=batch_size, shuffle=True, num_workers=1)
 
-    trainSet_stop = SimDataset().get(dataset_path, transform, dataset_mode="onlyStop")
+    # trainSet_stop, val_dataset_stop = SimDataset.get_with_val(dataset_path, train_val_split, transform, dataset_mode="onlyStop", n_demos=n_demos)
+    trainSet_stop, val_dataset_stop = get_dataset_with_val(dataset_path, train_val_split, transform, dataset_mode="onlyStop", n_demos=n_demos)
     trainLoader_stop = DataLoader(trainSet_stop, batch_size=batch_size, shuffle=True, num_workers=1)
 
-    transform = trainSet.get_transforms()
+    val_dataloader_reach = DataLoader(val_dataset_reach, batch_size=batch_size, num_workers=1)
+    val_dataloader_stop = DataLoader(val_dataset_stop, batch_size=batch_size, num_workers=1)
+    val_dataloaders = (val_dataloader_reach, val_dataloader_stop)
+
+
+    transform, metrics = trainSet.get_transforms(get_stats=True)
+    metrics = return_data_stats(metrics)
 
     # ---------------- Training ---------------- #
     torch.cuda.empty_cache()
     model = model_choice(model_name, num_outputs, num_aux_outputs, recon_size)
-    training = Train(model, trainLoader, trainLoader_stop, transform, use_gpu, epochs, stopping_epochs, batch_size, optimiser, lr, weight_decay, loss, stopping_loss, recon_size)
-    train_model(training, training_method)
+    training = get_trainer(training_method, model, saved_model_name, trainLoader, val_dataloaders, trainLoader_stop, transform, use_gpu, epochs, stopping_epochs, batch_size, optimiser, lr, weight_decay, loss, stopping_loss, recon_size)
+    # training = Training.get_trainer(model, saved_model_name, trainLoader, val_dataloaders, trainLoader_stop, transform, use_gpu, epochs, stopping_epochs, batch_size, optimiser, lr, weight_decay, loss, stopping_loss, recon_size)
+    # train_model(training, training_method)
+    training.train()
     print("Training Done \n")
 
     # save the model
@@ -59,7 +69,7 @@ def model_training(
     torch.save(model.state_dict(), save_dir)
     print(f"Done\n")
 
-    return uselessParams(training_method)
+    return uselessParams(training_method), metrics
 
 
 

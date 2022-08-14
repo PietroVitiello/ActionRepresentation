@@ -10,6 +10,8 @@ def runConfig():
     configs["n_epochs_stopping"] = epochs_stopping
     configs["batch_size"] = batch_size
     configs["use_gpu"] = use_gpu
+    configs["n_demos_used"] = n_demos
+    configs["train_val_split"] = train_val_split
     configs["optimiser"] = optimiser
     configs["learning_rate"] = lr
     configs["weight_decay"] = weight_decay
@@ -20,25 +22,32 @@ def runConfig():
     configs["reconstruction_size"] = recon_size
 
     print(f"Training {model_name} Model\n")
-    useless_keys = model_training(
-                    data_folder,
-                    saved_model_name,
-                    epochs,
-                    epochs_stopping,
-                    batch_size,
-                    training_method,
-                    use_gpu,
-                    optimiser,
-                    lr,
-                    weight_decay,
-                    loss,
-                    stopping_loss,
-                    model_name,
-                    num_outputs,
-                    num_aux_outputs,
-                    recon_size
-                )
+    print(f"\n{n_demos * (2-train_val_split)} Total Demonstrations: {n_demos} T, {n_demos * (1-train_val_split)} V")
+    useless_keys, metrics = model_training(
+                                data_folder,
+                                saved_model_name,
+                                epochs,
+                                epochs_stopping,
+                                batch_size,
+                                training_method,
+                                use_gpu,
+                                n_demos,
+                                train_val_split,
+                                optimiser,
+                                lr,
+                                weight_decay,
+                                loss,
+                                stopping_loss,
+                                model_name,
+                                num_outputs,
+                                num_aux_outputs,
+                                recon_size
+                            )
     keepUseful(configs, useless_keys)
+    configs["input_metrics"] = metrics[0]
+    configs["recon_metrics"] = metrics[1]
+    configs["eeVel_metrics"] = metrics[2]
+    configs["aux_metrics"] = metrics[3]    
 
     print("Uploading configuration details")
     saveConfig(configs)
@@ -63,15 +72,17 @@ def keepUseful(configs:dict, useless: list):
         
 
 #Saving and Training info
-data_folder = "linearGrasp_1"
-saved_model_name = "Pure_SimpleAE_mediumDec_1"
-model_name = "Pure_SimpleAE_mediumDec"
-training_method = 'pureAE'
+data_folder = "linearGrasp_experiment_64"
+saved_model_name = "test_all_2"
+model_name = "MotionImage_attention"
+training_method = 'AE_wandb'
 
 #Training process
 epochs = 100
 batch_size = 64
 use_gpu = True
+n_demos = 100
+train_val_split = 0.8
 
 #Model parameters
 num_outputs = 6
@@ -91,6 +102,5 @@ recon_size = 16
 
 #For individual stopping
 epochs_stopping = 30
-
 
 runConfig()

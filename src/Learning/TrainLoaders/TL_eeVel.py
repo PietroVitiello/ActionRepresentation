@@ -1,4 +1,4 @@
-from trainloader import SimDataset
+from .trainloader import SimDataset
 import pandas as pd
 import numpy as np
 from PIL import Image
