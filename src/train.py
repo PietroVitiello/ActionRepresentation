@@ -44,10 +44,11 @@ def runConfig():
                                 recon_size
                             )
     keepUseful(configs, useless_keys)
-    configs["input_metrics"] = metrics[0]
-    configs["recon_metrics"] = metrics[1]
-    configs["eeVel_metrics"] = metrics[2]
-    configs["aux_metrics"] = metrics[3]    
+    print(metrics[0])
+    # configs["input_metrics"] = metrics[0]
+    # configs["recon_metrics"] = metrics[1]
+    # configs["eeVel_metrics"] = metrics[2]
+    # configs["aux_metrics"] = metrics[3]    
 
     print("Uploading configuration details")
     saveConfig(configs)
@@ -73,9 +74,9 @@ def keepUseful(configs:dict, useless: list):
 
 #Saving and Training info
 data_folder = "linearGrasp_experiment_64"
-saved_model_name = "test_all_2"
-model_name = "MotionImage_attention"
-training_method = 'AE_wandb'
+saved_model_name = "ReduceTo1x1"
+model_name = "ReduceTo1x1"
+training_method = 'eeVel_aux_wandb'
 
 #Training process
 epochs = 100

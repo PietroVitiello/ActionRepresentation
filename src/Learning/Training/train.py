@@ -86,6 +86,32 @@ class Training():
     #     self.loss = get_loss(loss)
     #     self.stopping_loss = get_loss(stopping_loss)
 
+    def val_reaching(self):
+        def get_loss(x, label):
+            loss = loss_fn(x, label)
+            return torch.sum(loss) / torch.numel(loss) * loss.shape[0]
+
+        val_dataloader = self.val_dataloaders[0]
+        dtype = torch.float32
+        loss_fn = nn.MSELoss(reduction='none')
+        n_datapoints = len(val_dataloader.dataset)
+        loss = 0
+        with torch.no_grad():
+            for t, (x, labels) in enumerate(val_dataloader):
+                x = x.to(device=self.device, dtype=dtype)
+                x = self.input_transform(x)
+
+                labels = torch.cat(labels, dim=1)
+                labels = self.output_transform(labels)
+                labels = labels.to(device=self.device, dtype=dtype)
+
+                out = self.model(x)
+                loss += get_loss(out, labels) / n_datapoints
+
+        self.model.train(True)
+        print(f"**Validation**\t loss = {loss:.6f}")
+        return loss
+
     def val_reaching_AE(self):
         def get_loss(x, label):
             loss = loss_fn(x, label)

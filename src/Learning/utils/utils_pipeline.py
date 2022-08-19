@@ -14,11 +14,13 @@ from ..Models.AutoEncoder.models import SpatialAE_fc, StrengthSpatialAE_fc
 from ..Models.Stopping.models import Stopping_base, Stop_AuxBaselineCNN
 from ..Models.MotionIMG.models import MotionImage_attention
 from ..Models.PureAE.models import Pure_SimpleAE, Pure_SimpleAE_mediumDec,Pure_SimpleAE_vlargeDec
+from ..Models.BaselineCNN.conv2fc_analysis import ReduceTo1x1, AveragePool, MaximumPool, Flattening, CoordReduceTo1x1, CoordAveragePool
 
 # from ..training import Train
 from ..Testing.testing import Test
 from ..Training.train_eeVel import Train_eeVel
 from ..Training.train_eeVelAux import Train_eeVelAux
+from ..Training.train_Aux_wnb import Train_eeVelAux_wandb
 from ..Training.train_AE import Train_AE
 from ..Training.train_wnb import Train_AE_wandb
 from ..Training.train import Training
@@ -152,6 +154,21 @@ def get_trainer(
                         weight_decay,
                         loss
                     )
+        elif training_type == 'eeVel_aux_wandb':
+            return Train_eeVelAux_wandb(
+                        model,
+                        model_name,
+                        dataset,
+                        val_datasets,
+                        transform,
+                        use_gpu,
+                        epochs,
+                        batch_size,
+                        optimiser,
+                        lr,
+                        weight_decay,
+                        loss
+                    )
         elif training_type == 'AE':
             return Train_AE(
                         model,
@@ -226,6 +243,19 @@ def model_choice(
     elif model_name == "MotionImage_attention":
         return MotionImage_attention(num_outputs, num_aux_outputs)
 
+    elif model_name == "ReduceTo1x1":
+        return ReduceTo1x1(num_outputs, num_aux_outputs)
+    elif model_name == "AveragePool":
+        return AveragePool(num_outputs, num_aux_outputs)
+    elif model_name == "MaximumPool":
+        return MaximumPool(num_outputs, num_aux_outputs)
+    elif model_name == "Flattening":
+        return Flattening(num_outputs, num_aux_outputs)
+    elif model_name == "CoordReduceTo1x1":
+        return CoordReduceTo1x1(num_outputs, num_aux_outputs)
+    elif model_name == "CoordAveragePool":
+        return CoordAveragePool(num_outputs, num_aux_outputs)
+
     elif model_name == "Pure_SimpleAE":
         return Pure_SimpleAE()
     elif model_name == "Pure_SimpleAE_mediumDec":
@@ -283,6 +313,9 @@ def uselessParams(mode: str):
         useless_keys.append("reconstruction_size")
         useless_keys.append("num_aux_outputs")
     elif mode == 'eeVel_aux':
+        useless_keys.append("stopping_loss")
+        useless_keys.append("reconstruction_size")
+    elif mode == 'eeVel_aux_wandb':
         useless_keys.append("stopping_loss")
         useless_keys.append("reconstruction_size")
     elif mode == 'AE':

@@ -39,12 +39,13 @@ def model_training(
 
     # ---------------- Dataset ---------------- #
     # trainSet, val_dataset_reach = SimDataset.get_with_val(dataset_path, train_val_split, transform, dataset_mode="motionImage", filter_stop=True, n_demos=n_demos)
-    trainSet, val_dataset_reach = get_dataset_with_val(dataset_path, train_val_split, transform, dataset_mode="motionImage", filter_stop=True, n_demos=n_demos)
+    trainSet, val_dataset_reach = get_dataset_with_val(dataset_path, train_val_split, transform, dataset_mode="aux", filter_stop=True, n_demos=n_demos)
     trainLoader = DataLoader(trainSet, batch_size=batch_size, shuffle=True, num_workers=1)
 
-    # trainSet_stop, val_dataset_stop = SimDataset.get_with_val(dataset_path, train_val_split, transform, dataset_mode="onlyStop", n_demos=n_demos)
+    # # trainSet_stop, val_dataset_stop = SimDataset.get_with_val(dataset_path, train_val_split, transform, dataset_mode="onlyStop", n_demos=n_demos)
     trainSet_stop, val_dataset_stop = get_dataset_with_val(dataset_path, train_val_split, transform, dataset_mode="onlyStop", n_demos=n_demos)
-    trainLoader_stop = DataLoader(trainSet_stop, batch_size=batch_size, shuffle=True, num_workers=1)
+    # trainLoader_stop = DataLoader(trainSet_stop, batch_size=batch_size, shuffle=True, num_workers=1)
+    trainLoader_stop = None
 
     val_dataloader_reach = DataLoader(val_dataset_reach, batch_size=batch_size, num_workers=1)
     val_dataloader_stop = DataLoader(val_dataset_stop, batch_size=batch_size, num_workers=1)
