@@ -73,36 +73,35 @@ class CoordConv(nn.Module):
     ) -> None:
 
         super(CoordConv, self).__init__()
-        self.conv = nn.Conv2d(chIN, chOUT, kernel_size, stride, padding, bias=bias)
+        self.conv = nn.Conv2d(chIN+2, chOUT, kernel_size, stride, padding, bias=bias)
 
     def addCoord(self, batch: torch.Tensor):
-        batch_size, x, y = batch.shape[0:2]
-        print(batch_size, x, y)
+        device = batch.device
+        batch_size, x, y = batch.shape[0], batch.shape[2], batch.shape[3]
 
         xx_ones = torch.ones([batch_size, x], dtype=torch.int32)   # e.g. (batch, 64)
         xx_ones = torch.unsqueeze(xx_ones, -1)                     # e.g. (batch, 64, 1)
-        xx_range = torch.tile(torch.unsqueeze(torch.range(y), 0), 
+        xx_range = torch.tile(torch.unsqueeze(torch.range(0, y-1), 0), 
                             [batch_size, 1])                       # e.g. (batch, 64)
-        xx_range = torch.unsqueeze(xx_range, 1)                    # e.g. (batch, 1, 64)
+        xx_range = torch.unsqueeze(xx_range, 1).to(dtype=torch.int32)                    # e.g. (batch, 1, 64)
         xx_channel = torch.matmul(xx_ones, xx_range)               # e.g. (batch, 64, 64)
-        xx_channel = torch.unsqueeze(xx_channel, -1)               # e.g. (batch, 64, 64, 1)
+        xx_channel = torch.unsqueeze(xx_channel, 1)               # e.g. (batch, 1, 64, 64)
 
 
         yy_ones = torch.ones([batch_size, y], dtype=torch.int32)   # e.g. (batch, 64)
         yy_ones = torch.unsqueeze(yy_ones, 1)                      # e.g. (batch, 1, 64)
-        yy_range = torch.tile(torch.unsqueeze(torch.range(x), 0),
+        yy_range = torch.tile(torch.unsqueeze(torch.range(0, x-1), 0),
                             [batch_size, 1])                       # (batch, 64)
-        yy_range = torch.unsqueeze(yy_range, -1)                   # e.g. (batch, 64, 1)
+        yy_range = torch.unsqueeze(yy_range, -1).to(dtype=torch.int32)                   # e.g. (batch, 64, 1)
         yy_channel = torch.matmul(yy_range, yy_ones)               # e.g. (batch, 64, 64)
-        yy_channel = torch.unsqueeze(yy_channel, -1)               # e.g. (batch, 64, 64, 1)
+        yy_channel = torch.unsqueeze(yy_channel, 1)               # e.g. (batch, 1, 64, 64)
 
 
-        xx_channel = xx_channel.to(dtype='float32') / (x - 1)
-        yy_channel = yy_channel.to(dtype='float32') / (y - 1)
+        xx_channel = xx_channel.to(device=device, dtype=torch.float32) / (x - 1)
+        yy_channel = yy_channel.to(device=device, dtype=torch.float32) / (y - 1)
         xx_channel = xx_channel*2 - 1                           # [-1,1]
         yy_channel = yy_channel*2 - 1
-
-        return torch.concat((batch, xx_channel, yy_channel), axis=-1)    # e.g. (batch, 64, 64, c+2)
+        return torch.concat((batch, xx_channel, yy_channel), axis=1)    # e.g. (batch, 64, 64, c+2)
 
     def forward(self, x: torch.Tensor):
         x = self.addCoord(x)

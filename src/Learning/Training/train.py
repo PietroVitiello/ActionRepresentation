@@ -89,6 +89,7 @@ class Training():
     def val_reaching(self):
         def get_loss(x, label):
             loss = loss_fn(x, label)
+            # print(nn.MSELoss()(x, label))
             return torch.sum(loss) / torch.numel(loss) * loss.shape[0]
 
         val_dataloader = self.val_dataloaders[0]

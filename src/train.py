@@ -74,8 +74,8 @@ def keepUseful(configs:dict, useless: list):
 
 #Saving and Training info
 data_folder = "linearGrasp_experiment_64"
-saved_model_name = "ReduceTo1x1"
-model_name = "ReduceTo1x1"
+saved_model_name = "CoordReduceTo1x1"
+model_name = "CoordReduceTo1x1"
 training_method = 'eeVel_aux_wandb'
 
 #Training process
@@ -91,7 +91,7 @@ num_aux_outputs = 9
 
 #Optimiser
 optimiser = 'Adamax'
-lr = 0.001                       ###0.001 #0.0007 #0.001
+lr = 0.0001                       ###0.001 #0.0007 #0.001
 weight_decay = 1e-7
 
 #Loss
