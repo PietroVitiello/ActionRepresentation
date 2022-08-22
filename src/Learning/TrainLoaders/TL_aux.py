@@ -63,6 +63,8 @@ class TL_aux(SimDataset):
         input_std, input_mean = torch.std_mean(input_image, axis=[0,2,3])
         print(f"input -->\tmean:{input_mean}, \tstd: {input_std}")
         data_std, data_mean = torch.std_mean(data, axis=0)
+        data_std = torch.ones(data_std.shape)
+        data_mean = torch.zeros(data_mean.shape)
         print(f"data -->\tmean:{data_mean}, \tstd: {data_std}\n\n")
         return (input_std, input_mean), (None, None), (data_std, data_mean)
 

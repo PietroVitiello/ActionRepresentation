@@ -105,6 +105,8 @@ def get_dataset(
             delta_steps=5,
             considered_indices=considered_indices
         )
+    elif dataset_mode == "none":
+        return None
     else:
         raise Exception("The selected dataset mode is not supported")
 
@@ -347,8 +349,8 @@ def return_data_stats(stats):
 
 ###################### Testing ######################
 
-def getModelData(model_filename: str):
-    with open("Learning/TrainedModels/model_config.yaml", 'r') as file:
+def getModelData(model_filename: str, config_filename: str):
+    with open(f"Learning/TrainedModels/{config_filename}.yaml", 'r') as file:
         configs = yaml.safe_load(file)
     model_data = configs[model_filename]
     model_name = model_data["model_name"]

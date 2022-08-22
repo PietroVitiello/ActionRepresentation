@@ -73,6 +73,76 @@ def model_training(
     return uselessParams(training_method), metrics
 
 
+def loading_data(
+    data_folder,
+    n_demos = 100,
+    train_val_split: float = 0.8
+):
+    dataset_path = join(dirname(abspath(__file__)), f"../Demos/Dataset/{data_folder}/")
+    transform = None
+
+    # ---------------- Dataset ---------------- #
+    trainSet, val_dataset_reach = get_dataset_with_val(dataset_path, train_val_split, transform, dataset_mode="aux", filter_stop=True, n_demos=n_demos)
+    trainSet_stop, val_dataset_stop = get_dataset_with_val(dataset_path, train_val_split, transform, dataset_mode="none", n_demos=n_demos)
+
+    transform, metrics = trainSet.get_transforms(get_stats=True)
+    metrics = return_data_stats(metrics)
+    return transform, metrics, (trainSet, val_dataset_reach), (trainSet_stop, val_dataset_stop)
+
+def training_individual(
+    reach_datasets,
+    stop_datasets,
+    transform,
+    saved_model_name,
+    epochs = 100,
+    stopping_epochs = 100,
+    batch_size = 64,
+    training_method = 'eeVel',
+    use_gpu = True,
+    optimiser = 'Adamax',
+    lr = 0.001,
+    weight_decay = 1e-7,
+    loss = 'MSE',
+    stopping_loss = 'BCE',
+    model_name = "BaselineCNN",
+    num_outputs = 6,
+    num_aux_outputs = 9,
+    recon_size = 16
+):
+    # ---------------- Dataloaders ---------------- #
+    trainSet, val_dataset_reach = reach_datasets
+    trainSet_stop, val_dataset_stop = stop_datasets
+
+    trainLoader = DataLoader(trainSet, batch_size=batch_size, shuffle=True, num_workers=1)
+    val_dataloader_reach = DataLoader(val_dataset_reach, batch_size=batch_size, num_workers=1)
+
+    if trainSet_stop is not None:
+        trainLoader_stop = DataLoader(trainSet_stop, batch_size=batch_size, shuffle=True, num_workers=1)
+        val_dataloader_stop = DataLoader(val_dataset_stop, batch_size=batch_size, num_workers=1)
+    else:
+        trainLoader_stop = None
+        val_dataloader_stop = None
+    
+    val_dataloaders = (val_dataloader_reach, val_dataloader_stop)
+
+    # ---------------- Training ---------------- #
+    torch.cuda.empty_cache()
+    model = model_choice(model_name, num_outputs, num_aux_outputs, recon_size)
+    training = get_trainer(training_method, model, saved_model_name, trainLoader, val_dataloaders, trainLoader_stop, transform, use_gpu, epochs, stopping_epochs, batch_size, optimiser, lr, weight_decay, loss, stopping_loss, recon_size)
+    # training = Training.get_trainer(model, saved_model_name, trainLoader, val_dataloaders, trainLoader_stop, transform, use_gpu, epochs, stopping_epochs, batch_size, optimiser, lr, weight_decay, loss, stopping_loss, recon_size)
+    # train_model(training, training_method)
+    training.train()
+    print("Training Done \n")
+
+    # save the model
+    print(f"Saving the model as {saved_model_name}")
+    save_dir = join(dirname(abspath(__file__)), f'TrainedModels/{saved_model_name}.pt')
+    torch.save(model.state_dict(), save_dir)
+    print(f"Done\n")
+
+    return uselessParams(training_method)
+
+
 
 
 

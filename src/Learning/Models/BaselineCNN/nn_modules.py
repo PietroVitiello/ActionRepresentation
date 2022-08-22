@@ -81,7 +81,7 @@ class CoordConv(nn.Module):
 
         xx_ones = torch.ones([batch_size, x], dtype=torch.int32)   # e.g. (batch, 64)
         xx_ones = torch.unsqueeze(xx_ones, -1)                     # e.g. (batch, 64, 1)
-        xx_range = torch.tile(torch.unsqueeze(torch.range(0, y-1), 0), 
+        xx_range = torch.tile(torch.unsqueeze(torch.arange(0, y), 0), 
                             [batch_size, 1])                       # e.g. (batch, 64)
         xx_range = torch.unsqueeze(xx_range, 1).to(dtype=torch.int32)                    # e.g. (batch, 1, 64)
         xx_channel = torch.matmul(xx_ones, xx_range)               # e.g. (batch, 64, 64)
@@ -90,7 +90,7 @@ class CoordConv(nn.Module):
 
         yy_ones = torch.ones([batch_size, y], dtype=torch.int32)   # e.g. (batch, 64)
         yy_ones = torch.unsqueeze(yy_ones, 1)                      # e.g. (batch, 1, 64)
-        yy_range = torch.tile(torch.unsqueeze(torch.range(0, x-1), 0),
+        yy_range = torch.tile(torch.unsqueeze(torch.arange(0, x), 0),
                             [batch_size, 1])                       # (batch, 64)
         yy_range = torch.unsqueeze(yy_range, -1).to(dtype=torch.int32)                   # e.g. (batch, 64, 1)
         yy_channel = torch.matmul(yy_range, yy_ones)               # e.g. (batch, 64, 64)

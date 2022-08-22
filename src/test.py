@@ -1,7 +1,7 @@
 import argparse
 from ruamel.yaml import YAML
 from Learning.test_model import model_testing
-from Learning.Testing.test_locations import gather_valid_test_positions
+from Learning.Testing.gen_test_locations import gather_valid_test_positions
 
 ryaml = YAML()
 
@@ -10,14 +10,17 @@ def runTest():
         model_filename,
         num_episodes,
         max_n_steps,
-        restriction_type
+        restriction_type,
+        saved_locations,
+        use_metrics,
+        config_file_name
     )
     editConfig(cube_reached, restriction)
 
 def editConfig(cube_reached, restriction):
-    with open("Learning/TrainedModels/model_config.yaml", 'r') as file:
+    with open(f"Learning/TrainedModels/{config_file_name}.yaml", 'r') as file:
         configs = ryaml.load(file)
-    with open("Learning/TrainedModels/model_config.yaml", 'w') as file:
+    with open(f"Learning/TrainedModels/{config_file_name}.yaml", 'w') as file:
         configs[model_filename]["Testing"]["Cube_Reached"].append(cube_reached)
         configs[model_filename]["Testing"]["Boundary_Restriction"].append(restriction)
         if saved_locations is None:
@@ -43,12 +46,16 @@ def get_valid_test_positions():
 
 
 
-model_filename = "Stop_AuxBaselineCNN_5"
+model_filename = "ReduceTo1x1_100_100_reach_noNorm"
 restriction_type = "same"
-saved_locations = "LinearGrasp"
+
+saved_locations = None #"LinearGrasp"
+use_metrics = True
 
 num_episodes = 32
 max_n_steps = 140
+
+config_file_name = "model_config" #"cnn2fc_config" "model_config"
 
 
 if __name__ == "__main__":
@@ -58,7 +65,7 @@ if __name__ == "__main__":
                         default=False,
                         help='A boolean flag on whether to test a model (False) or gather valid cube test positions (True)')
 
-    get_test_positions = parser.parse_args()
+    get_test_positions = parser.parse_args().get_test_positions
     if get_test_positions is False:
         runTest()
     else:

@@ -1,4 +1,5 @@
 import yaml
+import numpy as np
 from Learning.train_model import model_training
 
 def runConfig():
@@ -21,8 +22,8 @@ def runConfig():
     configs["num_aux_outputs"] = num_aux_outputs
     configs["reconstruction_size"] = recon_size
 
-    print(f"Training {model_name} Model\n")
-    print(f"\n{n_demos * (2-train_val_split)} Total Demonstrations: {n_demos} T, {n_demos * (1-train_val_split)} V")
+    print(f"\nTraining {model_name} Model\n")
+    print(f"{int(np.round(n_demos * (2-train_val_split)))} Total Demonstrations: {n_demos} T, {int(np.round(n_demos * (1-train_val_split)))} V")
     useless_keys, metrics = model_training(
                                 data_folder,
                                 saved_model_name,
@@ -44,11 +45,11 @@ def runConfig():
                                 recon_size
                             )
     keepUseful(configs, useless_keys)
-    print(metrics[0])
-    # configs["input_metrics"] = metrics[0]
-    # configs["recon_metrics"] = metrics[1]
-    # configs["eeVel_metrics"] = metrics[2]
-    # configs["aux_metrics"] = metrics[3]    
+    configs["input_metrics"] = [metrics[0][0].tolist(), metrics[0][1].tolist()]
+    if metrics[1][0] is not None:
+        configs["recon_metrics"] = [metrics[1][0].tolist(), metrics[1][1].tolist()]
+    configs["eeVel_metrics"] = [metrics[2][0].tolist(), metrics[2][1].tolist()]
+    configs["aux_metrics"] = [metrics[3][0].tolist(), metrics[3][1].tolist()]      
 
     print("Uploading configuration details")
     saveConfig(configs)
@@ -74,8 +75,8 @@ def keepUseful(configs:dict, useless: list):
 
 #Saving and Training info
 data_folder = "linearGrasp_experiment_64"
-saved_model_name = "CoordReduceTo1x1"
-model_name = "CoordReduceTo1x1"
+saved_model_name = "ReduceTo1x1_100_100_reach_noNorm"
+model_name = "ReduceTo1x1"
 training_method = 'eeVel_aux_wandb'
 
 #Training process
@@ -91,7 +92,7 @@ num_aux_outputs = 9
 
 #Optimiser
 optimiser = 'Adamax'
-lr = 0.0001                       ###0.001 #0.0007 #0.001
+lr = 0.0007                  ###0.001 #0.0007 #0.001
 weight_decay = 1e-7
 
 #Loss

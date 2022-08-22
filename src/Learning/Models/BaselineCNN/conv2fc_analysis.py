@@ -32,7 +32,7 @@ class AveragePool(nn.Module):
     def __init__(self, num_outputs=6, num_aux_outputs=9):
         super(AveragePool,self).__init__()
 
-        self.encoder = CNN_encoder()
+        self.encoder = CNN_encoder([64, 128, 256])
         self.global_pooling = nn.AvgPool2d(kernel_size=8)
         self.action_predictor = FC_predictor(num_outputs, num_aux_outputs)
 
@@ -49,7 +49,7 @@ class MaximumPool(nn.Module):
     def __init__(self, num_outputs=6, num_aux_outputs=9):
         super(MaximumPool,self).__init__()
 
-        self.encoder = CNN_encoder()
+        self.encoder = CNN_encoder([64, 128, 256])
         self.global_pooling = nn.MaxPool2d(kernel_size=8)
         self.action_predictor = FC_predictor(num_outputs, num_aux_outputs)
 
@@ -67,7 +67,8 @@ class Flattening(nn.Module):
         super(Flattening,self).__init__()
 
         self.encoder = CNN_encoder()
-        self.conv4 = conv_layer(192, 64)
+        self.conv4 = conv_layer(192, 128)
+        self.conv5 = conv_layer(128, 64)
 
         self.action_predictor = FC_predictor(num_outputs, num_aux_outputs)
 
@@ -75,6 +76,7 @@ class Flattening(nn.Module):
 
         x = self.encoder(x)
         x = self.conv4(x)
+        x = self.conv5(x)
         
         x = x.view(x.size(0),-1)
         x = self.action_predictor(x)
@@ -113,7 +115,7 @@ class CoordAveragePool(nn.Module):
 
         self.conv1 = CoordConv_block(3, 64)
         self.conv2 = CoordConv_block(64, 128)
-        self.conv3 = CoordConv_block(128, 192)
+        self.conv3 = CoordConv_block(128, 256)
         self.global_pooling = nn.AvgPool2d(kernel_size=8)
 
         self.action_predictor = FC_predictor(num_outputs, num_aux_outputs)

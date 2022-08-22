@@ -13,7 +13,7 @@ from Robotics.Robot.micoBot import MicoBot
 from Robotics.Robot.baxterBot import BaxterBot
 from Robotics.Robot.my_robot import MyRobot
 from Robotics.target import Target
-from Robotics.Kinematics.robot_movement import RobotMovement
+from Robotics.Kinematics.autonomous_rmove import Autonomous_RobotMovement
 
 class Test():
 
@@ -21,7 +21,7 @@ class Test():
         self,
         pr: PyRep,
         model: nn.Module,
-        transform: T.Compose,
+        data_transforms: T.Compose,
         restriction_type: str,
         camera_res=64,
         num_episodes = 32,
@@ -31,15 +31,15 @@ class Test():
 
         self.pr = pr
 
+        self.data_transforms = data_transforms
+        self.model = model
+
         # arm = get_arm()
         self.bot = BaxterBot()
         self.target = Target()
         camera = VisionSensor("Vision_sensor")
-        self.rmove = RobotMovement(self.bot, self.target, self.pr, camera=camera, res=camera_res)
+        self.rmove = Autonomous_RobotMovement(self.bot, self.target, self.pr, self.data_transforms, camera=camera, res=camera_res)
         self.target.set_restrictedBoundaries(restriction_type)
-
-        self.transform = transform
-        self.model = model
 
         self.num_episodes = num_episodes
         self.max_n_steps = max_n_steps
@@ -72,7 +72,7 @@ class Test():
             reached = False
             step_n = 0
             while reached == False and step_n<self.max_n_steps:
-                move(self.model, self.transform)
+                move(self.model)
                 reached = self.rmove.check_cubeReached(0.025)
                 step_n += 1
                 # print(step_n+1)
@@ -100,7 +100,7 @@ class Test():
             reached = False
             step_n = 0
             while reached == False and step_n<self.max_n_steps:
-                self.rmove.autonomousMovement(self.model, self.transform)
+                self.rmove.autonomousMovement(self.model)
                 reached = self.rmove.check_cubeReached(0.04)
                 step_n += 1
 
@@ -124,7 +124,7 @@ class Test():
             stop = 0
             step_n = 0
             while stop < 0.96 and step_n<self.max_n_steps:
-                stop = self.rmove.autonomousStop(self.model, self.transform, constrained)
+                stop = self.rmove.autonomousStop(self.model, constrained)
                 step_n += 1
 
             print("Arm Thinks the Cube is Reached")
@@ -164,7 +164,7 @@ class Test():
             stop = 0
             step_n = 0
             while stop < 0.96 and step_n<self.max_n_steps:
-                stop = self.rmove.autonomousStop(self.model, self.transform, constrained)
+                stop = self.rmove.autonomousStop(self.model, constrained)
                 step_n += 1
 
             print("Arm Thinks the Cube is Reached")

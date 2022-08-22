@@ -48,7 +48,6 @@ class Train_eeVelAux_wandb(Training):
             tags=["conv2fc"]
         )
         self.run.name = model_name
-        self.run.save()
         self._wandb_config(optimiser, loss)
 
     def _wandb_config(self, optimiser, loss):
@@ -58,6 +57,7 @@ class Train_eeVelAux_wandb(Training):
         self.run.config.weight_decay = self.wd
         self.run.config.optimiser = optimiser
         self.run.config.loss = loss
+        print("\n")
 
     def _wandb_log_epoch(
         self,
