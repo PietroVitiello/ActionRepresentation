@@ -120,10 +120,16 @@ class TL_motionImage(SimDataset):
                 mi_image = labels[-1]
                 data = torch.cat(labels[:-1], dim=1)
         input_std, input_mean = torch.std_mean(input_image, axis=[0,2,3])
+        input_std = torch.ones(input_std.shape)
+        input_mean = torch.zeros(input_mean.shape)
         print(f"input -->\tmean:{input_mean}, \tstd: {input_std}")
         mi_std, mi_mean = torch.std_mean(mi_image, axis=[0,2,3])
+        mi_std = torch.ones(mi_std.shape)
+        mi_mean = torch.zeros(mi_mean.shape)
         print(f"mi -->   \tmean:{mi_mean}, \tstd: {mi_std}")
         data_std, data_mean = torch.std_mean(data, axis=0)
+        data_std = torch.ones(data_std.shape)
+        data_mean = torch.zeros(data_mean.shape)
         print(f"data -->\tmean:{data_mean}, \tstd: {data_std}\n\n")
         return (input_std, input_mean), (mi_std, mi_mean), (data_std, data_mean)
 

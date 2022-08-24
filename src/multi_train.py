@@ -6,6 +6,7 @@ def load_data():
     print(f"\n{int(np.round(n_demos * (2-train_val_split)))} Total Demonstrations: {n_demos} T, {int(np.round(n_demos * (1-train_val_split)))} V")
     transform, metrics, reach_datasets, stop_datasets = loading_data(
                                                             data_folder,
+                                                            [reach_data_mode, stop_data_mode],
                                                             n_demos,
                                                             train_val_split,
                                                         )
@@ -85,6 +86,9 @@ def keepUseful(configs:dict, useless: list):
 
 #Data
 data_folder = "linearGrasp_experiment_64"
+reach_data_mode = "aux"
+stop_data_mode = "none"
+
 n_demos = 1
 train_val_split = 0.8
 

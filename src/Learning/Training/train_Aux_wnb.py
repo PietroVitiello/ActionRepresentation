@@ -67,8 +67,8 @@ class Train_eeVelAux_wandb(Training):
     ):
         self.run.log({
             "epoch": epoch,
-            "loss": loss,
-            "val_loss": val_loss
+            "action_loss": loss,
+            "val_action_loss": val_loss
         })
 
     def train(self):
@@ -81,6 +81,8 @@ class Train_eeVelAux_wandb(Training):
             for t, (x, labels) in enumerate(self.dataloader):
 
                 x = x.to(device=self.device,dtype=dtype)
+                x = self.input_transform(x)
+                
                 labels = torch.cat(labels, dim=1)
                 labels = labels.to(device=self.device,dtype=dtype)
 

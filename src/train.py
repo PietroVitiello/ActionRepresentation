@@ -31,6 +31,7 @@ def runConfig():
                                 epochs_stopping,
                                 batch_size,
                                 training_method,
+                                [reach_data_mode, stop_data_mode],
                                 use_gpu,
                                 n_demos,
                                 train_val_split,
@@ -75,15 +76,18 @@ def keepUseful(configs:dict, useless: list):
 
 #Saving and Training info
 data_folder = "linearGrasp_experiment_64"
-saved_model_name = "ReduceTo1x1_100_100_reach_noNorm"
-model_name = "ReduceTo1x1"
-training_method = 'eeVel_aux_wandb'
+reach_data_mode = "motionImage"
+stop_data_mode = "onlyStop"
+
+saved_model_name = "discard_mi_untransformed_recon"
+model_name = "MotionImage_attention"
+training_method = 'AE_wandb'
 
 #Training process
 epochs = 100
 batch_size = 64
 use_gpu = True
-n_demos = 100
+n_demos = 30
 train_val_split = 0.8
 
 #Model parameters

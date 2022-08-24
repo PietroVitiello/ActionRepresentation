@@ -17,12 +17,13 @@ def model_testing(
     restriction_type = "same",
     saved_positions = None,
     use_metrics: bool = False,
-    config_filename = "LinearGrasp"
+    config_filename = "LinearGrasp",
+    show: bool = True
 ):
     pr = PyRep()
 
     SCENE_FILE = join(dirname(abspath(__file__)), "../Demos/Simulations/baxter_robot_arm.ttt")
-    pr.launch(SCENE_FILE, headless=False)
+    pr.launch(SCENE_FILE, headless=not show)
     pr.start()
     pr.step_ui()
 

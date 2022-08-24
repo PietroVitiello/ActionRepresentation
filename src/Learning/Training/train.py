@@ -1,5 +1,7 @@
 from abc import abstractclassmethod, abstractmethod
 from typing import List, Tuple
+import numpy as np
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -86,7 +88,7 @@ class Training():
     #     self.loss = get_loss(loss)
     #     self.stopping_loss = get_loss(stopping_loss)
 
-    def val_reaching(self):
+    def val_reaching(self, train_stop=None):
         def get_loss(x, label):
             loss = loss_fn(x, label)
             # print(nn.MSELoss()(x, label))
@@ -105,8 +107,10 @@ class Training():
                 labels = torch.cat(labels, dim=1)
                 labels = self.output_transform(labels)
                 labels = labels.to(device=self.device, dtype=dtype)
-
-                out = self.model(x)
+                if train_stop is not None:
+                    out = self.model(x, train_stop)
+                else:
+                    out = self.model(x)
                 loss += get_loss(out, labels) / n_datapoints
 
         self.model.train(True)
@@ -146,30 +150,55 @@ class Training():
         print(f"**Validation**\t recon_loss = {recon_loss:.6f}, action_loss = {action_loss:.6f}, loss = {recon_loss+action_loss:.6f}")
         return recon_loss, action_loss, recon_loss+action_loss
 
-    def val_stopping(self):
+    def val_stopping(self, threshold: float= 0.96):
         val_dataloader = self.val_dataloaders[1]
         dtype = torch.float32
-        # loss_fn = nn.BCELoss(reduction='sum')
         n_datapoints = len(val_dataloader.dataset)
-        # loss = 0
         correct_stop = 0
         correct_move = 0
+        total_stop = 0
+        total_move = 0
         accuracy = 0
         with torch.no_grad():
             for t, (x, labels) in enumerate(val_dataloader):
                 x = x.to(device=self.device, dtype=dtype)
                 stop_label = labels.to(device=self.device, dtype=dtype)
 
-                out = self.model(x, train_stop=True)
-                out = torch.tensor(out > 0.96).detach().type(torch.float)
+                out: torch.Tensor = self.model(x, train_stop=True).clone().detach()
+                print(out[stop_label == 1])
+                out = torch.tensor(out > threshold).type(torch.float)
 
                 # loss = loss_fn(out, stop_label)
                 accuracy += torch.sum(torch.tensor(stop_label ==  out)) / n_datapoints
-                correct_stop += sum(out[stop_label == 1]) / n_datapoints
-                correct_move += sum((1 - out[stop_label == 0])) / n_datapoints
+                correct_stop += sum(out[stop_label == 1])
+                total_stop += len(stop_label[stop_label==1])
+                correct_move += sum((1 - out[stop_label == 0]))
+                total_move += len(stop_label[stop_label==0])
 
         self.model.train(True)
+        correct_stop = correct_stop / total_stop
+        correct_move = correct_move / total_move
         print(f"**Validation**\t correct_move = {correct_move*100:.1f}%, correct_stop = {correct_stop*100:.1f}%, accuracy = {accuracy*100:.1f}%")
+
+    def val_image_pred(self, n_preds: int):
+        val_dataloader = self.val_dataloaders[0]
+        dtype = torch.float32
+        with torch.no_grad():
+            for t, (x, labels) in enumerate(val_dataloader):
+                x = x.to(device=self.device, dtype=dtype)
+                x = self.input_transform(x)
+
+                try:
+                    recon_labels = torch.concat((recon_labels, labels[-1]), axis=0)
+                    _, recon = self.model(x, train_stop=False)
+                    reconstructions = torch.concat((reconstructions, recon), axis=0)
+                except:
+                    recon_labels = labels[-1]
+                    _, reconstructions = self.model(x, train_stop=False)
+
+        self.model.train(True)
+        indices = np.random.randint(0, recon_labels.size(0), size=n_preds)
+        return recon_labels[indices], reconstructions[indices]
 
     @abstractclassmethod
     def train(self):

@@ -46,7 +46,7 @@ class Target(Shape):
 
     def _set_color(self, color: List[float]):
         if color is None:
-            self.set_color([1.0, 0.1, 0.1]) #ref
+            self.set_color([1.0, 0.1, 0.1]) #red
         else:
             self.set_color(color)
 
@@ -63,17 +63,23 @@ class Target(Shape):
             self.position_min = [-0.35, 0.55, 0.025]
             self.position_max = [0.35, 0.85, 0.025]
         elif restriction_type == "moderate":
-            self.position_min = [-0.30, 0.60, 0.025]
-            self.position_max = [0.30, 0.85, 0.025]
+            self.position_min = [-0.26, 0.63, 0.025]
+            self.position_max = [0.26, 0.85, 0.025]
         elif restriction_type == "highly":
             self.position_min = [-0.20, 0.60, 0.025]
             self.position_max = [0.20, 0.80, 0.025]
         else:
             raise Exception("Cube restiction option is not available")
         
-
     def random_pos(self):
         pos = list(np.random.uniform(self.position_min, self.position_max))
         # pos = [0, 0.75, 0.025]
         self.set_position(pos)
         self.set_orientation(self.initailOrientation)
+
+    def get_occupancy(self):
+        side = self._size[0]
+        margin = 0.1
+        occupancy = np.array([side/2, side/2]) + margin
+        pos = self.get_position()[:2]
+        return pos-occupancy, pos+occupancy

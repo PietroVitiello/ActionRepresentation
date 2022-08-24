@@ -9,6 +9,7 @@ def runConfig():
     configs = {}
     configs["bot_type"] = bot_type
     configs["trj_type"] = trj_type
+    configs["scene_type"] = scene_type
     configs["n_episodes"] = n_episodes
     if add_validation:
         n_val_episodes = int(np.round(n_episodes / 5))
@@ -34,7 +35,8 @@ def runConfig():
                     always_maxDev,
                     trj_type,
                     distance_cubeReached,
-                    image_size
+                    image_size,
+                    scene_type
                 )
     print("\nDone")
 
@@ -52,12 +54,13 @@ def saveConfig(configs):
         dataset = {f"{file_name}": configs}
         yaml.dump(dataset, file, sort_keys=False)
 
-file_name = "linearGrasp_experiment_64"
+file_name = "namaste"
 trj_type = "LinearGrasp"
+scene_type = "distractor"
 distance_cubeReached = 0.02
 boundary_restriction = "moderate"
 
-n_episodes = 500
+n_episodes = 50
 n_runs = 1
 n_steps = 100
 add_validation = True

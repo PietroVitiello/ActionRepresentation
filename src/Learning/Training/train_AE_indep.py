@@ -99,6 +99,50 @@ class Train_AE_wandb(Training):
                 "label_reconstruction": wandb.Image(label),
                 "predicted_reconstruction": wandb.Image(pred)
             })
+
+    def train_AE(self):
+        print_every = 10
+        dtype = torch.float32
+
+        for epoch in range(self.epochs):
+            epoch_recon_loss = 0
+            epoch_action_loss = 0
+            epoch_loss = 0
+            for t, (x, labels) in enumerate(self.dataloader):
+                x = x.to(device=self.device, dtype=dtype)
+                x = self.input_transform(x)
+
+                mi_label = labels[-1]
+                mi_label = mi_label.to(device=self.device, dtype=dtype)
+                mi_label = self.recon_transform(mi_label)
+
+                labels = torch.cat(labels[:-1], dim=1)
+                labels = self.output_transform(labels)
+                labels = labels.to(device=self.device, dtype=dtype)
+
+                out, mi = self.model(x, train_stop=False)
+                recon_loss = self.loss(mi, mi_label)
+                action_loss = self.loss(out, labels)
+                loss = action_loss + recon_loss
+
+                self.optimiser.zero_grad()
+                loss.backward()
+                self.optimiser.step()
+
+                #For logging purposes
+                epoch_recon_loss += recon_loss
+                epoch_action_loss += action_loss
+                epoch_loss += loss
+
+                if t % print_every == 0:
+                    print(f"Epoch: {epoch+1:3d}, Iteration {t:4d}, recon_loss = {recon_loss:.6f}, action_loss = {action_loss:.6f}, loss = {loss:.6f}")
+            val_recon_loss, val_action_loss, val_loss = self.val_reaching_AE()
+            # print(epoch_recon_loss/(t+1))
+            # print(epoch_action_loss/(t+1))
+            # print(epoch_loss/(t+1))
+            self._wandb_log_epoch(epoch, epoch_recon_loss/(t+1), epoch_action_loss/(t+1), epoch_loss/(t+1),
+                                  val_recon_loss, val_action_loss, val_loss)
+            print("\n\n")
         
     def train_reaching(self):
         print_every = 10
@@ -189,16 +233,6 @@ class Train_AE_wandb(Training):
         
         print("\nInitiating Training for Stopping")
         self.train_stopping()
-
-        print(0.95)
-        self.val_stopping(threshold=0.95)
-        print(0.97)
-        self.val_stopping(threshold=0.97)
-        print(0.98)
-        self.val_stopping(threshold=0.98)
-        print(0.99)
-        self.val_stopping(threshold=0.99)
-
         self.val_reaching_AE()
         print("\nStopping Training Ended\n")
 

@@ -21,6 +21,7 @@ from ..Testing.testing import Test
 from ..Training.train_eeVel import Train_eeVel
 from ..Training.train_eeVelAux import Train_eeVelAux
 from ..Training.train_Aux_wnb import Train_eeVelAux_wandb
+from ..Training.train_AuxStop import Train_AuxStop
 from ..Training.train_AE import Train_AE
 from ..Training.train_wnb import Train_AE_wandb
 from ..Training.train import Training
@@ -34,81 +35,90 @@ from ..TrainLoaders.TL_MI import TL_motionImage
 
 ###################### Data ######################
 
-def get_dataset_with_val( 
-    dataset_path,
-    train_val_split: float,
-    transform = None,
-    dataset_mode: str="eeVel",
-    filter_stop: bool=False,
-    n_demos: int=None
-) -> Tuple[SimDataset]:
+class dataset_pipeline():
 
-    df = pd.read_csv(dataset_path + "data.csv")
-    train_ids, val_ids = SimDataset.get_train_val_ids(df, train_val_split, n_demos)
-    train_dataset = get_dataset(
+    def __init__(
+        self,
         dataset_path,
-        transform,
-        dataset_mode,
-        filter_stop,
-        train_ids
-    )
-    val_dataset = get_dataset(
+        train_val_split: float,
+        n_demos: int=None
+    ) -> None:
+        self.dataset_path = dataset_path
+        df = pd.read_csv(dataset_path + "data.csv")
+        self.train_ids, self.val_ids = SimDataset.get_train_val_ids(df, train_val_split, n_demos)
+
+    def get_dataset_with_val( 
+        self,
+        transform = None,
+        dataset_mode: str="eeVel",
+        filter_stop: bool=False
+    ) -> Tuple[SimDataset]:
+
+        train_dataset = self.get_dataset(
+            self.dataset_path,
+            transform,
+            dataset_mode,
+            filter_stop,
+            self.train_ids
+        )
+        val_dataset = self.get_dataset(
+            self.dataset_path,
+            transform,
+            dataset_mode,
+            filter_stop,
+            self.val_ids
+        )
+        return train_dataset, val_dataset
+
+    @staticmethod
+    def get_dataset( 
         dataset_path,
-        transform,
-        dataset_mode,
-        filter_stop,
-        val_ids
-    )
-    return train_dataset, val_dataset
+        transform = None,
+        dataset_mode: str="eeVel",
+        filter_stop: bool=False,
+        considered_indices: np.ndarray = None
+    ) -> SimDataset:
 
-def get_dataset( 
-    dataset_path,
-    transform = None,
-    dataset_mode: str="eeVel",
-    filter_stop: bool=False,
-    considered_indices: np.ndarray = None
-) -> SimDataset:
-
-    if dataset_mode == "eeVel":
-        return TL_eeVel(
-            dataset_path,
-            transform,
-            filter_stop,
-            considered_indices
-        )
-    elif dataset_mode == "aux":
-        return TL_aux(
-            dataset_path,
-            transform,
-            filter_stop,
-            considered_indices=considered_indices
-        )
-    elif dataset_mode == "stop":
-        return TL_stop(
-            dataset_path,
-            transform,
-            filter_stop,
-            considered_indices=considered_indices
-        )
-    elif dataset_mode == "onlyStop":
-        return TL_onlyStop(
-            dataset_path,
-            transform,
-            filter_stop,
-            considered_indices=considered_indices
-        )
-    elif dataset_mode == "motionImage":
-        return TL_motionImage(
-            dataset_path,
-            transform,
-            filter_stop,
-            delta_steps=5,
-            considered_indices=considered_indices
-        )
-    elif dataset_mode == "none":
-        return None
-    else:
-        raise Exception("The selected dataset mode is not supported")
+        if dataset_mode == "eeVel":
+            return TL_eeVel(
+                dataset_path,
+                transform,
+                filter_stop,
+                considered_indices
+            )
+        elif dataset_mode == "aux":
+            return TL_aux(
+                dataset_path,
+                transform,
+                filter_stop,
+                considered_indices=considered_indices
+            )
+        elif dataset_mode == "stop":
+            return TL_stop(
+                dataset_path,
+                transform,
+                filter_stop,
+                considered_indices=considered_indices
+            )
+        elif dataset_mode == "onlyStop":
+            return TL_onlyStop(
+                dataset_path,
+                transform,
+                filter_stop,
+                considered_indices=considered_indices
+            )
+        elif dataset_mode == "motionImage":
+            return TL_motionImage(
+                dataset_path,
+                transform,
+                filter_stop,
+                delta_steps=5,
+                considered_indices=considered_indices
+            )
+        elif dataset_mode == "none":
+            return None
+        else:
+            raise Exception("The selected dataset mode is not supported")
 
 ###################### Training ######################
 
@@ -170,6 +180,25 @@ def get_trainer(
                         lr,
                         weight_decay,
                         loss
+                    )
+        elif training_type == 'aux_stop_wandb':
+            return Train_AuxStop(
+                        model,
+                        model_name,
+                        dataset,
+                        val_datasets,
+                        stopping_dataset,
+                        transform,
+                        use_gpu,
+                        epochs,
+                        stopping_epochs,
+                        batch_size,
+                        optimiser,
+                        lr,
+                        weight_decay,
+                        loss,
+                        stopping_loss,
+                        recon_size
                     )
         elif training_type == 'AE':
             return Train_AE(
@@ -242,6 +271,8 @@ def model_choice(
         return Stopping_base(num_outputs, num_aux_outputs)
     elif model_name == "Stop_AuxBaselineCNN":
         return Stop_AuxBaselineCNN(num_outputs, num_aux_outputs)
+
+    
     elif model_name == "MotionImage_attention":
         return MotionImage_attention(num_outputs, num_aux_outputs)
 
@@ -325,6 +356,8 @@ def uselessParams(mode: str):
     elif mode == 'stop':
         useless_keys.append("reconstruction_size")
     elif mode == 'aux_stopIndividual':
+        useless_keys.append("reconstruction_size")
+    elif mode == 'aux_stop_wandb':
         useless_keys.append("reconstruction_size")
     elif mode == 'motion_image':
         useless_keys.append("reconstruction_size")

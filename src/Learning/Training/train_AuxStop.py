@@ -10,7 +10,7 @@ from ..utils.utils_train import get_loss, get_optimiser, getReconProcessing, und
 from ..utils.utils_test import undo_imageTransform
 # from .utils.utils_dataloader import undoTransform
 
-class Train_AE_wandb(Training):
+class Train_AuxStop(Training):
 
     def __init__(self,
         model: torch.nn.Module,
@@ -43,8 +43,8 @@ class Train_AE_wandb(Training):
             weight_decay,
             loss
         )
-        self.recon_size = recon_size
-        self.input_transform, self.recon_transform, self.output_transform = transform
+
+        self.input_transform, _, self.output_transform = transform
 
         self.stopping_epochs = stopping_epochs
         self.stopping_dataloader = stopping_dataset
@@ -54,10 +54,10 @@ class Train_AE_wandb(Training):
         print("\nEstablishing connection with Weights and Biases")
         self.run = wandb.init(
             project="New-Robot-Action-Representation",
-            reinit=True
+            reinit=True,
+            tags=["conv2fc"]
         )
         self.run.name = model_name
-        self.run.save()
         self._wandb_config(optimiser, loss)
 
     def _wandb_config(self, optimiser, loss):
@@ -67,84 +67,50 @@ class Train_AE_wandb(Training):
         self.run.config.weight_decay = self.wd
         self.run.config.optimiser = optimiser
         self.run.config.loss = loss
+        print("\n")
 
     def _wandb_log_epoch(
         self,
         epoch,
-        recon_loss,
-        action_loss,
         loss,
-        val_recon_loss,
-        val_action_loss,
         val_loss
     ):
         self.run.log({
             "epoch": epoch,
-            "recon_loss": recon_loss,
-            "action_loss": action_loss,
-            "loss": loss,
-            "val_recon_loss": val_recon_loss,
-            "val_action_loss": val_action_loss,
-            "val_loss": val_loss
+            "action_loss": loss,
+            "val_action_loss": val_loss
         })
-
-    def _wandb_log_image_predictions(self, n_preds: int):
-        mean = self.recon_transform.mean.tolist()
-        std = self.recon_transform.std.tolist()
-        unnorm = undo_imageTransform(mean, std)
-        labels, preds = self.val_image_pred(n_preds)
-        preds = unnorm(preds)
-        for (label, pred) in zip(labels, preds):
-            self.run.log({
-                "label_reconstruction": wandb.Image(label),
-                "predicted_reconstruction": wandb.Image(pred)
-            })
         
     def train_reaching(self):
         print_every = 10
         dtype = torch.float32
+        self.model.train()
 
         for epoch in range(self.epochs):
-            epoch_recon_loss = 0
-            epoch_action_loss = 0
             epoch_loss = 0
             for t, (x, labels) in enumerate(self.dataloader):
-                x = x.to(device=self.device, dtype=dtype)
+                x = x.to(device=self.device,dtype=dtype)
                 x = self.input_transform(x)
 
-                mi_label = labels[-1]
-                mi_label = mi_label.to(device=self.device, dtype=dtype)
-                mi_label = self.recon_transform(mi_label)
+                labels = torch.cat(labels, dim=1)
+                labels = labels.to(device=self.device,dtype=dtype)
 
-                labels = torch.cat(labels[:-1], dim=1)
-                labels = self.output_transform(labels)
-                labels = labels.to(device=self.device, dtype=dtype)
-
-                out, mi = self.model(x, train_stop=False)
-                recon_loss = self.loss(mi, mi_label)
-                action_loss = self.loss(out, labels)
-                loss = action_loss + recon_loss
+                out = self.model(x, train_stop=False)
+                loss = self.loss(out, labels)
 
                 self.optimiser.zero_grad()
                 loss.backward()
                 self.optimiser.step()
 
-                #For logging purposes
-                epoch_recon_loss += recon_loss
-                epoch_action_loss += action_loss
                 epoch_loss += loss
 
                 if t % print_every == 0:
-                    print(f"Epoch: {epoch+1:3d}, Iteration {t:4d}, recon_loss = {recon_loss:.6f}, action_loss = {action_loss:.6f}, loss = {loss:.6f}")
-            val_recon_loss, val_action_loss, val_loss = self.val_reaching_AE()
-            # print(epoch_recon_loss/(t+1))
-            # print(epoch_action_loss/(t+1))
-            # print(epoch_loss/(t+1))
-            self._wandb_log_epoch(epoch, epoch_recon_loss/(t+1), epoch_action_loss/(t+1), epoch_loss/(t+1),
-                                  val_recon_loss, val_action_loss, val_loss)
+                    print(f"Epoch: {epoch+1}, Iteration {t}, loss = {loss:.6f}")
+
+            val_loss = self.val_reaching(train_stop=False)
+            self._wandb_log_epoch(epoch, epoch_loss/(t+1), val_loss)
             print("\n\n")
 
-        self._wandb_log_image_predictions(n_preds=3)
         self.run.finish()
 
     def freeze_reaching(self):
@@ -189,17 +155,6 @@ class Train_AE_wandb(Training):
         
         print("\nInitiating Training for Stopping")
         self.train_stopping()
-
-        print(0.95)
-        self.val_stopping(threshold=0.95)
-        print(0.97)
-        self.val_stopping(threshold=0.97)
-        print(0.98)
-        self.val_stopping(threshold=0.98)
-        print(0.99)
-        self.val_stopping(threshold=0.99)
-
-        self.val_reaching_AE()
         print("\nStopping Training Ended\n")
 
         
