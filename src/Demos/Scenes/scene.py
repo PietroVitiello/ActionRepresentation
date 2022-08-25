@@ -5,7 +5,7 @@ class Scene():
     def __init__(
         self,
     ) -> None:
-        pass
+        self.target: Target = None
 
     def set_target_object(self, target):
         self.target = target
@@ -17,6 +17,10 @@ class Scene():
 
     @abstractclassmethod
     def reset_scene(self):
+        pass
+
+    @abstractclassmethod
+    def set_scene(self, data):
         pass
 
     def restrictTargetBound(self, restriction_type: str):

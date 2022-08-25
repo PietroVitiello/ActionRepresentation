@@ -238,7 +238,7 @@ def choseTrjGenrator(gen: DataGenerator, trj_type: str, time: float, distance2cu
         return *gen.getFollowDummyGenerator_stop(time),
     elif trj_type=="LinearTrj":
         return distance2cube, *gen.getLinearTrjGenerator(time, distance2cube)
-    if trj_type=="LinearGrasp":
+    if trj_type=="graspDemo":
         return *gen.getLinearGraspGenerator(time),
     else:
         raise Exception("The chosen generation process does not exist")

@@ -15,11 +15,14 @@ from Robotics.Robot.my_robot import MyRobot
 from Robotics.target import Target
 from Robotics.Kinematics.autonomous_rmove import Autonomous_RobotMovement
 
+from Demos.Scenes.scene import Scene
+
 class Test():
 
     def __init__(
         self,
         pr: PyRep,
+        scene: Scene,
         model: nn.Module,
         data_transforms: T.Compose,
         restriction_type: str,
@@ -30,6 +33,7 @@ class Test():
     ) -> None:
 
         self.pr = pr
+        self.scene = scene
 
         self.data_transforms = data_transforms
         self.model = model
@@ -40,18 +44,17 @@ class Test():
         camera = VisionSensor("Vision_sensor")
         self.rmove = Autonomous_RobotMovement(self.bot, self.target, self.pr, self.data_transforms, camera=camera, res=camera_res)
         self.target.set_restrictedBoundaries(restriction_type)
+        self.scene.set_target_object(self.target)
 
         self.num_episodes = num_episodes
         self.max_n_steps = max_n_steps
 
-        self.saved_positions = saved_positions
+        self.saved_positions = saved_positions.to_numpy()
 
     def parse_saved_positions(self):
         for row in self.saved_positions:
-            x = row["cube_x"]
-            y = row["cube_y"]
-            z = row["cube_z"]
-            yield np.array([x, y, z])
+            self.scene.set_scene(row[1:])
+            yield 0
 
     def checkCubeGrasped(self):
         cube_elevation = self.target.get_position()[2]
@@ -156,14 +159,13 @@ class Test():
 
     def test_eeVelGrasp_savedPos(self, constrained):
         num_reached = 0
-        for ep, position in enumerate(self.parse_saved_positions()):
+        for ep, _ in enumerate(self.parse_saved_positions()):
             print(f"Beginning episode {ep+1}")
-            self.target.set_position(position)
             self.bot.resetInitial(self.pr)
             self.rmove.stayStill(2)
             stop = 0
             step_n = 0
-            while stop < 0.96 and step_n<self.max_n_steps:
+            while stop < 0.985 and step_n<self.max_n_steps:
                 stop = self.rmove.autonomousStop(self.model, constrained)
                 step_n += 1
 

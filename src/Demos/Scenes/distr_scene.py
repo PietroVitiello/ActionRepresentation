@@ -1,3 +1,5 @@
+import numpy as np
+
 from .scene import Scene
 from Robotics.target import Target
 
@@ -24,6 +26,17 @@ class Distractor_Scene(Scene):
             objects_in_scene.append(distractor)
             self.distractors.append(distractor)
 
+    def get_distractors(self):
+        return self.distractors
+
+    def get_distractors_state(self, as_concatenated_array=False):
+        get_position = lambda obj: np.concatenate((obj.get_position(), [obj.get_orientation()[2]]))
+        distr_positions = list(map(get_position, self.distractors))
+        if as_concatenated_array is False:
+            return distr_positions
+        else:
+            return np.concatenate(distr_positions)
+
     def _environment_startup(self):
         self.spawn_distractors()
 
@@ -35,7 +48,17 @@ class Distractor_Scene(Scene):
         self.target.random_pos()
         self.spawn_distractors()
 
-    def get_distractors(self):
-        return self.distractors
+    def set_scene(self, data):
+        self.reset_scene()
+        self.target : Target
+        self.target.set_position(data[:3])
+        for i in range(self.n_distractors):
+            obj: Distractor = self.distractors[i]
+            index = (i * 4) + 3
+            obj.set_position(data[index:index+3])
+            orientation = obj.get_orientation()
+            orientation[2] = data[index+3]
+            # obj.set_orientation(orientation)
+
         
         

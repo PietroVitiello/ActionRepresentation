@@ -33,7 +33,7 @@ def generate_distractor_dataset(
     SAVING_DIR = join(dirname(abspath(__file__)), f"../Dataset/{file_name}")
 
     pr = PyRep()
-    pr.launch(SCENE_FILE, headless=False)
+    pr.launch(SCENE_FILE, headless=True)
     pr.start()
     pr.step_ui()
 
@@ -99,7 +99,7 @@ def generate_distractor_dataset(
                     pass
                 r = n_runs
                 ep -= 1
-                print(f"\033[31mCube position [{gen.target.get_position()[:2]}] is likely invalid, generating new cube\033[38;5;231m", end="")
+                print(f"\033[31mInvalid demo, generating new scene\033[38;5;231m", end="")
                 # else:
                 #     shutil.rmtree(SAVING_DIR + f"/images/episode_{ep}/run_{r}")
                 #     print("\033[31mTask not completed, repeating run\033[38;5;231m", end="")
@@ -148,7 +148,7 @@ def choseTrjGenrator(gen: DataGenerator, trj_type: str, time: float, distance2cu
         return *gen.getFollowDummyGenerator_stop(time),
     elif trj_type=="LinearTrj":
         return distance2cube, *gen.getLinearTrjGenerator(time, distance2cube)
-    if trj_type=="LinearGrasp":
+    if trj_type=="graspDemo":
         return *gen.getAntiCollisionGraspGenerator(time),
     else:
         raise Exception("The chosen generation process does not exist")
