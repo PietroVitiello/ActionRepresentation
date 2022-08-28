@@ -14,16 +14,23 @@ class Cube_Scene(Scene):
     ) -> None:
         super().__init__()
 
+    def set_target_object(self, target):
+        # super().set_target_object(target)
+        self.target = target
+        self._environment_startup()
+
     def _environment_startup(self):
-        self.reset_scene
+        self.reset_scene()
 
     def reset_scene(self):
         self.target.random_pos()
 
     def set_scene(self, data):
-        print(data)
-        self.target : Target
-        data = np.concatenate(data)
         self.target.set_position(data)
+
+    def log_test_run(self, run, n_completions):
+        run.log({
+            f"grasped_cube": n_completions
+        })
         
         

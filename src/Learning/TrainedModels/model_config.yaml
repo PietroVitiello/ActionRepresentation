@@ -605,15 +605,15 @@ discard_mi:
     Attempts: 32
 #NOTE:
 
-discard_mi_untransformed:
-  model_name: MotionImage_attention
-  data_folder: linearGrasp_experiment_64
-  training_method: AE_wandb
+discard_base_distr_100:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: distrGrasp_64
+  training_method: aux_stop_wandb
   n_epochs: 100
   n_epochs_stopping: 30
   batch_size: 64
   use_gpu: true
-  n_demos_used: 30
+  n_demos_used: 100
   train_val_split: 0.8
   optimiser: Adamax
   learning_rate: 0.0007
@@ -629,13 +629,6 @@ discard_mi_untransformed:
   - - 1.0
     - 1.0
     - 1.0
-  recon_metrics:
-  - - 0.0047996630892157555
-    - 0.00226214830763638
-    - 0.0022302919533103704
-  - - 0.03816509619355202
-    - 0.02513589709997177
-    - 0.024205580353736877
   eeVel_metrics:
   - - 0.0
     - 0.0
@@ -670,21 +663,21 @@ discard_mi_untransformed:
     - 1.0
   Testing:
     Cube_Reached:
-    - 29
+    - 25
     Boundary_Restriction:
     - moderate
-    Attempts: 32
+    Attempts: 100
 #NOTE:
 
-discard_mi_untransformed_recon:
+discard_mi_distr_100:
   model_name: MotionImage_attention
-  data_folder: linearGrasp_experiment_64
+  data_folder: distrGrasp_64
   training_method: AE_wandb
   n_epochs: 100
   n_epochs_stopping: 30
   batch_size: 64
   use_gpu: true
-  n_demos_used: 30
+  n_demos_used: 100
   train_val_split: 0.8
   optimiser: Adamax
   learning_rate: 0.0007
@@ -701,12 +694,12 @@ discard_mi_untransformed_recon:
     - 1.0
     - 1.0
   recon_metrics:
-  - - 0.0
-    - 0.0
-    - 0.0
-  - - 1.0
-    - 1.0
-    - 1.0
+  - - 0.011768153868615627
+    - 0.008024786598980427
+    - 0.009863205254077911
+  - - 0.05737045407295227
+    - 0.04618072137236595
+    - 0.04988754168152809
   eeVel_metrics:
   - - 0.0
     - 0.0
@@ -741,8 +734,81 @@ discard_mi_untransformed_recon:
     - 1.0
   Testing:
     Cube_Reached:
-    - 17
+    - 20
     Boundary_Restriction:
     - moderate
-    Attempts: 32
+    Attempts: 100
+#NOTE:
+
+discard_mi300_distr_100:
+  model_name: MotionImage_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 300
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 100
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011480615474283695
+    - 0.00786689855158329
+    - 0.009680717252194881
+  - - 0.05613642558455467
+    - 0.04512590914964676
+    - 0.04903450235724449
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  Testing:
+    Cube_Reached:
+    - 19
+    - 0
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:

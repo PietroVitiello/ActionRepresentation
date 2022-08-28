@@ -1,10 +1,13 @@
+from __future__ import annotations
 from abc import abstractclassmethod
-from typing import List
+from typing import List, Union
 import numpy as np
 from pyrep import PyRep
 from pyrep.backend import sim
 from pyrep.objects.shape import Shape
 from pyrep.const import PrimitiveShape
+
+from Robotics.target import Target
 
 class Distractor(Shape):
 
@@ -75,10 +78,17 @@ class Distractor(Shape):
     #         raise Exception("Cube restiction option is not available")
         
 
-    def random_pos(self, other_objects: Shape = None):
+    def random_pos(self, other_objects: List[Union[Target, Distractor]] = None):
         valid_pos = False
+        n_iterations = 0
         while valid_pos is False:
             valid_pos = True
+
+            if n_iterations == 300:
+                for i, obj in enumerate(other_objects[1:]):
+                    obj.random_pos(other_objects[:i+1])
+                n_iterations = 0
+            
             pos = list(np.random.uniform(self.position_min, self.position_max))
             for obj in other_objects:
                 min_pos, max_pos = self.get_occupancy(pos)
@@ -86,6 +96,7 @@ class Distractor(Shape):
                 if check_pos_outside(min_pos, max_pos, other_min_pos, other_max_pos) is False:
                     valid_pos = False
                     break
+            n_iterations += 1
 
         self.set_position(pos)
         self.set_orientation(self.initailOrientation)

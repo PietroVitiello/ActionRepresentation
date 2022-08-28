@@ -43,7 +43,8 @@ def runConfig():
                                 model_name,
                                 num_outputs,
                                 num_aux_outputs,
-                                recon_size
+                                recon_size,
+                                is_shape_data
                             )
     keepUseful(configs, useless_keys)
     configs["input_metrics"] = [metrics[0][0].tolist(), metrics[0][1].tolist()]
@@ -75,19 +76,20 @@ def keepUseful(configs:dict, useless: list):
         
 
 #Saving and Training info
-data_folder = "linearGrasp_experiment_64"
+data_folder = "distrGrasp_64"
 reach_data_mode = "motionImage"
 stop_data_mode = "onlyStop"
+is_shape_data = False
 
-saved_model_name = "discard_mi_untransformed_recon"
-model_name = "MotionImage_attention"
-training_method = 'AE_wandb'
+saved_model_name = "discard_mi300_distr_100"
+model_name = "MotionImage_attention" # "Stop_AuxBaselineCNN"
+training_method = 'AE_wandb' # 'aux_stop_wandb' 'AE_wandb'
 
 #Training process
-epochs = 100
+epochs = 300
 batch_size = 64
 use_gpu = True
-n_demos = 30
+n_demos = 100
 train_val_split = 0.8
 
 #Model parameters

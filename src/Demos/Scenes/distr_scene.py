@@ -37,6 +37,11 @@ class Distractor_Scene(Scene):
         else:
             return np.concatenate(distr_positions)
 
+    def set_target_object(self, target):
+        # super().set_target_object(target)
+        self.target = target
+        self._environment_startup()
+
     def _environment_startup(self):
         self.spawn_distractors()
 
@@ -50,7 +55,6 @@ class Distractor_Scene(Scene):
 
     def set_scene(self, data):
         self.reset_scene()
-        self.target : Target
         self.target.set_position(data[:3])
         for i in range(self.n_distractors):
             obj: Distractor = self.distractors[i]
@@ -59,6 +63,11 @@ class Distractor_Scene(Scene):
             orientation = obj.get_orientation()
             orientation[2] = data[index+3]
             # obj.set_orientation(orientation)
+
+    def log_test_run(self, run, n_completions):
+        run.log({
+            f"{self.n_distractors}_distractor": n_completions
+        })
 
         
         

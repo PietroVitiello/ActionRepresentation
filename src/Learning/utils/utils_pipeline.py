@@ -2,7 +2,7 @@ import yaml
 import numpy as np
 import pandas as pd
 
-from typing import Tuple
+from typing import List, Tuple
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -10,9 +10,9 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as T
 
 from ..Models.BaselineCNN.models import BaselineCNN, Aux_BaselineCNN, LSTM_BaselineCNN, LSTM_largerBaseCNN
-from ..Models.AutoEncoder.models import SpatialAE_fc, StrengthSpatialAE_fc
+from ..Models.AutoEncoder.models import SpatialAE_fc, StrengthSpatialAE_fc, SpatialAE
 from ..Models.Stopping.models import Stopping_base, Stop_AuxBaselineCNN
-from ..Models.MotionIMG.models import MotionImage_attention
+from ..Models.MotionIMG.models import MotionImage_attention, MotionImage_DeeperAttention, MotionImage_attention_64, MotionImage_auxiliary, MI_Net_indepAE
 from ..Models.PureAE.models import Pure_SimpleAE, Pure_SimpleAE_mediumDec,Pure_SimpleAE_vlargeDec
 from ..Models.BaselineCNN.conv2fc_analysis import ReduceTo1x1, AveragePool, MaximumPool, Flattening, CoordReduceTo1x1, CoordAveragePool
 
@@ -24,6 +24,7 @@ from ..Training.train_Aux_wnb import Train_eeVelAux_wandb
 from ..Training.train_AuxStop import Train_AuxStop
 from ..Training.train_AE import Train_AE
 from ..Training.train_wnb import Train_AE_wandb
+from ..Training.train_AE_indep import Train_AE_indep_wandb
 from ..Training.train import Training
 
 from ..TrainLoaders.trainloader import SimDataset
@@ -32,6 +33,8 @@ from ..TrainLoaders.TL_aux import TL_aux
 from ..TrainLoaders.TL_stop import TL_stop
 from ..TrainLoaders.TL_onlyStop import TL_onlyStop
 from ..TrainLoaders.TL_MI import TL_motionImage
+from ..TrainLoaders.TL_future import TL_futureImage
+from ..TrainLoaders.TL_current import TL_currentImage
 
 ###################### Data ######################
 
@@ -41,11 +44,15 @@ class dataset_pipeline():
         self,
         dataset_path,
         train_val_split: float,
-        n_demos: int=None
+        n_demos: int=None,
+        is_shape_data = False
     ) -> None:
         self.dataset_path = dataset_path
         df = pd.read_csv(dataset_path + "data.csv")
-        self.train_ids, self.val_ids = SimDataset.get_train_val_ids(df, train_val_split, n_demos)
+        if is_shape_data:
+            self.train_ids, self.val_ids = SimDataset.get_train_val_ids_shapes(df, train_val_split, n_demos)
+        else:
+            self.train_ids, self.val_ids = SimDataset.get_train_val_ids(df, train_val_split, n_demos)
 
     def get_dataset_with_val( 
         self,
@@ -107,12 +114,54 @@ class dataset_pipeline():
                 filter_stop,
                 considered_indices=considered_indices
             )
-        elif dataset_mode == "motionImage":
+        elif dataset_mode == "MI":
             return TL_motionImage(
                 dataset_path,
                 transform,
                 filter_stop,
                 delta_steps=5,
+                considered_indices=considered_indices
+            )
+        elif dataset_mode == "MI_64":
+            return TL_motionImage(
+                dataset_path,
+                transform,
+                filter_stop,
+                delta_steps=5,
+                considered_indices=considered_indices,
+                resized_side=None
+            )
+        elif dataset_mode == "MI_delta1":
+            return TL_motionImage(
+                dataset_path,
+                transform,
+                filter_stop,
+                delta_steps=1,
+                considered_indices=considered_indices,
+                mi_threshold=80
+            )
+        elif dataset_mode == "MI_unfiltered":
+            return TL_motionImage(
+                dataset_path,
+                transform,
+                filter_stop,
+                delta_steps=5,
+                considered_indices=considered_indices,
+                mi_threshold=0
+            )
+        elif dataset_mode == "futureImage":
+            return TL_futureImage(
+                dataset_path,
+                transform,
+                filter_stop,
+                delta_steps=5,
+                considered_indices=considered_indices
+            )
+        elif dataset_mode == "currentImage":
+            return TL_currentImage(
+                dataset_path,
+                transform,
+                filter_stop,
                 considered_indices=considered_indices
             )
         elif dataset_mode == "none":
@@ -139,7 +188,8 @@ def get_trainer(
         weight_decay: float = 1e-7,
         loss: str = 'MSE',
         stopping_loss: str = 'BCE',
-        recon_size: int = 16
+        recon_size: int = 16,
+        tags: List[str] = None
     ) -> Training:
     
         if training_type == 'eeVel':
@@ -198,7 +248,8 @@ def get_trainer(
                         weight_decay,
                         loss,
                         stopping_loss,
-                        recon_size
+                        recon_size,
+                        tags
                     )
         elif training_type == 'AE':
             return Train_AE(
@@ -235,7 +286,28 @@ def get_trainer(
                         weight_decay,
                         loss,
                         stopping_loss,
-                        recon_size
+                        recon_size,
+                        tags
+                    )
+        elif training_type == 'AE_indep':
+            return Train_AE_indep_wandb(
+                        model,
+                        model_name,
+                        dataset,
+                        val_datasets,
+                        stopping_dataset,
+                        transform,
+                        use_gpu,
+                        epochs,
+                        stopping_epochs,
+                        batch_size,
+                        optimiser,
+                        lr,
+                        weight_decay,
+                        loss,
+                        stopping_loss,
+                        recon_size,
+                        tags
                     )
         # elif training_type == 'stop':
         #     train.train_stopping()
@@ -255,26 +327,36 @@ def model_choice(
     num_aux_outputs,
     recon_size
 ) -> nn.Module:
-    if model_name == "BaselineCNN":
-        return BaselineCNN(num_outputs)
-    elif model_name == "Aux_BaselineCNN":
-        return Aux_BaselineCNN(num_outputs, num_aux_outputs)
-    elif model_name == "LSTM_BaselineCNN":
-        return LSTM_BaselineCNN(num_outputs, num_aux_outputs)
-    elif model_name == "LSTM_largerBaseCNN":
-        return LSTM_largerBaseCNN(num_outputs, num_aux_outputs)
-    elif model_name == "SpatialAE_fc":
-        return SpatialAE_fc(num_outputs, num_aux_outputs, recon_size)
-    elif model_name == "StrengthSpatialAE_fc":
-        return StrengthSpatialAE_fc(num_outputs, num_aux_outputs, recon_size)
-    elif model_name == "Stopping_base":
-        return Stopping_base(num_outputs, num_aux_outputs)
-    elif model_name == "Stop_AuxBaselineCNN":
-        return Stop_AuxBaselineCNN(num_outputs, num_aux_outputs)
 
-    
+    if model_name == "BaselineCNN":
+        return Stop_AuxBaselineCNN(num_outputs, num_aux_outputs)
+    elif model_name == "SpatialAE":
+        return SpatialAE(num_outputs, num_aux_outputs, reconstruction_size=32)
     elif model_name == "MotionImage_attention":
         return MotionImage_attention(num_outputs, num_aux_outputs)
+    elif model_name == "MotionImage_deeper_attention":
+        return MotionImage_DeeperAttention(num_outputs, num_aux_outputs)
+    elif model_name == "MotionImage_attention_64":
+        return MotionImage_attention_64(num_outputs, num_aux_outputs)
+    elif model_name == "MotionImage_auxiliary":
+        return MotionImage_auxiliary(num_outputs, num_aux_outputs)
+
+
+
+    elif model_name == "_BaselineCNN_":
+        return BaselineCNN(num_outputs)
+    elif model_name == "_Aux_BaselineCNN":
+        return Aux_BaselineCNN(num_outputs, num_aux_outputs)
+    elif model_name == "_LSTM_BaselineCNN":
+        return LSTM_BaselineCNN(num_outputs, num_aux_outputs)
+    elif model_name == "_LSTM_largerBaseCNN":
+        return LSTM_largerBaseCNN(num_outputs, num_aux_outputs)
+    elif model_name == "_SpatialAE_fc":
+        return SpatialAE_fc(num_outputs, num_aux_outputs, recon_size)
+    elif model_name == "_StrengthSpatialAE_fc":
+        return StrengthSpatialAE_fc(num_outputs, num_aux_outputs, recon_size)
+    elif model_name == "_Stopping_base":
+        return Stopping_base(num_outputs, num_aux_outputs)
 
     elif model_name == "ReduceTo1x1":
         return ReduceTo1x1(num_outputs, num_aux_outputs)
@@ -408,12 +490,11 @@ def getRestriction(restriction: str, dataset_name: str):
 def testMethod(test: Test, model_name: str, constrained: bool, use_saved_locations: bool):
     LSTM_models = ["LSTM_largerBaseCNN", "LSTM_BaselineCNN"]
     stopping_models = ["Stopping_base", "Stop_AuxBaselineCNN", "MotionImage_attention"]
-    if model_name in LSTM_models:
+    if use_saved_locations:
+        return test.test_eeVelGrasp_savedPos(constrained)
+    elif model_name in LSTM_models:
         return test.test_eeVel_LSTM()
     elif model_name in stopping_models:
-        if use_saved_locations:
-            return test.test_eeVelGrasp_savedPos(constrained)
-        else:
-            return test.test_eeVelGrasp(constrained)
+        return test.test_eeVelGrasp(constrained)
     else:
         return test.test_eeVel(constrained)

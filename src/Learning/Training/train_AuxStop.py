@@ -1,3 +1,4 @@
+from typing import List
 import torch
 import wandb
 import torch.nn as nn
@@ -28,7 +29,8 @@ class Train_AuxStop(Training):
         weight_decay: float = 1e-7,
         loss: str = 'MSE',
         stopping_loss: str = 'BCE',
-        recon_size: int = 16
+        recon_size: int = 16,
+        tags: List[str] = None
     ) -> None:
 
         super().__init__(
@@ -52,22 +54,33 @@ class Train_AuxStop(Training):
         self.stopping_optimiser = None
 
         print("\nEstablishing connection with Weights and Biases")
-        self.run = wandb.init(
-            project="New-Robot-Action-Representation",
-            reinit=True,
-            tags=["conv2fc"]
-        )
+        config = self._wandb_config(optimiser, loss)
+        if tags is not None:
+            self.run = wandb.init(
+                project="New-Robot-Action-Representation",
+                reinit=True,
+                config=config,
+                tags=tags
+            )
+        else:
+            self.run = wandb.init(
+                project="New-Robot-Action-Representation",
+                reinit=True,
+                config=config
+            )
         self.run.name = model_name
-        self._wandb_config(optimiser, loss)
 
     def _wandb_config(self, optimiser, loss):
-        self.run.config.epochs = self.epochs
-        self.run.config.batch_size = self.batch_size
-        self.run.config.lr = self.lr
-        self.run.config.weight_decay = self.wd
-        self.run.config.optimiser = optimiser
-        self.run.config.loss = loss
+        config = {
+            "epochs" : self.epochs,
+            "batch_size" : self.batch_size,
+            "lr" : self.lr,
+            "weight_decay" : self.wd,
+            "optimiser" : optimiser,
+            "loss" : loss
+        }
         print("\n")
+        return config
 
     def _wandb_log_epoch(
         self,
@@ -80,6 +93,9 @@ class Train_AuxStop(Training):
             "action_loss": loss,
             "val_action_loss": val_loss
         })
+
+    def get_run_id(self):
+        return self.run.id
         
     def train_reaching(self):
         print_every = 10

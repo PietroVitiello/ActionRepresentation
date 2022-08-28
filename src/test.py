@@ -1,20 +1,22 @@
 import argparse
 from ruamel.yaml import YAML
 from Learning.test_model import model_testing
-from Learning.Testing.gen_test_locations import gather_valid_test_positions
+from Learning.Testing.Get_Locations.gen_test_locations import gather_valid_test_positions
 
 ryaml = YAML()
 
 def runTest():
     cube_reached, restriction = model_testing(
         model_filename,
+        scene_type,
         num_episodes,
         max_n_steps,
         restriction_type,
         saved_locations,
         use_metrics,
         config_file_name,
-        show_testing
+        n_distractors,
+        show_testing,
     )
     editConfig(cube_reached, restriction)
 
@@ -31,34 +33,40 @@ def editConfig(cube_reached, restriction):
         ryaml.dump(configs, file)
 
 def get_valid_test_positions():
-    print(f"Gathering 100 valid cube positions")
+    print(f"Gathering {num_episodes} valid cube positions")
     gather_valid_test_positions(
-        file_name="LinearGrasp",
+        scene_type=scene_type,
+        file_name=saved_locations,
         boundary_restiction="moderate",
-        n_episodes=100,
+        n_episodes=num_episodes,
         n_steps=100,
         bot_type="Baxter",
         max_deviation=0.03,
         always_maxDev=True,
-        trj_type="LinearGrasp",
-        distance_cubeReached=0.02
+        trj_type="graspDemo",
+        distance_cubeReached=0.02,
+        n_distractors=n_distractors,
+        shape=shape
     )
 
 
 
+scene_type = "cube"
+n_distractors = 3
+shape = 'tall cylinder'
 
-model_filename = "discard_mi_untransformed_recon"
+model_filename = "spacer_cube"
 restriction_type = "same"
 
-saved_locations = None #"LinearGrasp"
+saved_locations = "cube_envs" #"LinearGrasp"
 use_metrics = True
 
-num_episodes = 32
+num_episodes = 15
 max_n_steps = 140
 
-config_file_name = "model_config" #"cnn2fc_config" "model_config"
+config_file_name = "thesis_models" #"cnn2fc_config" "model_config"
 
-show_testing = True
+show_testing = False
 
 
 if __name__ == "__main__":

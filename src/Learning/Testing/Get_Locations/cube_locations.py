@@ -17,7 +17,7 @@ from Demos.Scenes.cube_scene import Cube_Scene
 
 def gather_cube_test_positions(
     file_name: str,
-    boundary_restiction: str,
+    boundary_restriction: str,
     n_episodes: int,
     n_steps: int,
     bot_type: str,
@@ -39,7 +39,7 @@ def gather_cube_test_positions(
     bot = choseBot(bot_type)
     scene = Cube_Scene()
     gen = DataGenerator(pr, scene, bot, 32, max_deviation, always_maxDev)
-    gen.restrictTargetBound(boundary_restiction)
+    gen.restrictTargetBound(boundary_restriction)
 
     desired_time = n_steps * 0.05
     distance_cubeReached, constrained, gen_process = choseTrjGenrator(gen, trj_type, desired_time, distance_cubeReached)
@@ -69,7 +69,7 @@ def gather_cube_test_positions(
 
     cube_pos_df = pd.DataFrame(columns=['cube_x', 'cube_y', 'cube_z'])
     cube_pos_df['cube_x'], cube_pos_df['cube_y'], cube_pos_df['cube_z'] = cube_positions[1:,:].T
-    cube_pos_df.to_csv(SAVING_DIR + "/" + "valid_cube_positions.csv")
+    cube_pos_df.to_csv(SAVING_DIR + "/" + "valid_positions.csv")
     gen.terminate()
 
 

@@ -9,6 +9,12 @@ import torchvision.transforms as T
 
 from pyrep import PyRep
 
+def get_run_id(model_name: str, config_filename: str):
+    with open(f"Learning/TrainedModels/{config_filename}.yaml", 'r') as file:
+        configs = yaml.safe_load(file)
+    model_data = configs[model_name]
+    return model_data["id"]
+
 def get_metrics(model_name: str, config_filename: str):
     with open(f"Learning/TrainedModels/{config_filename}.yaml", 'r') as file:
         configs = yaml.safe_load(file)

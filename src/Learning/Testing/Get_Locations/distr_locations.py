@@ -17,7 +17,7 @@ from Demos.Scenes.distr_scene import Distractor_Scene
 
 def gather_distr_test_positions(
     file_name: str,
-    boundary_restiction: str,
+    boundary_restriction: str,
     n_episodes: int,
     n_steps: int,
     bot_type: str,
@@ -40,7 +40,7 @@ def gather_distr_test_positions(
     bot = choseBot(bot_type)
     scene = Distractor_Scene(n_distractors)
     gen = DataGenerator(pr, scene, bot, 32, max_deviation, always_maxDev)
-    gen.restrictTargetBound(boundary_restiction)
+    gen.restrictTargetBound(boundary_restriction)
 
     desired_time = n_steps * 0.05
     distance_cubeReached, constrained, gen_process = choseTrjGenrator(gen, trj_type, desired_time, distance_cubeReached)

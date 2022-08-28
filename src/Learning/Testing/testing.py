@@ -161,11 +161,11 @@ class Test():
         num_reached = 0
         for ep, _ in enumerate(self.parse_saved_positions()):
             print(f"Beginning episode {ep+1}")
+            self.target.set_orientation([0,0,0])
             self.bot.resetInitial(self.pr)
-            self.rmove.stayStill(2)
             stop = 0
             step_n = 0
-            while stop < 0.985 and step_n<self.max_n_steps:
+            while stop < 0.96 and step_n<self.max_n_steps:
                 stop = self.rmove.autonomousStop(self.model, constrained)
                 step_n += 1
 

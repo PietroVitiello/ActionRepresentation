@@ -23,6 +23,7 @@ def runConfig():
     configs["boundary_restriction"] = boundary_restriction
     configs["image_size"] = image_size
     
+    print(f"********************** {scene_type} **********************")
     print(f"Generating {(n_episodes + n_val_episodes)*n_runs} Demonstrations \n")
     changed_data = generate_dataset(
                     file_name,
@@ -54,13 +55,13 @@ def saveConfig(configs):
         dataset = {f"{file_name}": configs}
         yaml.dump(dataset, file, sort_keys=False)
 
-file_name = "namaste"
-trj_type = "LinearGrasp"
-scene_type = "distractor"
+file_name = "shapeGrasp_64"
+trj_type = "graspDemo"
+scene_type = "shape"
 distance_cubeReached = 0.02
 boundary_restriction = "moderate"
 
-n_episodes = 50
+n_episodes = 60
 n_runs = 1
 n_steps = 100
 add_validation = True

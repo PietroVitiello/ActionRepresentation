@@ -17,7 +17,9 @@ class TL_motionImage(SimDataset):
         transform = None,
         filter_stop: bool = False,
         delta_steps: int = 5,
-        considered_indices: np.ndarray = None
+        considered_indices: np.ndarray = None,
+        resized_side = 32,
+        mi_threshold = 150
     ) -> None:
 
         super().__init__(
@@ -29,6 +31,8 @@ class TL_motionImage(SimDataset):
         
         self.cleaned_df = self.remove_unusable_data(self.df)
         self.delta_steps = delta_steps
+        self.resized_side = resized_side
+        self.mi_threshold = mi_threshold
         self.future_delta_target = delta_steps
 
     def __len__(self):
@@ -54,7 +58,7 @@ class TL_motionImage(SimDataset):
 
         image = Image.open(self.dataset_path + filename)
         future_image = Image.open(self.dataset_path + future_filename)
-        motion_image = get_motionImage(image, future_image, resized_side=32, mi_threshold=150)
+        motion_image = get_motionImage(image, future_image, resized_side=self.resized_side, mi_threshold=self.mi_threshold)
 
         if self.transform == None:
             image = T.ToTensor()(image)
@@ -124,8 +128,8 @@ class TL_motionImage(SimDataset):
         input_mean = torch.zeros(input_mean.shape)
         print(f"input -->\tmean:{input_mean}, \tstd: {input_std}")
         mi_std, mi_mean = torch.std_mean(mi_image, axis=[0,2,3])
-        mi_std = torch.ones(mi_std.shape)
-        mi_mean = torch.zeros(mi_mean.shape)
+        # mi_std = torch.ones(mi_std.shape)
+        # mi_mean = torch.zeros(mi_mean.shape)
         print(f"mi -->   \tmean:{mi_mean}, \tstd: {mi_std}")
         data_std, data_mean = torch.std_mean(data, axis=0)
         data_std = torch.ones(data_std.shape)

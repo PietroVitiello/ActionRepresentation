@@ -3,7 +3,7 @@ import torch.nn as nn
 from torch.nn.parameter import Parameter
 
 from .modules import SpatialSoftArgmax, SpatialSoftArgmax_strength
-from .backbones import BaselineCNN_backbone, Motion_attention
+from .backbones import BaselineCNN_backbone, Motion_attention, Motion_DeeperAttention, Motion_attention_64, Motion_decoder, Attention
 
 image_type = torch.Tensor
 
@@ -52,12 +52,12 @@ class MotionImage_attention(nn.Module):
             stop_signal = self.stop(x_conv)
             return (reach_x, stop_signal)
 
-class MI_Net_indepAE(nn.Module):
+class MotionImage_DeeperAttention(nn.Module):
     def __init__(self, num_outputs=6, num_aux_outputs=9) -> None:
-        super(MotionImage_attention, self).__init__()
+        super(MotionImage_DeeperAttention, self).__init__()
 
         self.cnn_backbone = BaselineCNN_backbone()
-        self.mi_attention = Motion_attention()
+        self.mi_attention = Motion_DeeperAttention()
 
         self.reach_fc = nn.Sequential(nn.Linear(256, 128),
                                       nn.ReLU())
@@ -77,20 +77,62 @@ class MI_Net_indepAE(nn.Module):
         self.out.requires_grad_(False)
         self.aux.requires_grad_(False)
 
-    def forward(self, x: image_type, train_actions: bool= False, train_stop: bool= None):
+    def forward(self, x: image_type, train_stop: bool= None):
         feature_map4x4, x_conv = self.cnn_backbone(x)
         if self.training:
-            if train_actions == False:
-                _, mi = self.mi_attention(feature_map4x4)
-                return mi
-            elif train_stop == False:
+            if train_stop == False:
                 mi_encoding, mi = self.mi_attention(feature_map4x4)
                 x = self.reach_fc(x_conv)
                 x = torch.mul(x, mi_encoding)
                 x_aux = self.aux(x)
                 x_out = self.out(x)
                 return torch.cat((x_out, x_aux), dim=1), mi
-            elif train_stop == True:
+            if train_stop == True:
+                return self.stop(x_conv)
+        else:
+            mi_encoding, _ = self.mi_attention(feature_map4x4)
+            reach_x = self.reach_fc(x_conv)
+            reach_x = torch.mul(reach_x, mi_encoding)
+            reach_x = self.out(reach_x)
+            stop_signal = self.stop(x_conv)
+            return (reach_x, stop_signal)
+
+class MotionImage_attention_64(nn.Module):
+    def __init__(self, num_outputs=6, num_aux_outputs=9) -> None:
+        super(MotionImage_attention_64, self).__init__()
+
+        self.cnn_backbone = BaselineCNN_backbone()
+        self.mi_attention = Motion_attention_64()
+
+        self.reach_fc = nn.Sequential(nn.Linear(256, 128),
+                                      nn.ReLU())
+
+        self.aux = nn.Linear(128, num_aux_outputs)
+        self.out = nn.Linear(128, num_outputs)
+
+        self.stop = nn.Sequential(nn.Linear(256, 64),
+                                  nn.ReLU(),
+                                  nn.Linear(64, 1),
+                                  nn.Sigmoid())
+
+    def freeze_backbone(self):
+        self.cnn_backbone.requires_grad_(False)
+        self.mi_attention.requires_grad_(False)
+        self.reach_fc.requires_grad_(False)
+        self.out.requires_grad_(False)
+        self.aux.requires_grad_(False)
+
+    def forward(self, x: image_type, train_stop: bool= None):
+        feature_map4x4, x_conv = self.cnn_backbone(x)
+        if self.training:
+            if train_stop == False:
+                mi_encoding, mi = self.mi_attention(feature_map4x4)
+                x = self.reach_fc(x_conv)
+                x = torch.mul(x, mi_encoding)
+                x_aux = self.aux(x)
+                x_out = self.out(x)
+                return torch.cat((x_out, x_aux), dim=1), mi
+            if train_stop == True:
                 return self.stop(x_conv)
         else:
             mi_encoding, _ = self.mi_attention(feature_map4x4)
@@ -141,17 +183,15 @@ class MotionImage_auxiliary(nn.Module):
             reach_x = self.out(reach_x)
             stop_signal = self.stop(x_conv)
             return (reach_x, stop_signal)
-        
 
-
-
-
-
-class Stop_AuxBaselineCNN(nn.Module):
-    def __init__(self, num_outputs=6, num_aux_outputs=9):
-        super(Stop_AuxBaselineCNN, self).__init__()
+class MI_Net_indepAE(nn.Module):
+    def __init__(self, num_outputs=6, num_aux_outputs=9) -> None:
+        super(MI_Net_indepAE, self).__init__()
 
         self.cnn_backbone = BaselineCNN_backbone()
+        deconv_channels = [256, 128, 64] #assuming starting from 4x4 to 32x32
+        self.motion_decoder = Motion_decoder(deconv_channels)
+        self.mi_attention = Attention()
 
         self.reach_fc = nn.Sequential(nn.Linear(256, 128),
                                       nn.ReLU())
@@ -164,172 +204,56 @@ class Stop_AuxBaselineCNN(nn.Module):
                                   nn.Linear(64, 1),
                                   nn.Sigmoid())
 
-    def freeze_backbone(self):
-        self.cnn_backbone.requires_grad_(False)
+        self.freeze_reach()
+
+    def freeze_reach(self):
+        self.cnn_backbone.requires_grad_(True)
+        self.motion_decoder.requires_grad_(True)
+
+        self.mi_attention.requires_grad_(False)
         self.reach_fc.requires_grad_(False)
         self.out.requires_grad_(False)
         self.aux.requires_grad_(False)
+        self.stop.requires_grad_(False)
 
-    def forward(self, x, train_stop: bool=None):
+    def unfreeze_reach(self):
+        self.cnn_backbone.requires_grad_(True)
+        self.mi_attention.requires_grad_(True)
+        self.reach_fc.requires_grad_(True)
+        self.out.requires_grad_(True)
+        self.aux.requires_grad_(True)
+        self.stop.requires_grad_(False)
+
+    def freeze_backbone(self):
+        self.cnn_backbone.requires_grad_(False)
+        self.mi_attention.requires_grad_(False)
+        self.reach_fc.requires_grad_(False)
+        self.out.requires_grad_(False)
+        self.aux.requires_grad_(False)
+        self.stop.requires_grad_(True)
+
+    def forward(self, x: image_type, train_actions: bool= True, train_stop: bool= None):
+        feature_map4x4, x_conv = self.cnn_backbone(x)
         if self.training:
-            if train_stop == False:
-                x = self.cnn_backbone(x)
-                x = self.reach_fc(x)
+            if train_actions == False:
+                _, mi = self.motion_decoder(feature_map4x4)
+                return mi
+            elif train_stop == False:
+                mi_encoding, _ = self.mi_attention(feature_map4x4)
+                mi_encoding = self.mi_attention(mi_encoding)
+                x = self.reach_fc(x_conv)
+                x = torch.mul(x, mi_encoding)
                 x_aux = self.aux(x)
                 x_out = self.out(x)
                 return torch.cat((x_out, x_aux), dim=1)
-            if train_stop == True:
-                # with torch.no_grad():
-                x: torch.Tensor = self.cnn_backbone(x)
-                # x.requires_grad = True
-                return self.stop(x)
+            elif train_stop == True:
+                return self.stop(x_conv)
         else:
-            x = self.cnn_backbone(x)
-
-            reach_x = self.reach_fc(x)
+            mi_encoding = self.motion_decoder(feature_map4x4)
+            mi_encoding, _ = self.mi_attention(mi_encoding)
+            reach_x = self.reach_fc(x_conv)
+            reach_x = torch.mul(reach_x, mi_encoding)
             reach_x = self.out(reach_x)
-            stop_signal = self.stop(x)
+            stop_signal = self.stop(x_conv)
             return (reach_x, stop_signal)
-
-
-class SpatialAE_fc(nn.Module):
-    def __init__(
-        self,
-        num_outputs=6,
-        num_aux_outputs=9,
-        reconstruction_size=16
-    ):
-        super(SpatialAE_fc,self).__init__()
-        self.recon_size = reconstruction_size
-        self.spatialArgmax = SpatialSoftArgmax()
-
-        self.encoder = self.Encoder()
-        self.decoder = self.Decoder(reconstruction_size)
-
-        self.fc1 = nn.Sequential(nn.Linear(256, 128),
-                                 nn.ReLU())
-
-        self.aux = nn.Linear(128, num_aux_outputs)
-        self.out = nn.Linear(128, num_outputs)
-
-    def Encoder(self):
-        encoder = nn.Sequential(
-            self.conv_layer(3, 32),
-            self.conv_layer(32, 64),
-            self.conv_layer(64, 128),
-            self.spatialArgmax
-        )
-        return encoder
-
-    def Decoder(self, img_size: int):
-        decoder = nn.Linear(256, img_size**2)
-        return decoder
-
-    def decoder_forward(self, x: torch.Tensor):
-        x = self.decoder(x)
-        return x.view(x.size(0), self.recon_size, -1)
-
-    def conv_layer(
-        self,
-        chIN,
-        chOUT,
-        kernel_size=3,
-        stride=1,
-        padding=1,
-        bias=False,
-        pool_kernel=3,
-        pool_stride=2,
-        pool_padding=1
-    ):
-        conv = nn.Sequential(nn.Conv2d(chIN, chOUT, kernel_size, stride, padding, bias=bias),
-                             nn.BatchNorm2d(chOUT),
-                             nn.MaxPool2d(pool_kernel, pool_stride, pool_padding),
-                             nn.ReLU(inplace=True))
-        return conv
-
-    def forward(self, x):
-        # print(x.shape)
-        x: torch.Tensor = self.encoder(x) 
-        # print(f"x after activation: {x.shape}")       
-        fc1 = self.fc1(x)
-
-        if self.training:
-            recon_img = self.decoder_forward(x)
-            x_aux = self.aux(fc1)
-            x_out = self.out(fc1)
-            out = torch.cat((x_out, x_aux), dim=1)
-            return (recon_img, out)
-        else:
-            return self.out(fc1)
-
-
-class StrengthSpatialAE_fc(nn.Module):
-    def __init__(
-        self,
-        num_outputs=6,
-        num_aux_outputs=9,
-        reconstruction_size=16
-    ):
-        super(StrengthSpatialAE_fc,self).__init__()
-        self.recon_size = reconstruction_size
-        self.spatialArgmax = SpatialSoftArgmax_strength()
-
-        self.encoder = self.Encoder()
-        self.decoder = self.Decoder()
-
-        self.fc1 = nn.Sequential(nn.Linear(384, 128),
-                                 nn.ReLU())
-
-        self.aux = nn.Linear(128, num_aux_outputs)
-        self.out = nn.Linear(128, num_outputs)
-
-    def Encoder(self):
-        encoder = nn.Sequential(
-            self.conv_layer(3, 32),
-            self.conv_layer(32, 64),
-            self.conv_layer(64, 128),
-            self.spatialArgmax
-        )
-        return encoder
-
-    def Decoder(self):
-        decoder = nn.Linear(384, self.recon_size**2)
-        return decoder
-
-    def decoder_forward(self, x: torch.Tensor):
-        x = self.decoder(x)
-        return x.view(x.size(0), self.recon_size, -1)
-
-    def conv_layer(
-        self,
-        chIN,
-        chOUT,
-        kernel_size=3,
-        stride=1,
-        padding=1,
-        bias=False,
-        pool_kernel=3,
-        pool_stride=2,
-        pool_padding=1
-    ):
-        conv = nn.Sequential(nn.Conv2d(chIN, chOUT, kernel_size, stride, padding, bias=bias),
-                             nn.BatchNorm2d(chOUT),
-                             nn.MaxPool2d(pool_kernel, pool_stride, pool_padding),
-                             nn.ReLU(inplace=True))
-        return conv
-
-    def forward(self, x):
-        # print(x.shape)
-        x: torch.Tensor = self.encoder(x) 
-        # print(f"x after activation: {x.shape}")       
-        fc1 = self.fc1(x)
-
-        if self.training:
-            recon_img = self.decoder_forward(x)
-            x_aux = self.aux(fc1)
-            x_out = self.out(fc1)
-            out = torch.cat((x_out, x_aux), dim=1)
-            return (recon_img, out)
-        else:
-            return self.out(fc1)
 

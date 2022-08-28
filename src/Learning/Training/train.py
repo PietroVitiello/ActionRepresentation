@@ -165,7 +165,7 @@ class Training():
                 stop_label = labels.to(device=self.device, dtype=dtype)
 
                 out: torch.Tensor = self.model(x, train_stop=True).clone().detach()
-                print(out[stop_label == 1])
+                # print(out[stop_label == 1])
                 out = torch.tensor(out > threshold).type(torch.float)
 
                 # loss = loss_fn(out, stop_label)
@@ -197,8 +197,11 @@ class Training():
                     _, reconstructions = self.model(x, train_stop=False)
 
         self.model.train(True)
-        indices = np.random.randint(0, recon_labels.size(0), size=n_preds)
-        return recon_labels[indices], reconstructions[indices]
+        if n_preds is not None:
+            indices = np.random.randint(0, recon_labels.size(0), size=n_preds)
+            return recon_labels[indices], reconstructions[indices]
+        else:
+            return recon_labels, reconstructions
 
     @abstractclassmethod
     def train(self):

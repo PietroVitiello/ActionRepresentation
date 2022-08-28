@@ -19,8 +19,10 @@ class Block(Distractor):
 
     def _define_bounding_box(self):
         angle = self.get_orientation()[2]
-        x = self._size[1] * np.sin(angle)
-        y = self._size[1] * np.cos(angle)
+        side_x = self._size[0]
+        side_y = self._size[1]
+        x = side_x * abs(np.cos(angle)) + side_y * abs(np.sin(angle))
+        y = side_x * abs(np.sin(angle)) + side_y * abs(np.cos(angle))
         occupancy = np.array([x/2, y/2])
         return occupancy
 

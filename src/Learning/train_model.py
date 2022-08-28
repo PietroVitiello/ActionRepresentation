@@ -1,3 +1,4 @@
+from typing import List
 import torch
 from torchvision import transforms
 from os.path import dirname, join, abspath
@@ -28,7 +29,8 @@ def model_training(
     model_name = "BaselineCNN",
     num_outputs = 6,
     num_aux_outputs = 9,
-    recon_size = 16
+    recon_size = 16,
+    is_shape_data = False
 ):
     dataset_path = join(dirname(abspath(__file__)), f"../Demos/Dataset/{data_folder}/")
     
@@ -39,7 +41,7 @@ def model_training(
     transform = None
 
     # ---------------- Dataset ---------------- #
-    ds = dataset_pipeline(dataset_path, train_val_split, n_demos)
+    ds = dataset_pipeline(dataset_path, train_val_split, n_demos, is_shape_data)
     # trainSet, val_dataset_reach = SimDataset.get_with_val(dataset_path, train_val_split, transform, dataset_mode="motionImage", filter_stop=True, n_demos=n_demos)
     trainSet, val_dataset_reach = ds.get_dataset_with_val(transform, dataset_mode=dataset_modes[0], filter_stop=True)
     trainLoader = DataLoader(trainSet, batch_size=batch_size, shuffle=True, num_workers=1)
@@ -82,19 +84,24 @@ def loading_data(
     data_folder,
     dataset_modes = ["motionImage", "onlyStop"],
     n_demos = 100,
-    train_val_split: float = 0.8
+    train_val_split: float = 0.8,
+    dataset_pipe: dataset_pipeline = None,
+    is_shape_data = False
 ):
     dataset_path = join(dirname(abspath(__file__)), f"../Demos/Dataset/{data_folder}/")
     transform = None
 
     # ---------------- Dataset ---------------- #
-    ds = dataset_pipeline(dataset_path, train_val_split, n_demos)
+    if dataset_pipe is None:
+        ds = dataset_pipeline(dataset_path, train_val_split, n_demos, is_shape_data)
+    else:
+        ds = dataset_pipe
     trainSet, val_dataset_reach = ds.get_dataset_with_val(transform, dataset_mode=dataset_modes[0], filter_stop=True)
     trainSet_stop, val_dataset_stop = ds.get_dataset_with_val(transform, dataset_mode=dataset_modes[1])
 
     transform, metrics = trainSet.get_transforms(get_stats=True)
     metrics = return_data_stats(metrics)
-    return transform, metrics, (trainSet, val_dataset_reach), (trainSet_stop, val_dataset_stop)
+    return transform, metrics, (trainSet, val_dataset_reach), (trainSet_stop, val_dataset_stop), ds
 
 def training_individual(
     reach_datasets,
@@ -114,7 +121,8 @@ def training_individual(
     model_name = "BaselineCNN",
     num_outputs = 6,
     num_aux_outputs = 9,
-    recon_size = 16
+    recon_size = 16,
+    tags: List[str] = None
 ):
     # ---------------- Dataloaders ---------------- #
     trainSet, val_dataset_reach = reach_datasets
@@ -135,7 +143,7 @@ def training_individual(
     # ---------------- Training ---------------- #
     torch.cuda.empty_cache()
     model = model_choice(model_name, num_outputs, num_aux_outputs, recon_size)
-    training = get_trainer(training_method, model, saved_model_name, trainLoader, val_dataloaders, trainLoader_stop, transform, use_gpu, epochs, stopping_epochs, batch_size, optimiser, lr, weight_decay, loss, stopping_loss, recon_size)
+    training = get_trainer(training_method, model, saved_model_name, trainLoader, val_dataloaders, trainLoader_stop, transform, use_gpu, epochs, stopping_epochs, batch_size, optimiser, lr, weight_decay, loss, stopping_loss, recon_size, tags)
     # training = Training.get_trainer(model, saved_model_name, trainLoader, val_dataloaders, trainLoader_stop, transform, use_gpu, epochs, stopping_epochs, batch_size, optimiser, lr, weight_decay, loss, stopping_loss, recon_size)
     # train_model(training, training_method)
     training.train()
@@ -147,7 +155,7 @@ def training_individual(
     torch.save(model.state_dict(), save_dir)
     print(f"Done\n")
 
-    return uselessParams(training_method)
+    return uselessParams(training_method), training.get_run_id()
 
 
 

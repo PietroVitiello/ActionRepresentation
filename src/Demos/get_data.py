@@ -17,6 +17,7 @@ from .Scenes.distr_scene import Distractor_Scene
 
 from .DemoCollection.cube_collect import generate_cube_dataset
 from .DemoCollection.distr_collect import generate_distractor_dataset
+from .DemoCollection.shape_collection import generate_shape_dataset
 
 def generate_dataset(
     file_name: str,
@@ -34,34 +35,51 @@ def generate_dataset(
 ):
 
     if scene_type == 'cube':
-        generate_cube_dataset(
-            file_name,
-            boundary_restiction,
-            n_episodes,
-            n_runs,
-            n_steps,
-            bot_type,
-            max_deviation,
-            always_maxDev,
-            trj_type,
-            distance_cubeReached,
-            image_size
-        )
+        distance_cubeReached, constrained = generate_cube_dataset(
+                                                file_name,
+                                                boundary_restiction,
+                                                n_episodes,
+                                                n_runs,
+                                                n_steps,
+                                                bot_type,
+                                                max_deviation,
+                                                always_maxDev,
+                                                trj_type,
+                                                distance_cubeReached,
+                                                image_size
+                                            )
 
     elif scene_type == 'distractor':
-        generate_distractor_dataset(
-            file_name,
-            boundary_restiction,
-            n_episodes,
-            n_runs,
-            n_steps,
-            bot_type,
-            max_deviation,
-            always_maxDev,
-            trj_type,
-            distance_cubeReached,
-            image_size
-        )
+        distance_cubeReached, constrained = generate_distractor_dataset(
+                                                file_name,
+                                                boundary_restiction,
+                                                n_episodes,
+                                                n_runs,
+                                                n_steps,
+                                                bot_type,
+                                                max_deviation,
+                                                always_maxDev,
+                                                trj_type,
+                                                distance_cubeReached,
+                                                image_size
+                                            )
+
+    elif scene_type == 'shape':
+        distance_cubeReached, constrained = generate_shape_dataset(
+                                                file_name,
+                                                boundary_restiction,
+                                                n_episodes,
+                                                n_runs,
+                                                n_steps,
+                                                bot_type,
+                                                max_deviation,
+                                                always_maxDev,
+                                                trj_type,
+                                                distance_cubeReached,
+                                                image_size
+                                            )
+    
+    return distance_cubeReached, constrained
 
 
 

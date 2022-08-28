@@ -2,15 +2,20 @@ import yaml
 import numpy as np
 from Learning.train_model import loading_data, training_individual
 
+dataset_pipe = None
+saved_config = "thesis_models" # "cnn2fc_config"
+
 def load_data():
     print(f"\n{int(np.round(n_demos * (2-train_val_split)))} Total Demonstrations: {n_demos} T, {int(np.round(n_demos * (1-train_val_split)))} V")
-    transform, metrics, reach_datasets, stop_datasets = loading_data(
+    transform, metrics, reach_datasets, stop_datasets, ds = loading_data(
                                                             data_folder,
                                                             [reach_data_mode, stop_data_mode],
                                                             n_demos,
                                                             train_val_split,
+                                                            dataset_pipe,
+                                                            is_shape_data
                                                         )
-    return transform, metrics, reach_datasets, stop_datasets
+    return transform, metrics, reach_datasets, stop_datasets, ds
 
 def runConfig(transform, metrics, reach_datasets, stop_datasets):
     configs = {}
@@ -33,8 +38,8 @@ def runConfig(transform, metrics, reach_datasets, stop_datasets):
     configs["reconstruction_size"] = recon_size
 
     print("\n", "#"*30)
-    print(f"Training {model_name} Model\n")
-    useless_keys = training_individual(
+    print(f"Training {saved_model_name} Model\n")
+    useless_keys, run_id = training_individual(
                         reach_datasets,
                         stop_datasets,
                         transform,
@@ -60,7 +65,8 @@ def runConfig(transform, metrics, reach_datasets, stop_datasets):
     if metrics[1][0] is not None:
         configs["recon_metrics"] = [metrics[1][0].tolist(), metrics[1][1].tolist()]
     configs["eeVel_metrics"] = [metrics[2][0].tolist(), metrics[2][1].tolist()]
-    configs["aux_metrics"] = [metrics[3][0].tolist(), metrics[3][1].tolist()]    
+    configs["aux_metrics"] = [metrics[3][0].tolist(), metrics[3][1].tolist()]
+    configs["id"] = run_id
 
     print("Uploading configuration details")
     saveConfig(configs)
@@ -68,7 +74,7 @@ def runConfig(transform, metrics, reach_datasets, stop_datasets):
     
 
 def saveConfig(configs):
-    with open("Learning/TrainedModels/cnn2fc_config.yaml", 'r+') as file:
+    with open(f"Learning/TrainedModels/{saved_config}.yaml", 'r+') as file:
         yaml.safe_load(file)
         file.write("\n")
         configs["Testing"] = {}
@@ -82,171 +88,213 @@ def saveConfig(configs):
 def keepUseful(configs:dict, useless: list):
     for key in useless:
         configs.pop(key)
-        
 
-#Data
-data_folder = "linearGrasp_experiment_64"
+
+
+
+#****************** Spacer Run ******************#
+data_folder = "cubeGrasp_64"
+is_shape_data = False
 reach_data_mode = "aux"
-stop_data_mode = "none"
-
+stop_data_mode = "onlyStop"
 n_demos = 1
 train_val_split = 0.8
+transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
+epochs = 1
+batch_size = 64
+use_gpu = True
+epochs_stopping = 0
 
-transform, metrics, reach_datasets, stop_datasets = load_data()
+saved_model_name = "spacer_MIexp_cube"
+model_name = "BaselineCNN"
+training_method = 'aux_stop_wandb'
+num_outputs = 6
+num_aux_outputs = 9
+optimiser = 'Adamax'
+lr = 0.0007                    ###0.001 #0.0007 #0.001
+weight_decay = 1e-7
+loss = 'MSE'
+stopping_loss = 'BCE'
+recon_size = 16
+runConfig(transform, metrics, reach_datasets, stop_datasets)
+dataset_pipe = None
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+#****************** Data ******************#
+data_folder = "cubeGrasp_64"
+is_shape_data = False
+reach_data_mode = "MI"
+stop_data_mode = "onlyStop"
+
+n_demos = 30
+train_val_split = 0.8
+
+transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
+
+
+#****************** Training ******************#
+epochs = 100
+batch_size = 64
+use_gpu = True
+epochs_stopping = 30
 
 
 ################################################# Model
-saved_model_name = "ReduceTo1x1_30d_30e"
-model_name = "ReduceTo1x1"
-training_method = 'eeVel_aux_wandb'
-
-epochs = 30
-batch_size = 64
-use_gpu = True
+saved_model_name = "MI_Net_cube_30d_7e4lr"
+model_name = "MotionImage_attention"
+training_method = 'AE_wandb'
 
 num_outputs = 6
 num_aux_outputs = 9
 
 optimiser = 'Adamax'
-lr = 0.0001                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
+lr = 0.0007                       ###0.001 #0.0007 #0.001
+weight_decay = 2e-7
 
 loss = 'MSE'
 stopping_loss = 'BCE'
 
 recon_size = 16
-
-epochs_stopping = 30
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
 
 
 ################################################# Model
-saved_model_name = "AveragePool_30d_30e"
-model_name = "AveragePool"
-training_method = 'eeVel_aux_wandb'
-
-epochs = 30
-batch_size = 64
-use_gpu = True
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0001                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
-
-epochs_stopping = 30
+saved_model_name = "MI_Net_cube_30d_8e5lr"
+lr = 0.00008                     ###0.001 #0.0007 #0.001
+weight_decay = 1e-8
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
 
 
 ################################################# Model
-saved_model_name = "MaximumPool_30d_30e"
-model_name = "MaximumPool"
-training_method = 'eeVel_aux_wandb'
-
-epochs = 30
-batch_size = 64
-use_gpu = True
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0001                       ###0.001 #0.0007 #0.001
+saved_model_name = "MI_Net_cube_30d_1e4lr"
+lr = 0.0001                     ###0.001 #0.0007 #0.001
 weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
-
-epochs_stopping = 30
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
 
 
 ################################################# Model
-saved_model_name = "Flattening_30d_30e"
-model_name = "Flattening"
-training_method = 'eeVel_aux_wandb'
-
-epochs = 30
-batch_size = 64
-use_gpu = True
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0001                       ###0.001 #0.0007 #0.001
+saved_model_name = "MI_Net_cube_30d_3e3lr"
+lr = 0.003                   ###0.001 #0.0007 #0.001
 weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
-
-epochs_stopping = 30
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
 
 
 ################################################# Model
-saved_model_name = "CoordReduceTo1x1_30d_30e"
-model_name = "CoordReduceTo1x1"
-training_method = 'eeVel_aux_wandb'
+saved_model_name = "MI_Net_cube_30d_6e3lr"
+lr = 0.006                   ###0.001 #0.0007 #0.001
+weight_decay = 2e-7
 
-epochs = 30
+runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
+
+
+
+
+
+
+
+
+dataset_pipe = None
+
+#****************** Data ******************#
+
+n_demos = 100
+train_val_split = 0.8
+
+transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
+
+
+#****************** Training ******************#
+epochs = 100
 batch_size = 64
 use_gpu = True
+epochs_stopping = 30
+
+
+################################################# Model
+saved_model_name = "MI_Net_cube_100d_7e4lr"
+model_name = "MotionImage_attention"
+training_method = 'AE_wandb'
 
 num_outputs = 6
 num_aux_outputs = 9
 
 optimiser = 'Adamax'
-lr = 0.0001                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
+lr = 0.0007                       ###0.001 #0.0007 #0.001
+weight_decay = 2e-7
 
 loss = 'MSE'
 stopping_loss = 'BCE'
 
 recon_size = 16
-
-epochs_stopping = 30
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
 
 
 ################################################# Model
-saved_model_name = "CoordAveragePool_30d_30e"
-model_name = "CoordAveragePool"
-training_method = 'eeVel_aux_wandb'
+saved_model_name = "MI_Net_cube_100d_8e5lr"
+lr = 0.00008                     ###0.001 #0.0007 #0.001
+weight_decay = 1e-8
 
-epochs = 30
-batch_size = 64
-use_gpu = True
+runConfig(transform, metrics, reach_datasets, stop_datasets)
 
-num_outputs = 6
-num_aux_outputs = 9
 
-optimiser = 'Adamax'
-lr = 0.0001                       ###0.001 #0.0007 #0.001
+################################################# Model
+saved_model_name = "MI_Net_cube_100d_1e4lr"
+lr = 0.0001                     ###0.001 #0.0007 #0.001
 weight_decay = 1e-7
 
-loss = 'MSE'
-stopping_loss = 'BCE'
+runConfig(transform, metrics, reach_datasets, stop_datasets)
 
-recon_size = 16
 
-epochs_stopping = 30
+################################################# Model
+saved_model_name = "MI_Net_cube_100d_3e3lr"
+lr = 0.003                   ###0.001 #0.0007 #0.001
+weight_decay = 1e-7
+
+runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
+################################################# Model
+saved_model_name = "MI_Net_cube_100d_6e3lr"
+lr = 0.006                   ###0.001 #0.0007 #0.001
+weight_decay = 2e-7
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)

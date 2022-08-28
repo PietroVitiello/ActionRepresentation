@@ -7,6 +7,8 @@ import torch.optim as optim
 import torchvision.transforms as T
 from PIL import Image, ImageOps
 
+from ..Losses.directional import DirectionalLoss
+
 def get_optimiser(
         optimiser,
         model: nn.Module,
@@ -23,6 +25,8 @@ def get_loss(loss) -> nn.modules.loss:
         return nn.MSELoss()
     if loss == 'BCE':
         return nn.BCELoss()
+    if loss == 'directional':
+        return DirectionalLoss()
     else:
         raise Exception("The proposed loss is not available. Try a different one!")
 

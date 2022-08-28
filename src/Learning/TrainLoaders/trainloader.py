@@ -62,6 +62,31 @@ class SimDataset(Dataset):
         indices = indices[:n_demos]
         return indices[:training_len], indices[training_len:]
 
+    @staticmethod
+    def get_train_val_ids_shapes(dataset: pd.DataFrame, split: float, n_demos: int= None, n_objects: int = 5):
+        def intrd(val):
+            return int(np.round(val))
+
+        len_df = len(dataset)
+        total_number_demos = dataset.iloc[len_df-1]["demo_id"] + 1
+        number_demos = intrd( total_number_demos / n_objects)
+        if n_demos is not None:
+            n_demos = intrd((n_demos * (2 - split)) / n_objects)
+            assert(n_demos <= number_demos)
+            split = 1 / (2 - split)
+        else:
+            n_demos = number_demos
+        training_len = intrd(n_demos * split)
+        train_indices = np.zeros((n_objects, training_len))
+        validation_indices = np.zeros((n_objects, n_demos - training_len))
+        for shape in range(n_objects):
+            indices = np.arange(shape, total_number_demos, n_objects)
+            np.random.shuffle(indices)
+            train_indices[shape, :] = indices[:training_len]
+            validation_indices[shape, :] = indices[training_len:]
+
+        return np.reshape(train_indices, -1), np.reshape(validation_indices, -1)
+
     # @staticmethod
     # def get_with_val( 
     #     dataset_path,

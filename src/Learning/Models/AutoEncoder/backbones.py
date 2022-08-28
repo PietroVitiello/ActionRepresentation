@@ -61,7 +61,7 @@ class SpatialAE_sceneUnderstanding_backbone(nn.Module):
         kernel_size=3,
         stride=1,
         padding=1,
-        bias=False,
+        bias=True,
         pool_kernel=3,
         pool_stride=2,
         pool_padding=1

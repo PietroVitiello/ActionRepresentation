@@ -1,3 +1,4 @@
+from typing import List
 import torch
 import wandb
 import torch.nn as nn
@@ -28,7 +29,8 @@ class Train_AE_wandb(Training):
         weight_decay: float = 1e-7,
         loss: str = 'MSE',
         stopping_loss: str = 'BCE',
-        recon_size: int = 16
+        recon_size: int = 16,
+        tags: List[str] = None
     ) -> None:
 
         super().__init__(
@@ -46,27 +48,41 @@ class Train_AE_wandb(Training):
         self.recon_size = recon_size
         self.input_transform, self.recon_transform, self.output_transform = transform
 
+        self.ae_loss = nn.MSELoss()
+
         self.stopping_epochs = stopping_epochs
         self.stopping_dataloader = stopping_dataset
         self.stopping_loss = get_loss(stopping_loss)
         self.stopping_optimiser = None
 
         print("\nEstablishing connection with Weights and Biases")
-        self.run = wandb.init(
-            project="New-Robot-Action-Representation",
-            reinit=True
-        )
+        config = self._wandb_config(optimiser, loss)
+        if tags is not None:
+            self.run = wandb.init(
+                project="New-Robot-Action-Representation",
+                reinit=True,
+                config=config,
+                tags=tags
+            )
+        else:
+            self.run = wandb.init(
+                project="New-Robot-Action-Representation",
+                reinit=True,
+                config=config
+            )
         self.run.name = model_name
         self.run.save()
-        self._wandb_config(optimiser, loss)
 
     def _wandb_config(self, optimiser, loss):
-        self.run.config.epochs = self.epochs
-        self.run.config.batch_size = self.batch_size
-        self.run.config.lr = self.lr
-        self.run.config.weight_decay = self.wd
-        self.run.config.optimiser = optimiser
-        self.run.config.loss = loss
+        config = {
+            "epochs" : self.epochs,
+            "batch_size" : self.batch_size,
+            "lr" : self.lr,
+            "weight_decay" : self.wd,
+            "optimiser" : optimiser,
+            "loss" : loss
+        }
+        return config
 
     def _wandb_log_epoch(
         self,
@@ -99,6 +115,9 @@ class Train_AE_wandb(Training):
                 "label_reconstruction": wandb.Image(label),
                 "predicted_reconstruction": wandb.Image(pred)
             })
+
+    def get_run_id(self):
+        return self.run.id
         
     def train_reaching(self):
         print_every = 10
@@ -121,7 +140,7 @@ class Train_AE_wandb(Training):
                 labels = labels.to(device=self.device, dtype=dtype)
 
                 out, mi = self.model(x, train_stop=False)
-                recon_loss = self.loss(mi, mi_label)
+                recon_loss = self.ae_loss(mi, mi_label)
                 action_loss = self.loss(out, labels)
                 loss = action_loss + recon_loss
 
@@ -144,7 +163,7 @@ class Train_AE_wandb(Training):
                                   val_recon_loss, val_action_loss, val_loss)
             print("\n\n")
 
-        self._wandb_log_image_predictions(n_preds=3)
+        self._wandb_log_image_predictions(n_preds=None)
         self.run.finish()
 
     def freeze_reaching(self):

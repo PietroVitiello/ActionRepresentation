@@ -71,6 +71,9 @@ class Train_eeVelAux_wandb(Training):
             "val_action_loss": val_loss
         })
 
+    def get_run_id(self):
+        return self.run.id
+
     def train(self):
         print_every = 10
         dtype = torch.float32

@@ -7,6 +7,7 @@ class Scene():
     ) -> None:
         self.target: Target = None
 
+    @abstractclassmethod
     def set_target_object(self, target):
         self.target = target
         self._environment_startup()
@@ -21,6 +22,10 @@ class Scene():
 
     @abstractclassmethod
     def set_scene(self, data):
+        pass
+
+    @abstractclassmethod
+    def log_test_run(self, run, n_completions):
         pass
 
     def restrictTargetBound(self, restriction_type: str):
