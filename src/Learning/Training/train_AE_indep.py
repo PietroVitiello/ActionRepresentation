@@ -121,6 +121,9 @@ class Train_AE_indep_wandb(Training):
                 "predicted_reconstruction": wandb.Image(pred)
             })
 
+    def get_run_id(self):
+        return self.run.id
+
     def train_AE(self):
         print_every = 10
         dtype = torch.float32
@@ -169,7 +172,7 @@ class Train_AE_indep_wandb(Training):
                 labels = self.output_transform(labels)
                 labels = labels.to(device=self.device, dtype=dtype)
 
-                out = self.model(x, train_stop=False)
+                out, mi = self.model(x, train_stop=False)
                 action_loss = self.loss(out, labels)
 
                 self.optimiser.zero_grad()
@@ -189,7 +192,7 @@ class Train_AE_indep_wandb(Training):
                                   val_recon_loss, val_action_loss, val_loss)
             print("\n\n")
 
-        self._wandb_log_image_predictions(n_preds=3)
+        self._wandb_log_image_predictions(n_preds=None)
         self.run.finish()
 
     def freeze_reaching(self):
@@ -244,7 +247,7 @@ class Train_AE_indep_wandb(Training):
 
         print("\nInitiating Training for AutoEncoder")
         self.train_AE()
-        print("\nReaching Training Ended\n")
+        print("AutoEncoder Training Ended\n")
 
         self.unfreeze_reaching()
 

@@ -82,6 +82,7 @@ class SimDataset(Dataset):
         for shape in range(n_objects):
             indices = np.arange(shape, total_number_demos, n_objects)
             np.random.shuffle(indices)
+            indices = indices[:n_demos]
             train_indices[shape, :] = indices[:training_len]
             validation_indices[shape, :] = indices[training_len:]
 

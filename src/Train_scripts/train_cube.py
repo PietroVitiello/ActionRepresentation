@@ -4,6 +4,7 @@ from Learning.train_model import loading_data, training_individual
 
 dataset_pipe = None
 saved_config = "thesis_models" # "cnn2fc_config"
+tags = None
 
 def load_data():
     print(f"\n{int(np.round(n_demos * (2-train_val_split)))} Total Demonstrations: {n_demos} T, {int(np.round(n_demos * (1-train_val_split)))} V")
@@ -57,7 +58,8 @@ def runConfig(transform, metrics, reach_datasets, stop_datasets):
                         model_name,
                         num_outputs,
                         num_aux_outputs,
-                        recon_size
+                        recon_size,
+                        tags
                     )
     keepUseful(configs, useless_keys)
     # print(metrics[0])
@@ -161,6 +163,9 @@ stop_data_mode = "onlyStop"
 n_demos = 30
 train_val_split = 0.8
 
+task = "cube"
+tags_default = [f"{task}", "30_demos"]
+
 transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
@@ -168,32 +173,27 @@ transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 epochs = 100
 batch_size = 64
 use_gpu = True
-epochs_stopping = 30
-
-
-################################################# Model
-saved_model_name = "BaselineCNN_cube_30d"
-model_name = "BaselineCNN"
-training_method = 'aux_stop_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
+epochs_stopping = 40
 
 num_outputs = 6
 num_aux_outputs = 9
-
 optimiser = 'Adamax'
-lr = 0.0007                    ###0.001 #0.0007 #0.001
+lr = 0.001
 weight_decay = 1e-7
-
 loss = 'MSE'
 stopping_loss = 'BCE'
-
 recon_size = 16
 
+
+################################################# Model
+saved_model_name = f"BaselineCNN_{task}_{n_demos}d"
+model_name = "BaselineCNN"
+training_method = 'aux_stop_wandb'
+tags = tags_default + ["BaselineCNN"]
+
 runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
 
 
 #****************** Data ******************#
@@ -202,89 +202,57 @@ transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
 ################################################# Model
-saved_model_name = "SpatialAE_cube_30d"
+saved_model_name = f"SpatialAE_{task}_{n_demos}d"
 model_name = "SpatialAE"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["SpatialAE"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
 
 
+
+
 #****************** Data ******************#
-# data_folder = "distrGrasp_64"
 reach_data_mode = "MI"
-# stop_data_mode = "onlyStop"
-
-# n_demos = None
-# train_val_split = None
-
 transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
 ################################################# Model
-saved_model_name = "MI_Net_cube_30d"
+saved_model_name = f"MI_Net_{task}_{n_demos}d"
 model_name = "MotionImage_attention"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["MI_Net"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
 
 
 ################################################# Model
-saved_model_name = "MI_Net_deeperAttention_cube_30d"
+saved_model_name = f"MI_Net_deeperAttention_{task}_{n_demos}d"
 model_name = "MotionImage_deeper_attention"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["deeper_attention"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
+################################################# Model
+saved_model_name = f"MI_Net_auxiliary_{task}_{n_demos}d"
+model_name = "MotionImage_auxiliary"
+training_method = 'AE_wandb'
+tags = tags_default + ["auxiliary"]
+
+runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
+################################################# Model
+saved_model_name = f"MI_Net_indepAE_{task}_{n_demos}d"
+model_name = "MotionImage_indepAE"
+training_method = 'AE_indep'
+tags = tags_default + ["indepAE"]
+
+runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
 
 
 #****************** Data ******************#
@@ -294,28 +262,14 @@ transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
 ################################################# Model
-saved_model_name = "MI_Net64_cube_30d"
+saved_model_name = f"MI_Net64_{task}_{n_demos}d"
 model_name = "MotionImage_attention_64"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["MI_Net_64"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
 
 
 #****************** Data ******************#
@@ -324,28 +278,14 @@ transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
 ################################################# Model
-saved_model_name = "MI_Net_delta1_cube_30d"
+saved_model_name = f"MI_Net_delta1_{task}_{n_demos}d"
 model_name = "MotionImage_attention"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["delta_1"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
 
 
 #****************** Data ******************#
@@ -354,28 +294,14 @@ transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
 ################################################# Model
-saved_model_name = "MI_Net_unfiltered_cube_30d"
+saved_model_name = f"MI_Net_unfiltered_{task}_{n_demos}d"
 model_name = "MotionImage_attention"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["unfiltered"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
 
 
 #****************** Data ******************#
@@ -384,26 +310,10 @@ transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
 ################################################# Model
-saved_model_name = "Future_Net_cube_30d"
+saved_model_name = f"Future_Net_{task}_{n_demos}d"
 model_name = "MotionImage_attention"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["future"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
 
@@ -417,11 +327,15 @@ dataset_pipe = None
 
 #****************** Data ******************#
 data_folder = "cubeGrasp_64"
+is_shape_data = False
 reach_data_mode = "aux"
 stop_data_mode = "onlyStop"
 
-n_demos = 100
+n_demos = 70
 train_val_split = 0.8
+
+task = "cube"
+tags_default = [f"{task}", "70_demos"]
 
 transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
@@ -430,32 +344,27 @@ transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 epochs = 100
 batch_size = 64
 use_gpu = True
-epochs_stopping = 30
-
-
-################################################# Model
-saved_model_name = "BaselineCNN_cube_100d"
-model_name = "BaselineCNN"
-training_method = 'aux_stop_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
+epochs_stopping = 50
 
 num_outputs = 6
 num_aux_outputs = 9
-
 optimiser = 'Adamax'
-lr = 0.0007                    ###0.001 #0.0007 #0.001
+lr = 0.001
 weight_decay = 1e-7
-
 loss = 'MSE'
 stopping_loss = 'BCE'
-
 recon_size = 16
 
+
+################################################# Model
+saved_model_name = f"BaselineCNN_{task}_{n_demos}d"
+model_name = "BaselineCNN"
+training_method = 'aux_stop_wandb'
+tags = tags_default + ["BaselineCNN"]
+
 runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
 
 
 #****************** Data ******************#
@@ -464,89 +373,57 @@ transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
 ################################################# Model
-saved_model_name = "SpatialAE_cube_100d"
+saved_model_name = f"SpatialAE_{task}_{n_demos}d"
 model_name = "SpatialAE"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["SpatialAE"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
 
 
+
+
 #****************** Data ******************#
-# data_folder = "distrGrasp_64"
 reach_data_mode = "MI"
-# stop_data_mode = "onlyStop"
-
-# n_demos = None
-# train_val_split = None
-
 transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
 ################################################# Model
-saved_model_name = "MI_Net_cube_100d"
+saved_model_name = f"MI_Net_{task}_{n_demos}d"
 model_name = "MotionImage_attention"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["MI_Net"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
 
 
 ################################################# Model
-saved_model_name = "MI_Net_deeperAttention_cube_100d"
+saved_model_name = f"MI_Net_deeperAttention_{task}_{n_demos}d"
 model_name = "MotionImage_deeper_attention"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["deeper_attention"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
+################################################# Model
+saved_model_name = f"MI_Net_auxiliary_{task}_{n_demos}d"
+model_name = "MotionImage_auxiliary"
+training_method = 'AE_wandb'
+tags = tags_default + ["auxiliary"]
+
+runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
+################################################# Model
+saved_model_name = f"MI_Net_indepAE_{task}_{n_demos}d"
+model_name = "MotionImage_indepAE"
+training_method = 'AE_indep'
+tags = tags_default + ["indepAE"]
+
+runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
 
 
 #****************** Data ******************#
@@ -556,28 +433,14 @@ transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
 ################################################# Model
-saved_model_name = "MI_Net64_cube_100d"
+saved_model_name = f"MI_Net64_{task}_{n_demos}d"
 model_name = "MotionImage_attention_64"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["MI_Net_64"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
 
 
 #****************** Data ******************#
@@ -586,28 +449,14 @@ transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
 ################################################# Model
-saved_model_name = "MI_Net_delta1_cube_100d"
+saved_model_name = f"MI_Net_delta1_{task}_{n_demos}d"
 model_name = "MotionImage_attention"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["delta_1"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
 
 
 #****************** Data ******************#
@@ -616,28 +465,14 @@ transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
 ################################################# Model
-saved_model_name = "MI_Net_unfiltered_cube_100d"
+saved_model_name = f"MI_Net_unfiltered_{task}_{n_demos}d"
 model_name = "MotionImage_attention"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["unfiltered"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+
 
 
 #****************** Data ******************#
@@ -646,25 +481,9 @@ transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
 ################################################# Model
-saved_model_name = "Future_Net_cube_100d"
+saved_model_name = f"Future_Net_{task}_{n_demos}d"
 model_name = "MotionImage_attention"
 training_method = 'AE_wandb'
-
-# epochs = 100
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 30
-
-num_outputs = 6
-num_aux_outputs = 9
-
-optimiser = 'Adamax'
-lr = 0.0007                       ###0.001 #0.0007 #0.001
-weight_decay = 1e-7
-
-loss = 'MSE'
-stopping_loss = 'BCE'
-
-recon_size = 16
+tags = tags_default + ["future"]
 
 runConfig(transform, metrics, reach_datasets, stop_datasets)

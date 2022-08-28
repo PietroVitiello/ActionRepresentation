@@ -3,7 +3,7 @@ import numpy as np
 from Learning.train_model import loading_data, training_individual
 
 dataset_pipe = None
-saved_config = "thesis_tuning" # "cnn2fc_config"
+saved_config = "thesis_models" # "cnn2fc_config"
 
 def load_data():
     print(f"\n{int(np.round(n_demos * (2-train_val_split)))} Total Demonstrations: {n_demos} T, {int(np.round(n_demos * (1-train_val_split)))} V")
@@ -71,7 +71,7 @@ def runConfig(transform, metrics, reach_datasets, stop_datasets):
 
     print("Uploading configuration details")
     saveConfig(configs)
-    print(f"Configurations saved in 'Learning/TrainedModels/{saved_config}.yaml'\n")
+    print("Configurations saved in 'Learning/TrainedModels/model_config.yaml'\n")
     
 
 def saveConfig(configs):
@@ -94,12 +94,12 @@ def keepUseful(configs:dict, useless: list):
 
 
 #****************** Spacer Run ******************#
-data_folder = "shapeGrasp_64"
-is_shape_data = True
+data_folder = "cubeGrasp_64"
+is_shape_data = False
 reach_data_mode = "aux"
 stop_data_mode = "onlyStop"
-n_demos = 30
-train_val_split = 1 - 1/6
+n_demos = 1
+train_val_split = 0.8
 transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 epochs = 1
 batch_size = 64
@@ -107,7 +107,7 @@ use_gpu = True
 epochs_stopping = 0
 tags = None
 
-saved_model_name = "spacer_testing_cube"
+saved_model_name = "spacer_MIstop_cube"
 model_name = "BaselineCNN"
 training_method = 'aux_stop_wandb'
 num_outputs = 6
@@ -154,55 +154,53 @@ dataset_pipe = None
 
 
 
-# tags = ["test"]
-# #****************** Data ******************#
-# data_folder = "cubeGrasp_64"
-# is_shape_data = False
-# reach_data_mode = "MI"
-# stop_data_mode = "onlyStop"
 
-# n_demos = 30
-# train_val_split = 0.8
+#****************** Data ******************#
+data_folder = "cubeGrasp_64"
+is_shape_data = False
+reach_data_mode = "MI"
+stop_data_mode = "onlyStop"
 
-# transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
+n_demos = 30
+train_val_split = 0.8
 
-
-# #****************** Training ******************#
-# epochs = 1
-# batch_size = 64
-# use_gpu = True
-# epochs_stopping = 1
-
-# ################################################# Model
-
-# saved_model_name = f"MI_Net_deeperAttention_test"
-# model_name = "MotionImage_deeper_attention"
-# training_method = 'AE_wandb'
-# num_outputs = 6
-# num_aux_outputs = 9
-# optimiser = 'Adamax'
-# lr = 0.001
-# weight_decay = 1e-7
-# loss = 'MSE'
-# stopping_loss = 'BCE'
-# recon_size = 16
-# runConfig(transform, metrics, reach_datasets, stop_datasets)
+transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
 
-# # ################################################# Model
+#****************** Training ******************#
+epochs = 100
+batch_size = 64
+use_gpu = True
+epochs_stopping = 30
 
-# # saved_model_name = f"MI_auxiliary_cube"
-# # model_name = "MotionImage_auxiliary"
-# # training_method = 'AE_wandb'
-# # num_outputs = 6
-# # num_aux_outputs = 9
-# # optimiser = 'Adamax'
-# # lr = 0.001
-# # weight_decay = 1e-7
-# # loss = 'MSE'
-# # stopping_loss = 'BCE'
-# # recon_size = 16
-# # runConfig(transform, metrics, reach_datasets, stop_datasets)
+tags = ["MI_stop_tuning", f"{n_demos}", f"{epochs_stopping}stop"]
+
+################################################# Model
+
+saved_model_name = f"MI_Net_cube_{n_demos}d_{epochs_stopping}es"
+model_name = "MotionImage_attention"
+training_method = 'AE_wandb'
+num_outputs = 6
+num_aux_outputs = 9
+optimiser = 'Adamax'
+lr = 0.001
+weight_decay = 1e-7
+loss = 'MSE'
+stopping_loss = 'BCE'
+recon_size = 16
+runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+################################################# Model
+epochs_stopping = 40
+tags = ["MI_stop_tuning", f"{n_demos}", f"{epochs_stopping}stop"]
+saved_model_name = f"MI_Net_cube_{n_demos}d_{epochs_stopping}es"
+runConfig(transform, metrics, reach_datasets, stop_datasets)
+
+################################################# Model
+epochs_stopping = 50
+tags = ["MI_stop_tuning", f"{n_demos}", f"{epochs_stopping}stop"]
+saved_model_name = f"MI_Net_cube_{n_demos}d_{epochs_stopping}es"
+runConfig(transform, metrics, reach_datasets, stop_datasets)
 
 
 
@@ -215,35 +213,27 @@ dataset_pipe = None
 
 
 
-# # dataset_pipe = None
-# # data_folder = "cubeGrasp_64"
-# # is_shape_data = False
-# # reach_data_mode = "aux"
-# # stop_data_mode = "onlyStop"
 
-# # n_demos = 70
-# # train_val_split = 0.8
+dataset_pipe = None
+n_demos = 70
+train_val_split = 0.8
 
-# # transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
+transform, metrics, reach_datasets, stop_datasets, dataset_pipe = load_data()
 
+################################################# Model
+epochs_stopping = 30
+tags = ["MI_stop_tuning", f"{n_demos}", f"{epochs_stopping}stop"]
+saved_model_name = f"MI_Net_cube_{n_demos}d_{epochs_stopping}es"
+runConfig(transform, metrics, reach_datasets, stop_datasets)
 
-# # #****************** Training ******************#
-# # epochs = 100
-# # batch_size = 64
-# # use_gpu = True
-# # epochs_stopping = 40
+################################################# Model
+epochs_stopping = 40
+tags = ["MI_stop_tuning", f"{n_demos}", f"{epochs_stopping}stop"]
+saved_model_name = f"MI_Net_cube_{n_demos}d_{epochs_stopping}es"
+runConfig(transform, metrics, reach_datasets, stop_datasets)
 
-# # ################################################# Model
-
-# # saved_model_name = f"baseline_try"
-# # model_name = "BaselineCNN"
-# # training_method = 'aux_stop_wandb'
-# # num_outputs = 6
-# # num_aux_outputs = 9
-# # optimiser = 'Adamax'
-# # lr = 0.001
-# # weight_decay = 1e-7
-# # loss = 'MSE'
-# # stopping_loss = 'BCE'
-# # recon_size = 16
-# # runConfig(transform, metrics, reach_datasets, stop_datasets)
+################################################# Model
+epochs_stopping = 50
+tags = ["MI_stop_tuning", f"{n_demos}", f"{epochs_stopping}stop"]
+saved_model_name = f"MI_Net_cube_{n_demos}d_{epochs_stopping}es"
+runConfig(transform, metrics, reach_datasets, stop_datasets)

@@ -72,25 +72,28 @@ n = 70
 
 
 
-n_demos = [30, 70]
-lr_ids = ["7e4", "1e3", "3e3", "5e3", "8e3"]
+# n_demos = [30, 70]
+n_demos = [70]
+# lr_ids = ["7e4", "1e3", "3e3", "5e3", "8e3"]
+# lr_ids = ["3e3", "5e3", "8e3"]
+lr_ids = ["8e3"]
 for n in n_demos:
 
     for lr_id in lr_ids:
-        ################################################# Model
-        if lr_id != "7e4":
-            model_filename = f"MI_Net_cube_{n}d_{lr_id}_1e7"
-            runTest()
-            if stop_between_models:
-                input("\n\nPress enter to test the next model\n\n")
-            # time.sleep(0.5)
+        # ################################################# Model
+        # if lr_id != "3e3":
+        #     model_filename = f"MI_Net_cube_{n}d_{lr_id}_1e7"
+        #     runTest()
+        #     if stop_between_models:
+        #         input("\n\nPress enter to test the next model\n\n")
+        #     # time.sleep(0.5)
 
-        ################################################# Model
-        model_filename = f"MI_Net_cube_{n}d_{lr_id}_2e7"
-        runTest()
-        if stop_between_models:
-            input("\n\nPress enter to test the next model\n\n")
-        # time.sleep(0.5)
+        # ################################################# Model
+        # model_filename = f"MI_Net_cube_{n}d_{lr_id}_2e7"
+        # runTest()
+        # if stop_between_models:
+        #     input("\n\nPress enter to test the next model\n\n")
+        # # time.sleep(0.5)
 
         ################################################# Model
         model_filename = f"MI_Net_cube_{n}d_{lr_id}_5e7"

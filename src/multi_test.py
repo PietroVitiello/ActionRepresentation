@@ -1,4 +1,5 @@
 import argparse
+import time
 from ruamel.yaml import YAML
 from Learning.test_model import model_testing
 
@@ -40,52 +41,85 @@ restriction_type = "same"
 use_metrics = True
 max_n_steps = 140
 n_distractors = 1
-show_testing = True
+show_testing = False
 
-stop_between_models = True
+stop_between_models = False
+
+
+
+
+n_demos = [30, 70]
+n_stop_epochs = [30, 40, 50]
+for n in n_demos:
+
+    for epoch in n_stop_epochs:
+        ################################################# Model
+        model_filename = f"MI_Net_cube_{n}d_{epoch}es"
+        runTest()
+        if stop_between_models:
+            input("\n\nPress enter to test the next model\n\n")
 
 ################################################# Model
-model_filename = "BaselineCNN_cube_100d"
+model_filename = f"baseline_try"
 runTest()
 if stop_between_models:
     input("\n\nPress enter to test the next model\n\n")
 
-################################################# Model
-model_filename = "SpatialAE_cube_100d"
-runTest()
-if stop_between_models:
-    input("\n\nPress enter to test the next model\n\n")
 
-################################################# Model
-model_filename = "MI_Net_cube_100d"
-runTest()
-if stop_between_models:
-    input("\n\nPress enter to test the next model\n\n")
 
-################################################# Model
-model_filename = "MI_Net_deeperAttention_cube_100d"
-runTest()
-if stop_between_models:
-    input("\n\nPress enter to test the next model\n\n")
 
-################################################# Model
-model_filename = "MI_Net64_cube_100d"
-runTest()
-if stop_between_models:
-    input("\n\nPress enter to test the next model\n\n")
 
-################################################# Model
-model_filename = "MI_Net_delta1_cube_100d"
-runTest()
-if stop_between_models:
-    input("\n\nPress enter to test the next model\n\n")
 
-################################################# Model
-model_filename = "MI_Net_unfiltered_cube_100d"
-runTest()
-if stop_between_models:
-    input("\n\nPress enter to test the next model\n\n")
 
-################################################# Model
-model_filename = "Future_Net_cube_100d"
-runTest()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ################################################# Model
+# model_filename = "MI_Net_cube_30d_7e4lr"
+# runTest()
+# if stop_between_models:
+#     input("\n\nPress enter to test the next model\n\n")
+
+# ################################################# Model
+# model_filename = "MI_Net_cube_30d_8e5lr"
+# runTest()
+# if stop_between_models:
+#     input("\n\nPress enter to test the next model\n\n")
+
+# ################################################# Model
+# model_filename = "MI_Net_cube_30d_1e4lr"
+# runTest()
+# if stop_between_models:
+#     input("\n\nPress enter to test the next model\n\n")
+
+# ################################################# Model
+# model_filename = "MI_Net_cube_30d_3e3lr"
+# runTest()
+# if stop_between_models:
+#     input("\n\nPress enter to test the next model\n\n")
+
+# ################################################# Model
+# model_filename = "MI_Net_cube_30d_6e3lr"
+# runTest()
+# if stop_between_models:
+#     input("\n\nPress enter to test the next model\n\n")

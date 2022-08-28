@@ -147,7 +147,8 @@ class MotionImage_auxiliary(nn.Module):
         super(MotionImage_auxiliary, self).__init__()
 
         self.cnn_backbone = BaselineCNN_backbone()
-        self.mi_attention = Motion_attention()
+        deconv_channels = [256, 128, 64] #assuming starting from 4x4 to 32x32
+        self.motion_decoder = Motion_decoder(deconv_channels)
 
         self.reach_fc = nn.Sequential(nn.Linear(256, 128),
                                       nn.ReLU())
@@ -162,7 +163,7 @@ class MotionImage_auxiliary(nn.Module):
 
     def freeze_backbone(self):
         self.cnn_backbone.requires_grad_(False)
-        self.mi_attention.requires_grad_(False)
+        self.motion_decoder.requires_grad_(False)
         self.reach_fc.requires_grad_(False)
         self.out.requires_grad_(False)
         self.aux.requires_grad_(False)
@@ -171,7 +172,7 @@ class MotionImage_auxiliary(nn.Module):
         feature_map4x4, x_conv = self.cnn_backbone(x)
         if self.training:
             if train_stop == False:
-                _, mi = self.mi_attention(feature_map4x4)
+                _, mi = self.motion_decoder(feature_map4x4)
                 x = self.reach_fc(x_conv)
                 x_aux = self.aux(x)
                 x_out = self.out(x)
@@ -217,7 +218,9 @@ class MI_Net_indepAE(nn.Module):
         self.stop.requires_grad_(False)
 
     def unfreeze_reach(self):
-        self.cnn_backbone.requires_grad_(True)
+        self.cnn_backbone.requires_grad_(False)
+        self.motion_decoder.requires_grad_(False)
+
         self.mi_attention.requires_grad_(True)
         self.reach_fc.requires_grad_(True)
         self.out.requires_grad_(True)
@@ -226,6 +229,7 @@ class MI_Net_indepAE(nn.Module):
 
     def freeze_backbone(self):
         self.cnn_backbone.requires_grad_(False)
+        self.motion_decoder.requires_grad_(False)
         self.mi_attention.requires_grad_(False)
         self.reach_fc.requires_grad_(False)
         self.out.requires_grad_(False)
@@ -239,13 +243,13 @@ class MI_Net_indepAE(nn.Module):
                 _, mi = self.motion_decoder(feature_map4x4)
                 return mi
             elif train_stop == False:
-                mi_encoding, _ = self.mi_attention(feature_map4x4)
+                mi_encoding, mi = self.motion_decoder(feature_map4x4)
                 mi_encoding = self.mi_attention(mi_encoding)
                 x = self.reach_fc(x_conv)
                 x = torch.mul(x, mi_encoding)
                 x_aux = self.aux(x)
                 x_out = self.out(x)
-                return torch.cat((x_out, x_aux), dim=1)
+                return torch.cat((x_out, x_aux), dim=1), mi
             elif train_stop == True:
                 return self.stop(x_conv)
         else:

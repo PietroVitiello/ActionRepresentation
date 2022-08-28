@@ -340,8 +340,8 @@ def model_choice(
         return MotionImage_attention_64(num_outputs, num_aux_outputs)
     elif model_name == "MotionImage_auxiliary":
         return MotionImage_auxiliary(num_outputs, num_aux_outputs)
-
-
+    elif model_name == "MotionImage_indepAE":
+        return MI_Net_indepAE(num_outputs, num_aux_outputs)
 
     elif model_name == "_BaselineCNN_":
         return BaselineCNN(num_outputs)
@@ -444,6 +444,8 @@ def uselessParams(mode: str):
     elif mode == 'motion_image':
         useless_keys.append("reconstruction_size")
     elif mode == 'AE_wandb':
+        useless_keys.append("reconstruction_size")
+    elif mode == 'AE_indep':
         useless_keys.append("reconstruction_size")
 
     elif mode == 'pureAE':

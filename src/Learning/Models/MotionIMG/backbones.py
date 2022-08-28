@@ -117,7 +117,7 @@ class Motion_attention(nn.Module):
         motion_encoding = motion_encoding.view(motion_encoding.size(0),-1)
         return motion_encoding, mi
 
-class Motion_DeeperAttention(nn.Module):
+class Motion_DeeperAttention_conv(nn.Module):
     def __init__(self) -> None:
         super(Motion_DeeperAttention, self).__init__()
 
@@ -140,6 +140,29 @@ class Motion_DeeperAttention(nn.Module):
         motion_encoding = self.conv1(motion_encoding)
         motion_encoding = self.conv2(motion_encoding)
         motion_encoding = motion_encoding.view(motion_encoding.size(0),-1)
+        return motion_encoding, mi
+
+class Motion_DeeperAttention(nn.Module):
+    def __init__(self) -> None:
+        super(Motion_DeeperAttention, self).__init__()
+
+        deconv_channels = [256, 128, 64] #assuming starting from 4x4 to 32x32
+        self.motion_decoder = Motion_decoder(deconv_channels)
+        self.conv = nn.Sequential(nn.Conv2d(64, 192, kernel_size=3, stride=1, padding=0, bias=True),
+                                   nn.BatchNorm2d(192),
+                                   nn.MaxPool2d(3, 2, 1),
+                                   nn.AvgPool2d(7))
+        self.fc = nn.Linear(192, 128)
+
+    def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        mi = None
+        if self.training:
+            motion_encoding, mi = self.motion_decoder(x)
+        else:
+            motion_encoding = self.motion_decoder(x)
+        motion_encoding = self.conv(motion_encoding)
+        motion_encoding = motion_encoding.view(motion_encoding.size(0),-1)
+        motion_encoding = self.fc(motion_encoding)
         return motion_encoding, mi
 
 class Motion_attention_64(nn.Module):
@@ -175,7 +198,7 @@ class Attention(nn.Module):
                                   nn.AvgPool2d(7))
 
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
-        motion_encoding = self.conv(motion_encoding)
+        motion_encoding = self.conv(x)
         motion_encoding = motion_encoding.view(motion_encoding.size(0),-1)
         return motion_encoding
         
