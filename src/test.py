@@ -55,18 +55,18 @@ scene_type = "cube"
 n_distractors = 3
 shape = 'tall cylinder'
 
-model_filename = "spacer_cube"
+model_filename = "MI_Net_cube_30d_7e4lr"
 restriction_type = "same"
 
-saved_locations = "cube_envs" #"LinearGrasp"
+saved_locations = "cube_envs_3" #"LinearGrasp"
 use_metrics = True
 
-num_episodes = 15
+num_episodes = 100
 max_n_steps = 140
 
-config_file_name = "thesis_models" #"cnn2fc_config" "model_config"
+config_file_name = "thesis_tuning" #"cnn2fc_config" "model_config"
 
-show_testing = False
+show_testing = True
 
 
 if __name__ == "__main__":

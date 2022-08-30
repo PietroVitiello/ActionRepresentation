@@ -37,8 +37,9 @@ def model_testing(
     run_id = get_run_id(model_filename, config_filename)
     run = wandb.init(
         project="New-Robot-Action-Representation",
+        id=run_id,
         reinit=True,
-        id=run_id
+        resume="allow"
     )
 
     model_name, constrained, dataset_name, model_params = getModelData(model_filename, config_filename)

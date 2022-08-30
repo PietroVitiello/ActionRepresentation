@@ -254,7 +254,7 @@ class MI_Net_indepAE(nn.Module):
                 return self.stop(x_conv)
         else:
             mi_encoding = self.motion_decoder(feature_map4x4)
-            mi_encoding, _ = self.mi_attention(mi_encoding)
+            mi_encoding = self.mi_attention(mi_encoding)
             reach_x = self.reach_fc(x_conv)
             reach_x = torch.mul(reach_x, mi_encoding)
             reach_x = self.out(reach_x)

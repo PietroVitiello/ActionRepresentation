@@ -78,7 +78,7 @@ spacer_cube:
   Testing:
     Cube_Reached: []
     Boundary_Restriction: []
-    Attempts: null
+    Attempts:
 #NOTE:
 
 BaselineCNN_cube_30d:
@@ -139,9 +139,53 @@ BaselineCNN_cube_30d:
     - 1.0
   id: 23ys9kuc
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 34
+    - 13
+    - 7
+    - 6
+    - 13
+    - 5
+    - 7
+    - 7
+    - 7
+    - 34
+    - 34
+    - 78
+    - 13
+    - 8
+    - 7
+    - 13
+    - 5
+    - 7
+    - 7
+    - 7
+    - 85
+    - 78
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 SpatialAE_cube_30d:
@@ -205,9 +249,55 @@ SpatialAE_cube_30d:
     - 1.0
   id: t5og6jzl
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 15
+    - 1
+    - 2
+    - 0
+    - 3
+    - 2
+    - 3
+    - 4
+    - 2
+    - 15
+    - 15
+    - 31
+    - 1
+    - 2
+    - 0
+    - 3
+    - 2
+    - 3
+    - 4
+    - 2
+    - 33
+    - 31
+    - 0
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net_cube_30d:
@@ -275,9 +365,53 @@ MI_Net_cube_30d:
     - 1.0
   id: 1322myy0
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 36
+    - 3
+    - 2
+    - 2
+    - 11
+    - 3
+    - 12
+    - 12
+    - 10
+    - 36
+    - 36
+    - 78
+    - 3
+    - 3
+    - 2
+    - 11
+    - 3
+    - 12
+    - 12
+    - 10
+    - 80
+    - 78
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net_deeperAttention_cube_30d:
@@ -345,9 +479,53 @@ MI_Net_deeperAttention_cube_30d:
     - 1.0
   id: 3sy8iyf4
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 45
+    - 3
+    - 3
+    - 0
+    - 15
+    - 13
+    - 11
+    - 15
+    - 12
+    - 45
+    - 45
+    - 98
+    - 3
+    - 3
+    - 0
+    - 15
+    - 13
+    - 11
+    - 15
+    - 12
+    - 98
+    - 0
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net_auxiliary_cube_30d:
@@ -415,9 +593,51 @@ MI_Net_auxiliary_cube_30d:
     - 1.0
   id: 3rwvl00w
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 41
+    - 5
+    - 2
+    - 2
+    - 14
+    - 10
+    - 14
+    - 11
+    - 11
+    - 41
+    - 41
+    - 92
+    - 5
+    - 4
+    - 2
+    - 14
+    - 10
+    - 14
+    - 11
+    - 11
+    - 92
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net64_cube_30d:
@@ -485,9 +705,49 @@ MI_Net64_cube_30d:
     - 1.0
   id: 8s4hyul9
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 35
+    - 5
+    - 2
+    - 2
+    - 14
+    - 13
+    - 14
+    - 9
+    - 9
+    - 35
+    - 35
+    - 5
+    - 3
+    - 1
+    - 14
+    - 13
+    - 14
+    - 9
+    - 9
+    - 88
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net_delta1_cube_30d:
@@ -555,9 +815,47 @@ MI_Net_delta1_cube_30d:
     - 1.0
   id: 3uzmoiyc
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 42
+    - 5
+    - 5
+    - 1
+    - 14
+    - 6
+    - 9
+    - 5
+    - 42
+    - 42
+    - 5
+    - 4
+    - 1
+    - 14
+    - 6
+    - 9
+    - 5
+    - 9
+    - 85
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net_unfiltered_cube_30d:
@@ -625,9 +923,47 @@ MI_Net_unfiltered_cube_30d:
     - 1.0
   id: 29bvminu
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 44
+    - 3
+    - 6
+    - 0
+    - 15
+    - 14
+    - 9
+    - 15
+    - 44
+    - 44
+    - 3
+    - 6
+    - 1
+    - 15
+    - 14
+    - 9
+    - 15
+    - 12
+    - 96
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 Future_Net_cube_30d:
@@ -695,9 +1031,47 @@ Future_Net_cube_30d:
     - 1.0
   id: 13rpzgxx
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 21
+    - 6
+    - 1
+    - 4
+    - 9
+    - 2
+    - 10
+    - 9
+    - 21
+    - 21
+    - 6
+    - 1
+    - 3
+    - 9
+    - 2
+    - 10
+    - 9
+    - 9
+    - 66
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 BaselineCNN_cube_70d:
@@ -758,9 +1132,37 @@ BaselineCNN_cube_70d:
     - 1.0
   id: 3pp5gin3
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 43
+    - 9
+    - 4
+    - 5
+    - 43
+    - 99
+    - 9
+    - 4
+    - 3
+    - 15
+    - 10
+    - 12
+    - 15
+    - 11
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 SpatialAE_cube_70d:
@@ -824,9 +1226,37 @@ SpatialAE_cube_70d:
     - 1.0
   id: 3j1howvj
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 19
+    - 2
+    - 2
+    - 2
+    - 19
+    - 28
+    - 2
+    - 3
+    - 3
+    - 5
+    - 3
+    - 3
+    - 5
+    - 3
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net_cube_70d:
@@ -894,9 +1324,37 @@ MI_Net_cube_70d:
     - 1.0
   id: a9gq0pz5
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 41
+    - 6
+    - 3
+    - 1
+    - 41
+    - 99
+    - 6
+    - 2
+    - 3
+    - 14
+    - 9
+    - 15
+    - 8
+    - 5
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net_deeperAttention_cube_70d:
@@ -964,9 +1422,37 @@ MI_Net_deeperAttention_cube_70d:
     - 1.0
   id: 2ekgkvgw
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 37
+    - 3
+    - 2
+    - 0
+    - 37
+    - 92
+    - 3
+    - 2
+    - 0
+    - 14
+    - 8
+    - 13
+    - 10
+    - 11
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net_auxiliary_cube_70d:
@@ -1034,9 +1520,35 @@ MI_Net_auxiliary_cube_70d:
     - 1.0
   id: 37felelw
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 44
+    - 3
+    - 5
+    - 0
+    - 44
+    - 3
+    - 4
+    - 0
+    - 15
+    - 10
+    - 15
+    - 7
+    - 6
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net64_cube_70d:
@@ -1104,9 +1616,35 @@ MI_Net64_cube_70d:
     - 1.0
   id: 1id7w9ls
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 39
+    - 4
+    - 1
+    - 1
+    - 39
+    - 4
+    - 3
+    - 0
+    - 12
+    - 8
+    - 12
+    - 8
+    - 10
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net_delta1_cube_70d:
@@ -1174,9 +1712,35 @@ MI_Net_delta1_cube_70d:
     - 1.0
   id: 10qrqcoj
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 40
+    - 6
+    - 2
+    - 2
+    - 40
+    - 6
+    - 2
+    - 3
+    - 15
+    - 12
+    - 13
+    - 13
+    - 10
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net_unfiltered_cube_70d:
@@ -1244,9 +1808,35 @@ MI_Net_unfiltered_cube_70d:
     - 1.0
   id: i5961tr4
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 37
+    - 1
+    - 2
+    - 0
+    - 37
+    - 1
+    - 1
+    - 0
+    - 11
+    - 8
+    - 9
+    - 15
+    - 10
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 Future_Net_cube_70d:
@@ -1314,9 +1904,35 @@ Future_Net_cube_70d:
     - 1.0
   id: bvmth31k
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 43
+    - 6
+    - 1
+    - 2
+    - 43
+    - 6
+    - 2
+    - 2
+    - 15
+    - 8
+    - 14
+    - 14
+    - 9
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net_indepAE_cube_30d:
@@ -1384,9 +2000,71 @@ MI_Net_indepAE_cube_30d:
     - 1.0
   id: 37g1mskc
   Testing:
-    Cube_Reached: []
-    Boundary_Restriction: []
-    Attempts: null
+    Cube_Reached:
+    - 32
+    - 3
+    - 0
+    - 0
+    - 12
+    - 7
+    - 10
+    - 8
+    - 4
+    - 32
+    - 3
+    - 32
+    - 32
+    - 32
+    - 32
+    - 32
+    - 3
+    - 32
+    - 3
+    - 3
+    - 32
+    - 32
+    - 3
+    - 0
+    - 2
+    - 12
+    - 7
+    - 10
+    - 8
+    - 4
+    - 77
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
 #NOTE:
 
 MI_Net_indepAE_cube_70d:
@@ -1454,7 +2132,3543 @@ MI_Net_indepAE_cube_70d:
     - 1.0
   id: 301pt7tx
   Testing:
+    Cube_Reached:
+    - 35
+    - 3
+    - 4
+    - 0
+    - 35
+    - 3
+    - 3
+    - 0
+    - 12
+    - 9
+    - 6
+    - 10
+    - 9
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+spacer_distr:
+  model_name: BaselineCNN
+  data_folder: cubeGrasp_64
+  training_method: aux_stop_wandb
+  n_epochs: 1
+  n_epochs_stopping: 0
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 1
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 3qrrw2ak
+  Testing:
     Cube_Reached: []
     Boundary_Restriction: []
-    Attempts: null
+    Attempts:
+#NOTE:
+
+BaselineCNN_distr_30d:
+  model_name: BaselineCNN
+  data_folder: distrGrasp_64
+  training_method: aux_stop_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1q4z8k24
+  Testing:
+    Cube_Reached:
+    - 11
+    - 11
+    - 12
+    - 11
+    - 13
+    - 10
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+SpatialAE_distr_30d:
+  model_name: SpatialAE
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.7663604021072388
+  - - 0.13707414269447327
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1fg8g7di
+  Testing:
+    Cube_Reached:
+    - 1
+    - 5
+    - 3
+    - 1
+    - 7
+    - 2
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_distr_30d:
+  model_name: MotionImage_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011483919806778431
+    - 0.008067700080573559
+    - 0.009604436345398426
+  - - 0.05724833160638809
+    - 0.04830869287252426
+    - 0.051009904593229294
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: uuhyh61q
+  Testing:
+    Cube_Reached:
+    - 8
+    - 13
+    - 8
+    - 8
+    - 13
+    - 8
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_deeperAttention_distr_30d:
+  model_name: MotionImage_deeper_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011483919806778431
+    - 0.008067700080573559
+    - 0.009604436345398426
+  - - 0.05724833160638809
+    - 0.04830869287252426
+    - 0.051009904593229294
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 2j3rg9ge
+  Testing:
+    Cube_Reached:
+    - 7
+    - 11
+    - 9
+    - 7
+    - 11
+    - 8
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_auxiliary_distr_30d:
+  model_name: MotionImage_auxiliary
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011483919806778431
+    - 0.008067700080573559
+    - 0.009604436345398426
+  - - 0.05724833160638809
+    - 0.04830869287252426
+    - 0.051009904593229294
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1znlskor
+  Testing:
+    Cube_Reached:
+    - 3
+    - 11
+    - 9
+    - 3
+    - 11
+    - 9
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_indepAE_distr_30d:
+  model_name: MotionImage_indepAE
+  data_folder: distrGrasp_64
+  training_method: AE_indep
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011483919806778431
+    - 0.008067700080573559
+    - 0.009604436345398426
+  - - 0.05724833160638809
+    - 0.04830869287252426
+    - 0.051009904593229294
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 20aeeefq
+  Testing:
+    Cube_Reached:
+    - 4
+    - 8
+    - 3
+    - 4
+    - 7
+    - 3
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net64_distr_30d:
+  model_name: MotionImage_attention_64
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011449619196355343
+    - 0.008036919869482517
+    - 0.009574927389621735
+  - - 0.10021646320819855
+    - 0.08515267074108124
+    - 0.09210972487926483
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 11hdpw33
+  Testing:
+    Cube_Reached:
+    - 8
+    - 9
+    - 9
+    - 8
+    - 11
+    - 9
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_delta1_distr_30d:
+  model_name: MotionImage_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.019812103360891342
+    - 0.014056256040930748
+    - 0.01662130281329155
+  - - 0.0683373436331749
+    - 0.05482351779937744
+    - 0.06095011532306671
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1cekhwj8
+  Testing:
+    Cube_Reached:
+    - 8
+    - 12
+    - 9
+    - 8
+    - 13
+    - 10
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_unfiltered_distr_30d:
+  model_name: MotionImage_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.04681899771094322
+    - 0.038638580590486526
+    - 0.04243526980280876
+  - - 0.08095799386501312
+    - 0.0671217292547226
+    - 0.07305995374917984
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 2aa7kttd
+  Testing:
+    Cube_Reached:
+    - 8
+    - 8
+    - 3
+    - 8
+    - 7
+    - 2
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+Future_Net_distr_30d:
+  model_name: MotionImage_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.8009805679321289
+    - 0.7551406621932983
+    - 0.7337884902954102
+  - - 0.13478821516036987
+    - 0.17214196920394897
+    - 0.13925597071647644
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 38ry1zof
+  Testing:
+    Cube_Reached:
+    - 6
+    - 11
+    - 10
+    - 6
+    - 11
+    - 9
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+BaselineCNN_distr_70d:
+  model_name: BaselineCNN
+  data_folder: distrGrasp_64
+  training_method: aux_stop_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: l7ikc0hm
+  Testing:
+    Cube_Reached:
+    - 17
+    - 19
+    - 17
+    - 17
+    - 17
+    - 18
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+SpatialAE_distr_70d:
+  model_name: SpatialAE
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.762111485004425
+  - - 0.13857819139957428
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: lm23n14j
+  Testing:
+    Cube_Reached:
+    - 4
+    - 5
+    - 7
+    - 4
+    - 6
+    - 6
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_distr_70d:
+  model_name: MotionImage_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011585768312215805
+    - 0.008149472065269947
+    - 0.009842741303145885
+  - - 0.057593584060668945
+    - 0.04750456660985947
+    - 0.05111885815858841
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 2xwhtn4k
+  Testing:
+    Cube_Reached:
+    - 11
+    - 13
+    - 12
+    - 11
+    - 13
+    - 11
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_deeperAttention_distr_70d:
+  model_name: MotionImage_deeper_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011585768312215805
+    - 0.008149472065269947
+    - 0.009842741303145885
+  - - 0.057593584060668945
+    - 0.04750456660985947
+    - 0.05111885815858841
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 3m68zv3f
+  Testing:
+    Cube_Reached:
+    - 13
+    - 14
+    - 11
+    - 13
+    - 14
+    - 10
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_auxiliary_distr_70d:
+  model_name: MotionImage_auxiliary
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011585768312215805
+    - 0.008149472065269947
+    - 0.009842741303145885
+  - - 0.057593584060668945
+    - 0.04750456660985947
+    - 0.05111885815858841
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1prr1t84
+  Testing:
+    Cube_Reached:
+    - 11
+    - 13
+    - 11
+    - 11
+    - 12
+    - 10
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_indepAE_distr_70d:
+  model_name: MotionImage_indepAE
+  data_folder: distrGrasp_64
+  training_method: AE_indep
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011585768312215805
+    - 0.008149472065269947
+    - 0.009842741303145885
+  - - 0.057593584060668945
+    - 0.04750456660985947
+    - 0.05111885815858841
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: lt3eng5u
+  Testing:
+    Cube_Reached:
+    - 1
+    - 2
+    - 5
+    - 1
+    - 6
+    - 6
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net64_distr_70d:
+  model_name: MotionImage_attention_64
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011550522409379482
+    - 0.00811668299138546
+    - 0.009811300784349442
+  - - 0.10066792368888855
+    - 0.08559539169073105
+    - 0.09312991797924042
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 2wuv4247
+  Testing:
+    Cube_Reached:
+    - 14
+    - 14
+    - 15
+    - 14
+    - 14
+    - 14
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_delta1_distr_70d:
+  model_name: MotionImage_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.02053031697869301
+    - 0.014626890420913696
+    - 0.017595455050468445
+  - - 0.07098282873630524
+    - 0.056767892092466354
+    - 0.06338366121053696
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 2ntsxli6
+  Testing:
+    Cube_Reached:
+    - 12
+    - 12
+    - 12
+    - 12
+    - 11
+    - 12
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_unfiltered_distr_70d:
+  model_name: MotionImage_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.04684477299451828
+    - 0.03855640068650246
+    - 0.043034400790929794
+  - - 0.08165077865123749
+    - 0.0662752315402031
+    - 0.0738128274679184
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: pnr5hwjk
+  Testing:
+    Cube_Reached:
+    - 13
+    - 13
+    - 14
+    - 13
+    - 13
+    - 14
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+Future_Net_distr_70d:
+  model_name: MotionImage_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.793574333190918
+    - 0.7520075440406799
+    - 0.7329041957855225
+  - - 0.1457740217447281
+    - 0.169462189078331
+    - 0.13550741970539093
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 44qa16no
+  Testing:
+    Cube_Reached:
+    - 9
+    - 13
+    - 15
+    - 9
+    - 14
+    - 15
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+spacer_shape:
+  model_name: BaselineCNN
+  data_folder: cubeGrasp_64
+  training_method: aux_stop_wandb
+  n_epochs: 1
+  n_epochs_stopping: 0
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 1
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: o45502ym
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+BaselineCNN_shapes_30d:
+  model_name: BaselineCNN
+  data_folder: shapeGrasp_64
+  training_method: aux_stop_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8333333333333334
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: z80fiilp
+  Testing:
+    Cube_Reached:
+    - 13
+    - 10
+    - 11
+    - 14
+    - 13
+    - 10
+    - 11
+    - 14
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+SpatialAE_shapes_30d:
+  model_name: SpatialAE
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8333333333333334
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.7818230390548706
+  - - 0.1045781597495079
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 2c9n4u8b
+  Testing:
+    Cube_Reached:
+    - 2
+    - 2
+    - 3
+    - 2
+    - 2
+    - 2
+    - 3
+    - 2
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_shapes_30d:
+  model_name: MotionImage_attention
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8333333333333334
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.005679895170032978
+    - 0.0025845682248473167
+    - 0.002536476356908679
+  - - 0.041454143822193146
+    - 0.029362576082348824
+    - 0.028401216492056847
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 12gu7hvq
+  Testing:
+    Cube_Reached:
+    - 15
+    - 10
+    - 14
+    - 12
+    - 15
+    - 10
+    - 14
+    - 12
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_deeperAttention_shapes_30d:
+  model_name: MotionImage_deeper_attention
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8333333333333334
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.005679895170032978
+    - 0.0025845682248473167
+    - 0.002536476356908679
+  - - 0.041454143822193146
+    - 0.029362576082348824
+    - 0.028401216492056847
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1nqzwzvx
+  Testing:
+    Cube_Reached:
+    - 10
+    - 8
+    - 12
+    - 7
+    - 10
+    - 8
+    - 12
+    - 7
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_auxiliary_shapes_30d:
+  model_name: MotionImage_auxiliary
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8333333333333334
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.005679895170032978
+    - 0.0025845682248473167
+    - 0.002536476356908679
+  - - 0.041454143822193146
+    - 0.029362576082348824
+    - 0.028401216492056847
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 7qa6u14e
+  Testing:
+    Cube_Reached:
+    - 9
+    - 8
+    - 13
+    - 14
+    - 9
+    - 8
+    - 13
+    - 14
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_indepAE_shapes_30d:
+  model_name: MotionImage_indepAE
+  data_folder: shapeGrasp_64
+  training_method: AE_indep
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8333333333333334
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.005679895170032978
+    - 0.0025845682248473167
+    - 0.002536476356908679
+  - - 0.041454143822193146
+    - 0.029362576082348824
+    - 0.028401216492056847
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: kim8v9xk
+  Testing:
+    Cube_Reached:
+    - 8
+    - 5
+    - 6
+    - 10
+    - 8
+    - 5
+    - 6
+    - 10
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net64_shapes_30d:
+  model_name: MotionImage_attention_64
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8333333333333334
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.005664088763296604
+    - 0.002576791448518634
+    - 0.002528108423575759
+  - - 0.06967958062887192
+    - 0.047782398760318756
+    - 0.047373171895742416
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 2echq632
+  Testing:
+    Cube_Reached:
+    - 13
+    - 11
+    - 13
+    - 9
+    - 13
+    - 11
+    - 13
+    - 9
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_delta1_shapes_30d:
+  model_name: MotionImage_attention
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8333333333333334
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.010414790362119675
+    - 0.005211136303842068
+    - 0.00506676035001874
+  - - 0.051336877048015594
+    - 0.03423721343278885
+    - 0.03301381319761276
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 3lz0s1i2
+  Testing:
+    Cube_Reached:
+    - 13
+    - 11
+    - 13
+    - 14
+    - 13
+    - 11
+    - 13
+    - 14
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_unfiltered_shapes_30d:
+  model_name: MotionImage_attention
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8333333333333334
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.03296681493520737
+    - 0.02547229267656803
+    - 0.02614307403564453
+  - - 0.06309686601161957
+    - 0.04563094675540924
+    - 0.045686159282922745
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 2444lvjg
+  Testing:
+    Cube_Reached:
+    - 14
+    - 9
+    - 11
+    - 14
+    - 14
+    - 9
+    - 11
+    - 14
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+Future_Net_shapes_30d:
+  model_name: MotionImage_attention
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8333333333333334
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.8226969242095947
+    - 0.7698389291763306
+    - 0.7343034148216248
+  - - 0.06569278985261917
+    - 0.14561492204666138
+    - 0.13615064322948456
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 31n0mbk0
+  Testing:
+    Cube_Reached:
+    - 15
+    - 10
+    - 12
+    - 13
+    - 15
+    - 10
+    - 12
+    - 13
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+BaselineCNN_shapes_70d:
+  model_name: BaselineCNN
+  data_folder: shapeGrasp_64
+  training_method: aux_stop_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8571428571428572
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1qp9912t
+  Testing:
+    Cube_Reached:
+    - 13
+    - 3
+    - 10
+    - 9
+    - 9
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+SpatialAE_shapes_70d:
+  model_name: SpatialAE
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8571428571428572
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.7786471843719482
+  - - 0.1032654345035553
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: oaz2k43b
+  Testing:
+    Cube_Reached:
+    - 2
+    - 2
+    - 0
+    - 1
+    - 1
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_shapes_70d:
+  model_name: MotionImage_attention
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8571428571428572
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.005422620102763176
+    - 0.002354877768084407
+    - 0.00231598480604589
+  - - 0.04067814722657204
+    - 0.027868662029504776
+    - 0.02693364769220352
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 21hsg9iw
+  Testing:
+    Cube_Reached:
+    - 14
+    - 9
+    - 11
+    - 6
+    - 7
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_deeperAttention_shapes_70d:
+  model_name: MotionImage_deeper_attention
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8571428571428572
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.005422620102763176
+    - 0.002354877768084407
+    - 0.00231598480604589
+  - - 0.04067814722657204
+    - 0.027868662029504776
+    - 0.02693364769220352
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 149ok4u6
+  Testing:
+    Cube_Reached:
+    - 14
+    - 13
+    - 14
+    - 15
+    - 11
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_auxiliary_shapes_70d:
+  model_name: MotionImage_auxiliary
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8571428571428572
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.005422620102763176
+    - 0.002354877768084407
+    - 0.00231598480604589
+  - - 0.04067814722657204
+    - 0.027868662029504776
+    - 0.02693364769220352
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: qq8n47co
+  Testing:
+    Cube_Reached:
+    - 14
+    - 12
+    - 12
+    - 14
+    - 14
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_indepAE_shapes_70d:
+  model_name: MotionImage_indepAE
+  data_folder: shapeGrasp_64
+  training_method: AE_indep
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8571428571428572
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.005422620102763176
+    - 0.002354877768084407
+    - 0.00231598480604589
+  - - 0.04067814722657204
+    - 0.027868662029504776
+    - 0.02693364769220352
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1azw2d6f
+  Testing:
+    Cube_Reached:
+    - 9
+    - 5
+    - 9
+    - 9
+    - 11
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net64_shapes_70d:
+  model_name: MotionImage_attention_64
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8571428571428572
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.005492147523909807
+    - 0.0023634175304323435
+    - 0.002317507518455386
+  - - 0.0686672031879425
+    - 0.04575173184275627
+    - 0.045339882373809814
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: guskz9pb
+  Testing:
+    Cube_Reached:
+    - 14
+    - 9
+    - 14
+    - 15
+    - 13
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_delta1_shapes_70d:
+  model_name: MotionImage_attention
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8571428571428572
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.010468975640833378
+    - 0.004981422796845436
+    - 0.004867887124419212
+  - - 0.05243626981973648
+    - 0.03395840898156166
+    - 0.03292681276798248
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1tmfuwsv
+  Testing:
+    Cube_Reached:
+    - 13
+    - 10
+    - 10
+    - 12
+    - 11
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_unfiltered_shapes_70d:
+  model_name: MotionImage_attention
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8571428571428572
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.032092783600091934
+    - 0.02450382336974144
+    - 0.025169454514980316
+  - - 0.06252439320087433
+    - 0.044040702283382416
+    - 0.04410957917571068
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 25x4c330
+  Testing:
+    Cube_Reached:
+    - 15
+    - 13
+    - 10
+    - 11
+    - 14
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+Future_Net_shapes_70d:
+  model_name: MotionImage_attention
+  data_folder: shapeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8571428571428572
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.8189131617546082
+    - 0.7661181688308716
+    - 0.7310209274291992
+  - - 0.06445809453725815
+    - 0.14419062435626984
+    - 0.134863942861557
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 32n1uf1r
+  Testing:
+    Cube_Reached:
+    - 8
+    - 9
+    - 8
+    - 6
+    - 1
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+BaselineCNN_cube_30d_2:
+  model_name: BaselineCNN
+  data_folder: cubeGrasp_64
+  training_method: aux_stop_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 21v6iekg
+  Testing:
+    Cube_Reached:
+    - 41
+    Boundary_Restriction:
+    - moderate
+    Attempts: 100
+#NOTE:
+
+BaselineCNN_cube_70d_2:
+  model_name: BaselineCNN
+  data_folder: cubeGrasp_64
+  training_method: aux_stop_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 14ejcg19
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
 #NOTE:

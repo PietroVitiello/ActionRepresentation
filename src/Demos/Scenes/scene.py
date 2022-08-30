@@ -30,3 +30,6 @@ class Scene():
 
     def restrictTargetBound(self, restriction_type: str):
         self.target.set_restrictedBoundaries(restriction_type)
+
+    def get_target(self):
+        return self.target

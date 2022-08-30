@@ -26,9 +26,6 @@ class Shape_Scene(Scene):
         ]
         self.distance2cube = None
 
-    def get_target(self):
-        return self.target
-
     def get_supported_shapes(self):
         return self.supported_shapes
 
@@ -123,4 +120,5 @@ def get_id_name(index):
         'cylinders',
         'tall_cylinders'   
     ]
+    return names[index]
         

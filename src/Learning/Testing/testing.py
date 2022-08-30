@@ -54,6 +54,7 @@ class Test():
     def parse_saved_positions(self):
         for row in self.saved_positions:
             self.scene.set_scene(row[1:])
+            self.target = self.scene.get_target()
             yield 0
 
     def checkCubeGrasped(self):

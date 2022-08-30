@@ -17,6 +17,10 @@ class Distractor_Scene(Scene):
         self.distractors = []
         super().__init__()
 
+    def set_target_object(self, target):
+        self.target = target
+        self._environment_startup()
+
     def spawn_distractors(self):
         distractors = [Cone, Block, Cylinder]
         objects_in_scene = [self.target]
@@ -68,6 +72,7 @@ class Distractor_Scene(Scene):
         run.log({
             f"{self.n_distractors}_distractor": n_completions
         })
+        # run.summary[f"{self.n_distractors}_distractor"] = n_completions
 
         
         
