@@ -14,7 +14,7 @@ from ..Models.AutoEncoder.models import SpatialAE_fc, StrengthSpatialAE_fc
 from ..Models.Stopping.models import Stopping_base, Stop_AuxBaselineCNN
 
 from ..training import Train
-from ..testing import Test
+from ..Testing.testing import Test
 
 ryaml = YAML()
 

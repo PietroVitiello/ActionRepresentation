@@ -4,19 +4,14 @@ from torch.nn.parameter import Parameter
 
 class SpatialSoftArgmax(nn.Module):
     def __init__(self) -> None:
-        super().__init__()
+        super(SpatialSoftArgmax, self).__init__()
         self.alpha = Parameter(torch.rand(1), requires_grad=True)
 
     def forward(self, x):
-        # print(f"x inside activation: {x.shape}")
         x = torch.div(x, self.alpha)
-        # print(f"x after division: {x.shape}")
         x = nn.Softmax2d()(x)
-        # print(f"x after softmax: {x.shape}")
         x_x = torch.mean(torch.sum(x, dim=3), dim=2)
         x_y = torch.mean(torch.sum(x, dim=2), dim=2)
-        # print(f"x_x: {x_x.shape}")
-        # print(f"x_y: {x_y.shape}")
         return torch.cat((x_x, x_y), dim=1)
 
 class SpatialSoftArgmax_strength(nn.Module):

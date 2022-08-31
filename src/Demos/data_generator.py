@@ -17,18 +17,35 @@ from Robotics.Robot.my_robot import MyRobot
 from Robotics.target import Target
 from Robotics.Kinematics.dummy_movement import DummyMovement
 
+from .Scenes.scene import Scene
 import time as t
 import math
 
 class DataGenerator():
 
-    def __init__(self, pr: PyRep, bot: MyRobot, res: int= 64, max_deviation: float=0.04, always_maxDev: bool=True) -> None:
+    def __init__(
+        self,
+        pr: PyRep,
+        scene: Scene,
+        bot: MyRobot,
+        res: int= 64,
+        max_deviation: float=0.04,
+        always_maxDev: bool=True,
+    ) -> None:
         self.pr = pr
 
         self.bot = bot #MyRobot()
         self.target = Target()
         self.camera = VisionSensor("Vision_sensor")
         self.curve = Quadratic(self.bot.robot.get_tip(), self.target, max_deviation, always_maxDev)
+
+        self.scene = scene
+        self.scene.set_target_object(self.target)
+        try:
+            self.ep_pos = self.target.get_position()
+            self.ep_orientation = self.target.get_orientation()
+        except RuntimeError:
+            pass
 
         self.setCameraRes(res)
         self.time = 0
@@ -38,8 +55,12 @@ class DataGenerator():
     def setCameraRes(self, res: int) -> None:
         self.camera.set_resolution([res, res])
 
+    def set_target(self, target):
+        self.target = target
+        self.curve.setTarget(self.target)
+
     def restrictTargetBound(self, restriction_type: str):
-        self.target.set_restrictedBoundaries(restriction_type)
+        self.scene.restrictTargetBound(restriction_type)
 
     def terminate(self) -> None:
         self.pr.stop()
@@ -53,11 +74,15 @@ class DataGenerator():
         self.pr.step()
 
     def resetEpisode(self):
-        self.target.random_pos()
+        self.scene.reset_scene()
+        self.ep_pos = self.target.get_position()
+        self.ep_orientation = self.target.get_orientation()
         self.resetRun()
 
     def resetRun(self):
         self.bot.resetInitial(self.pr)
+        self.target.set_position(self.ep_pos)
+        self.target.set_orientation(self.ep_orientation)
         self.stop = 0
         self.grasped = False
 
@@ -72,9 +97,12 @@ class DataGenerator():
         ee_vel = np.concatenate(list(self.bot.robot.get_tip().get_velocity()), axis=0)
 
         cube_pos = self.target.get_position()
-        rel_cubePos = cube_pos - ee_pos
+        rel_cubePos = cube_pos - ee_pos #relative is hard to calculate in real setting (I discarded it)
         
         return (im, joint_target_vel, joint_vel, joint_pos, ee_vel, ee_pos, ee_orientation, rel_cubePos, self.stop)
+
+    def get_cube_pos(self):
+        return self.target.get_position()
 
     def check_cubeInDistance(self, threshold_dist=0.04) -> bool:
         distance = self.target.get_position() - self.bot.robot._ik_tip.get_position()
@@ -351,6 +379,52 @@ class DataGenerator():
         
         self.curve.remove_dummies()
 
+    def antiCollisionGrasp_generator(self, distance2cube: float):
+        def check_distractor_collisions():
+            collision = False
+            for handle in distractors_handles:
+                collision = True if self.bot.gripper.check_collision(handle) else collision
+                collision = True if self.bot.robot.check_collision(handle) else collision
+            # if collision: print("\033[31mOuch collision\033[38;5;231m", end="...")
+            return collision
+
+        n_steps = np.round(self.time / 0.05).astype(int)
+        distractors_handles = self.scene.get_distractors()
+        collided = False
+
+        for i in range(n_steps):
+            distance = self.bot.get_movementDir(self.target)
+            orientation = self.curve.linear_mid.get_orientation(relative_to=self.bot.robot._ik_tip)
+            v = self.bot.get_linearVelo(distance, self.time)
+            w = self.bot.get_angularSpeed(orientation)
+            q = self.bot.get_jointVelo_constrained(v, w)
+            self.bot.robot.set_joint_target_velocities(q)
+            eeVel, data = np.hstack((v, w)), self.get_CurrentData()
+            self.simStep()
+            collided = check_distractor_collisions()
+            yield self.grasped, (eeVel, *data)
+            if self.check_cubeReached(distance2cube):
+                print(f"\033[32mCube Reached at step {i+1}\033[38;5;231m", end=", ")
+                break
+        # print(f"Cube Reached", end="")
+        q = [0]*len(q)
+        self.bot.robot.set_joint_target_velocities(q)
+        self.stop = 1
+
+        for data in self.grasp(dof=6):
+            yield data
+
+        self.stayStill(0.3)
+        for data in self.lift_grasped():
+            yield data
+        if self.checkCubeGrasped():
+            self.grasped = True
+            success = (self.grasped and (not collided))
+            yield success, (np.array([0]), *self.get_CurrentData())
+            print("\033[32mCube Grasped\033[38;5;231m", end="")
+        
+        self.curve.remove_dummies()
+
 
     def humanTrjGrasp_generator(self, distance2cube: float):
         self.curve.find_middlePoint()
@@ -413,10 +487,11 @@ class DataGenerator():
         constrained = True #whether ee has also orientation constraint
         return constrained, self.imperfect_humanTrjGenerator(distance2cube)
 
-    def getLinearGraspGenerator(self, time: float=2) -> Generator:
+    def getLinearGraspGenerator(self, time: float=2, distance2cube=None) -> Generator:
         self.setTime(time)
         self.curve.resetCurve()
-        distance2cube = 0.025
+        if distance2cube == None:
+            distance2cube = 0.015 #0.025
         constrained = True #whether ee has also orientation constraint
         return distance2cube, constrained, self.linearGrasp_generator(distance2cube)
 
@@ -445,6 +520,13 @@ class DataGenerator():
         distance2cube = 0.01
         constrained = False #whether ee has also orientation constraint
         return distance2cube, constrained, self.followDummyGenerator_stop()
+
+    def getAntiCollisionGraspGenerator(self, time: float=2) -> Generator:
+        self.setTime(time)
+        self.curve.resetCurve()
+        distance2cube = 0.015 #0.025
+        constrained = True #whether ee has also orientation constraint
+        return distance2cube, constrained, self.antiCollisionGrasp_generator(distance2cube)
 
     def getGenerator(self, move_type: str, constraint: str, time: float=2) -> Generator:
         if move_type == 'human-like':

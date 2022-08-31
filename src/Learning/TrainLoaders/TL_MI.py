@@ -6,28 +6,34 @@ import pandas as pd
 import numpy as np
 from PIL import Image
 
+from .trainloader import SimDataset
 from ..utils.motion_image import get_motionImage
 from ..utils.utils_dataloader import get_numEpisodeRun, get_stepNum
 
-class TL_motionImage(Dataset):
+class TL_motionImage(SimDataset):
     def __init__(
         self, 
         dataset_path,
         transform = None,
         filter_stop: bool = False,
-        delta_steps: int = 5
+        delta_steps: int = 5,
+        considered_indices: np.ndarray = None,
+        resized_side = 32,
+        mi_threshold = 150
     ) -> None:
 
-        self.df = pd.read_csv(dataset_path + "data.csv")
-        if filter_stop:
-            self.filter_stopData()
+        super().__init__(
+            dataset_path,
+            transform,
+            filter_stop,
+            considered_indices
+        )
+        
         self.cleaned_df = self.remove_unusable_data(self.df)
-
-        self.transform = transform
-        self.dataset_path = dataset_path
         self.delta_steps = delta_steps
+        self.resized_side = resized_side
+        self.mi_threshold = mi_threshold
         self.future_delta_target = delta_steps
-
 
     def __len__(self):
         # l_df = len(self.df)
@@ -52,7 +58,7 @@ class TL_motionImage(Dataset):
 
         image = Image.open(self.dataset_path + filename)
         future_image = Image.open(self.dataset_path + future_filename)
-        motion_image = get_motionImage(image, future_image, resized_side=32, mi_threshold=150)
+        motion_image = get_motionImage(image, future_image, resized_side=self.resized_side, mi_threshold=self.mi_threshold)
 
         if self.transform == None:
             image = T.ToTensor()(image)
@@ -118,20 +124,31 @@ class TL_motionImage(Dataset):
                 mi_image = labels[-1]
                 data = torch.cat(labels[:-1], dim=1)
         input_std, input_mean = torch.std_mean(input_image, axis=[0,2,3])
+        input_std = torch.ones(input_std.shape)
+        input_mean = torch.zeros(input_mean.shape)
         print(f"input -->\tmean:{input_mean}, \tstd: {input_std}")
         mi_std, mi_mean = torch.std_mean(mi_image, axis=[0,2,3])
+        # mi_std = torch.ones(mi_std.shape)
+        # mi_mean = torch.zeros(mi_mean.shape)
         print(f"mi -->   \tmean:{mi_mean}, \tstd: {mi_std}")
         data_std, data_mean = torch.std_mean(data, axis=0)
+        data_std = torch.ones(data_std.shape)
+        data_mean = torch.zeros(data_mean.shape)
         print(f"data -->\tmean:{data_mean}, \tstd: {data_std}\n\n")
         return (input_std, input_mean), (mi_std, mi_mean), (data_std, data_mean)
 
-    def get_transforms(self):
+    def get_transforms(self, get_stats: bool=False):
+        def vector_transform(x: torch.Tensor):
+            return (x - stats[2][1]) / stats[2][0]
         print("Calculating mean and standard deviation for data")
         stats = self.calculate_statistics()
         input_transform = T.Normalize(stats[0][1], stats[0][0])
         mi_transform = T.Normalize(stats[1][1], stats[1][0])
-        data_transform = T.Normalize(stats[2][1], stats[2][0])
-        return input_transform, mi_transform, data_transform
+        # data_transform = T.Normalize(stats[2][1], stats[2][0])
+        if get_stats == False:
+            return input_transform, mi_transform, vector_transform
+        else:
+            return (input_transform, mi_transform, vector_transform), stats
 
 
     # def calculate_mean_and_std(self, img, mi, data):

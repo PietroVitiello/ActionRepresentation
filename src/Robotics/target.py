@@ -8,12 +8,12 @@ from pyrep.const import PrimitiveShape
 class Target(Shape):
 
     def __init__(self, target_type: str='cube', size: List[float]=None, color: List[float]=None) -> None:
-        handle, _height = self._create_target(target_type, size)
+        handle, self._height = self._create_target(target_type, size)
         super().__init__(handle)
         self._set_color(color)
         self.set_renderable(True)
 
-        self.position_min, self.position_max = [-0.5, 0.5, _height/2], [0.5, 0.85, _height/2] #[-0.5, 0.5, 0.3], [0.5, 1, 0.3]
+        self.position_min, self.position_max = [-0.5, 0.5, self._height/2], [0.5, 0.85, self._height/2] #[-0.5, 0.5, 0.3], [0.5, 1, 0.3]
         self.initailOrientation = self.get_orientation()
         self.random_pos()
 
@@ -46,7 +46,7 @@ class Target(Shape):
 
     def _set_color(self, color: List[float]):
         if color is None:
-            self.set_color([1.0, 0.1, 0.1]) #ref
+            self.set_color([1.0, 0.1, 0.1]) #red
         else:
             self.set_color(color)
 
@@ -60,20 +60,26 @@ class Target(Shape):
         if restriction_type == "None":
             pass
         elif restriction_type == "slightly":
-            self.position_min = [-0.35, 0.55, 0.025]
-            self.position_max = [0.35, 0.85, 0.025]
+            self.position_min = [-0.35, 0.55, self._height/2]
+            self.position_max = [0.35, 0.85, self._height/2]
         elif restriction_type == "moderate":
-            self.position_min = [-0.30, 0.60, 0.025]
-            self.position_max = [0.30, 0.85, 0.025]
+            self.position_min = [-0.26, 0.63, self._height/2]
+            self.position_max = [0.26, 0.85, self._height/2]
         elif restriction_type == "highly":
-            self.position_min = [-0.20, 0.60, 0.025]
-            self.position_max = [0.20, 0.80, 0.025]
+            self.position_min = [-0.20, 0.60, self._height/2]
+            self.position_max = [0.20, 0.80, self._height/2]
         else:
             raise Exception("Cube restiction option is not available")
         
-
     def random_pos(self):
         pos = list(np.random.uniform(self.position_min, self.position_max))
         # pos = [0, 0.75, 0.025]
         self.set_position(pos)
         self.set_orientation(self.initailOrientation)
+
+    def get_occupancy(self):
+        side = self._size[0]
+        margin = 0.1
+        occupancy = np.array([side/2, side/2]) + margin
+        pos = self.get_position()[:2]
+        return pos-occupancy, pos+occupancy

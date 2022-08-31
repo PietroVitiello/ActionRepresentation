@@ -5,6 +5,94 @@ from torch.nn.parameter import Parameter
 from .backbones import SpatialAE_sceneUnderstanding_backbone
 from .activation_func import SpatialSoftArgmax, SpatialSoftArgmax_strength
 
+class SpatialAE(nn.Module):
+    def __init__(
+        self,
+        num_outputs=6,
+        num_aux_outputs=9,
+        reconstruction_size=32
+    ):
+        super(SpatialAE,self).__init__()
+        self.recon_size = reconstruction_size
+        self.spatialArgmax = SpatialSoftArgmax()
+
+        self.encoder = self.Encoder()
+        self.decoder = self.Decoder(reconstruction_size)
+
+        self.reach_fc = nn.Sequential(nn.Linear(256, 128),
+                                 nn.ReLU())
+
+        self.aux = nn.Linear(128, num_aux_outputs)
+        self.out = nn.Linear(128, num_outputs)
+
+        self.stop = nn.Sequential(nn.Linear(256, 64),
+                                  nn.ReLU(),
+                                  nn.Linear(64, 1),
+                                  nn.Sigmoid())
+
+    def Encoder(self):
+        encoder = nn.Sequential(
+            self.conv_layer(3, 32),
+            self.conv_layer(32, 64),
+            self.conv_layer(64, 128),
+            self.spatialArgmax
+        )
+        return encoder
+
+    def Decoder(self, img_size: int):
+        decoder = nn.Linear(256, img_size**2)
+        return decoder
+
+    def decoder_forward(self, x: torch.Tensor):
+        x = self.decoder(x)
+        return x.view(x.size(0), 1, self.recon_size, self.recon_size)
+
+    def conv_layer(
+        self,
+        chIN,
+        chOUT,
+        kernel_size=3,
+        stride=1,
+        padding=1,
+        bias=True,
+        pool_kernel=3,
+        pool_stride=2,
+        pool_padding=1,
+        inplace=True
+    ):
+        conv = nn.Sequential(nn.Conv2d(chIN, chOUT, kernel_size, stride, padding, bias=bias),
+                             nn.BatchNorm2d(chOUT),
+                             nn.MaxPool2d(pool_kernel, pool_stride, pool_padding),
+                             nn.ReLU(inplace))
+        return conv
+
+    def freeze_backbone(self):
+        self.encoder.requires_grad_(False)
+        self.spatialArgmax.requires_grad_(False)
+        self.decoder.requires_grad_(False)
+        self.reach_fc.requires_grad_(False)
+        self.out.requires_grad_(False)
+        self.aux.requires_grad_(False)
+
+    def forward(self, x, train_stop: bool=None):
+        x = self.encoder(x)
+
+        if self.training:
+            if train_stop == False:
+                recon_img = self.decoder_forward(x)
+                fc1 = self.reach_fc(x)
+                x_aux = self.aux(fc1)
+                x_out = self.out(fc1)
+                out = torch.cat((x_out, x_aux), dim=1)
+                return (out, recon_img)
+            elif train_stop == True:
+                return self.stop(x)
+        else:
+            reach = self.reach_fc(x)
+            reach = self.out(reach)
+            stop = self.stop(x)
+            return (reach, stop)
+
 class SpatialAE_fc(nn.Module):
     def __init__(
         self,
@@ -49,7 +137,7 @@ class SpatialAE_fc(nn.Module):
         kernel_size=3,
         stride=1,
         padding=1,
-        bias=False,
+        bias=True,
         pool_kernel=3,
         pool_stride=2,
         pool_padding=1
@@ -61,9 +149,7 @@ class SpatialAE_fc(nn.Module):
         return conv
 
     def forward(self, x):
-        # print(x.shape)
-        x: torch.Tensor = self.encoder(x) 
-        # print(f"x after activation: {x.shape}")       
+        x: torch.Tensor = self.encoder(x)     
         fc1 = self.fc1(x)
 
         if self.training:

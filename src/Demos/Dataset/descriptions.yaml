@@ -60,3 +60,107 @@ linearGrasp_1:
   boundary_restriction: moderate
   distance_cubeReached: 0.025
   constrained: true
+
+linearGrasp_experiment_64:
+  bot_type: Baxter
+  trj_type: LinearGrasp
+  n_episodes: 500
+  n_val_episodes: 100
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.025
+  constrained: true
+
+cubeGrasp_64:
+  bot_type: Baxter
+  trj_type: graspDemo
+  scene_type: cube
+  n_episodes: 300
+  n_val_episodes: 60
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.025
+  constrained: true
+
+distrGrasp_64:
+  bot_type: Baxter
+  trj_type: graspDemo
+  scene_type: distractor
+  n_episodes: 200
+  n_val_episodes: 40
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.025
+  constrained: true
+
+namaste:
+  bot_type: Baxter
+  trj_type: graspDemo
+  scene_type: cube
+  n_episodes: 15
+  n_val_episodes: 3
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.015
+  constrained: true
+
+cubeGrasp:
+  bot_type: Baxter
+  trj_type: graspDemo
+  scene_type: cube
+  n_episodes: 200
+  n_val_episodes: 40
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.015
+  constrained: true
+
+distrGrasp_64:
+  bot_type: Baxter
+  trj_type: graspDemo
+  scene_type: distractor
+  n_episodes: 200
+  n_val_episodes: 40
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.015
+  constrained: true
+
+shapeGrasp_64:
+  bot_type: Baxter
+  trj_type: graspDemo
+  scene_type: shape
+  n_episodes: 60
+  n_val_episodes: 12
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.02
+  constrained: true

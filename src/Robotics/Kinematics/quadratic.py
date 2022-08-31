@@ -27,17 +27,17 @@ class Quadratic():
         self.all_dummies = [self.linear_mid]
 
         self.target_pos = self.tip
-        n = Dummy.create(0.05)
-        n.set_position(self.tip)
-        self.verga = n
-        # self.all_dummies.append(self.verga)
+        # n = Dummy.create(0.05) #(0.001)
+        # n.set_position(self.tip)
+        # self.verga = n
+        # # self.all_dummies.append(self.verga)
 
     def setTarget(self, target: Union[Target, Dummy]):
         self.ik_target = target
         self.target = target.get_position()
         self.remove_dummies()
-        print("Changed quadratic target and removed all previous dummies")
-        # self.resetCurve()
+        # print("Changed quadratic target and removed all previous dummies")
+        self.resetCurve()
 
     def set_linearMid(self, pos: np.ndarray) -> None:
         self.linear_mid.set_position(pos)
@@ -54,12 +54,13 @@ class Quadratic():
         self.target = self.ik_target.get_position()
 
         self.target_pos = self.tip
-        self.verga.set_position(self.tip)
+        # self.verga.set_position(self.tip)
 
         self.distance_vec = self.target - self.tip
         self.distance = np.linalg.norm(self.distance_vec)
 
         linear_mid_pos = (self.target + self.tip)/2
+        # self.linear_mid.remove()
         self.linear_mid = Dummy.create(0.001)
         # sim.simSetObjectInt32Parameter(self.linear_mid.get_handle(), 10, 11)
         self.set_linearMid(linear_mid_pos)

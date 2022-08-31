@@ -1,4 +1,5 @@
 import yaml
+import numpy as np
 from Demos.get_data import generate_dataset
 
 cubeReaching_generators = [""]
@@ -8,25 +9,35 @@ def runConfig():
     configs = {}
     configs["bot_type"] = bot_type
     configs["trj_type"] = trj_type
+    configs["scene_type"] = scene_type
     configs["n_episodes"] = n_episodes
+    if add_validation:
+        n_val_episodes = int(np.round(n_episodes / 5))
+        configs["n_val_episodes"] = n_val_episodes
+    else:
+        configs["n_val_episodes"] = 0
     configs["n_runs"] = n_runs
     configs["n_steps"] = n_steps
     configs["max_deviation"] = max_deviation
     configs["always_maxDev"] = always_maxDev
     configs["boundary_restriction"] = boundary_restriction
+    configs["image_size"] = image_size
     
-    print(f"Generating {n_episodes*n_runs} Demonstrations \n")
+    print(f"********************** {scene_type} **********************")
+    print(f"Generating {(n_episodes + n_val_episodes)*n_runs} Demonstrations \n")
     changed_data = generate_dataset(
                     file_name,
                     boundary_restriction,
-                    n_episodes,
+                    n_episodes + n_val_episodes,
                     n_runs,
                     n_steps,
                     bot_type,
                     max_deviation,
                     always_maxDev,
                     trj_type,
-                    distance_cubeReached
+                    distance_cubeReached,
+                    image_size,
+                    scene_type
                 )
     print("\nDone")
 
@@ -44,17 +55,21 @@ def saveConfig(configs):
         dataset = {f"{file_name}": configs}
         yaml.dump(dataset, file, sort_keys=False)
 
-file_name = "linearGrasp_1"
-trj_type = "LinearGrasp"
+file_name = "shapeGrasp_64"
+trj_type = "graspDemo"
+scene_type = "shape"
 distance_cubeReached = 0.02
 boundary_restriction = "moderate"
 
-n_episodes = 100
+n_episodes = 60
 n_runs = 1
 n_steps = 100
+add_validation = True
 
 bot_type = "Baxter"
 max_deviation = 0.03
 always_maxDev = True
+
+image_size = 64
 
 runConfig()

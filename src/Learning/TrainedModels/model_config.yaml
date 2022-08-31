@@ -468,5 +468,347 @@ Pure_SimpleAE_mediumDec_1:
   Testing:
     Cube_Reached: []
     Boundary_Restriction: []
-    Attempts: null
+    Attempts:
 #NOTE: Not bad at all, the final training loss was between 0.09 and 0.06 although I should check validation loss as well
+
+CoordReduceTo1x1_100_100_reach:
+  model_name: CoordReduceTo1x1
+  data_folder: linearGrasp_experiment_64
+  training_method: eeVel_aux_wandb
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 100
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0001
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.8197298049926758
+    - 0.7808372378349304
+    - 0.7447342276573181
+  - - 0.06673736870288849
+    - 0.12106295675039291
+    - 0.11275460571050644
+  eeVel_metrics:
+  - - -0.0023999537630164085
+    - -0.09525168974152616
+    - -0.10993967073056495
+    - 0.0015188546700322155
+    - 0.0026745655722996537
+    - -0.0022286665085516854
+  - - 0.03442870213690665
+    - 0.01635090119549282
+    - 0.014301650047776233
+    - 0.07217983852662392
+    - 0.04672039193814877
+    - 0.08094697985758811
+  aux_metrics:
+  - - -0.004645400756342262
+    - 0.9861640740175908
+    - 0.32033922656355895
+    - 0.717556329684952
+    - -0.003011237585012188
+    - -1.578135961253346
+    - -0.005213966968276338
+    - -0.24855552028763397
+    - -0.2953370962298152
+  - - 0.09195238390860551
+    - 0.1408402031757925
+    - 0.15549981089751985
+    - 0.06746339683379561
+    - 0.18052229302144832
+    - 0.2020547085899632
+    - 0.10072883757963506
+    - 0.14256321507863418
+    - 0.15549724585285304
+  Testing:
+    Cube_Reached:
+    - 3
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE:
+
+discard_mi:
+  model_name: MotionImage_attention
+  data_folder: linearGrasp_experiment_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.8187927007675171
+    - 0.7812894582748413
+    - 0.7450950741767883
+  - - 0.06595294922590256
+    - 0.11751066893339157
+    - 0.10935831815004349
+  recon_metrics:
+  - - 0.004528498277068138
+    - 0.002044858643785119
+    - 0.0020007146522402763
+  - - 0.03699255734682083
+    - 0.024249641224741936
+    - 0.02323889173567295
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  Testing:
+    Cube_Reached:
+    - 10
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE:
+
+discard_base_distr_100:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: distrGrasp_64
+  training_method: aux_stop_wandb
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 100
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  Testing:
+    Cube_Reached:
+    - 25
+    Boundary_Restriction:
+    - moderate
+    Attempts: 100
+#NOTE:
+
+discard_mi_distr_100:
+  model_name: MotionImage_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 100
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011768153868615627
+    - 0.008024786598980427
+    - 0.009863205254077911
+  - - 0.05737045407295227
+    - 0.04618072137236595
+    - 0.04988754168152809
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  Testing:
+    Cube_Reached:
+    - 20
+    Boundary_Restriction:
+    - moderate
+    Attempts: 100
+#NOTE:
+
+discard_mi300_distr_100:
+  model_name: MotionImage_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 300
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 100
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011480615474283695
+    - 0.00786689855158329
+    - 0.009680717252194881
+  - - 0.05613642558455467
+    - 0.04512590914964676
+    - 0.04903450235724449
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  Testing:
+    Cube_Reached:
+    - 19
+    - 0
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
