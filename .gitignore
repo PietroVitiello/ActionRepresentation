@@ -15,3 +15,7 @@ src/multi_test.py
 
 **/Train_scripts/**
 **/Test_scripts/**
+
+src/Learning/Testing/cube_envs_[2-5]/**
+src/Learning/Testing/cube_envs_vis/**
+src/Learning/Testing/distr_deb/**
