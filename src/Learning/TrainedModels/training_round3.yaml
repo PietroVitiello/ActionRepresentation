@@ -1,0 +1,1753 @@
+BaselineCNN_cube_30d:
+  model_name: BaselineCNN
+  data_folder: cubeGrasp_vis_64
+  training_method: aux_stop_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 2etfs3c5
+  Testing:
+    Cube_Reached:
+    - 65
+    Boundary_Restriction:
+    - visible
+    Attempts: 100
+#NOTE:
+
+SpatialAE_cube_30d:
+  model_name: SpatialAE
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.788276731967926
+  - - 0.08713217824697495
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1zqowygh
+  Testing:
+    Cube_Reached:
+    - 24
+    Boundary_Restriction:
+    - visible
+    Attempts: 100
+#NOTE:
+
+MI_Net_cube_30d:
+  model_name: MotionImage_attention
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.004481784533709288
+    - 0.002237143460661173
+    - 0.0021628914400935173
+  - - 0.03567423298954964
+    - 0.026030078530311584
+    - 0.024873265996575356
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 3fwoadll
+  Testing:
+    Cube_Reached:
+    - 57
+    Boundary_Restriction:
+    - visible
+    Attempts: 100
+#NOTE:
+
+MI_Net_deeperAttention_cube_30d:
+  model_name: MotionImage_deeper_attention
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.004481784533709288
+    - 0.002237143460661173
+    - 0.0021628914400935173
+  - - 0.03567423298954964
+    - 0.026030078530311584
+    - 0.024873265996575356
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1m6q8z47
+  Testing:
+    Cube_Reached:
+    - 57
+    Boundary_Restriction:
+    - visible
+    Attempts: 100
+#NOTE:
+
+MI_Net_auxiliary_cube_30d:
+  model_name: MotionImage_auxiliary
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.004481784533709288
+    - 0.002237143460661173
+    - 0.0021628914400935173
+  - - 0.03567423298954964
+    - 0.026030078530311584
+    - 0.024873265996575356
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 17wcys7m
+  Testing:
+    Cube_Reached:
+    - 68
+    Boundary_Restriction:
+    - visible
+    Attempts: 100
+#NOTE:
+
+MI_Net_indepAE_cube_30d:
+  model_name: MotionImage_indepAE
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_indep
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.004481784533709288
+    - 0.002237143460661173
+    - 0.0021628914400935173
+  - - 0.03567423298954964
+    - 0.026030078530311584
+    - 0.024873265996575356
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 640n54d4
+  Testing:
+    Cube_Reached:
+    - 43
+    Boundary_Restriction:
+    - visible
+    Attempts: 100
+#NOTE:
+
+MI_Net64_cube_30d:
+  model_name: MotionImage_attention_64
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.0044694808311760426
+    - 0.002230335958302021
+    - 0.0021556345745921135
+  - - 0.06203474476933479
+    - 0.04460645094513893
+    - 0.04395339637994766
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 3rwgy83r
+  Testing:
+    Cube_Reached:
+    - 80
+    Boundary_Restriction:
+    - visible
+    Attempts: 100
+#NOTE:
+
+MI_Net_delta1_cube_30d:
+  model_name: MotionImage_attention
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.008389187045395374
+    - 0.004448815248906612
+    - 0.004267951473593712
+  - - 0.045071884989738464
+    - 0.031194109469652176
+    - 0.029632117599248886
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 16rj7ths
+  Testing:
+    Cube_Reached:
+    - 44
+    Boundary_Restriction:
+    - visible
+    Attempts: 100
+#NOTE:
+
+MI_Net_unfiltered_cube_30d:
+  model_name: MotionImage_attention
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.029295744374394417
+    - 0.02366139553487301
+    - 0.024406936019659042
+  - - 0.0570046603679657
+    - 0.04293258488178253
+    - 0.04273652657866478
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: d8eeace5
+  Testing:
+    Cube_Reached:
+    - 59
+    Boundary_Restriction:
+    - visible
+    Attempts: 100
+#NOTE:
+
+Future_Net_cube_30d:
+  model_name: MotionImage_attention
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.8205316066741943
+    - 0.7801778316497803
+    - 0.743998646736145
+  - - 0.06133619695901871
+    - 0.11864469200372696
+    - 0.11007963120937347
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 7ms0wwzh
+  Testing:
+    Cube_Reached:
+    - 52
+    Boundary_Restriction:
+    - visible
+    Attempts: 100
+#NOTE:
+
+BaselineCNN_cube_70d:
+  model_name: BaselineCNN
+  data_folder: cubeGrasp_vis_64
+  training_method: aux_stop_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 3vask3jb
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+SpatialAE_cube_70d:
+  model_name: SpatialAE
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.7895447015762329
+  - - 0.08791247755289078
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 3quc55ap
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+MI_Net_cube_70d:
+  model_name: MotionImage_attention
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.00472750561311841
+    - 0.0024797574151307344
+    - 0.0024128209333866835
+  - - 0.037871796637773514
+    - 0.02840505540370941
+    - 0.027390215545892715
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1ji618q1
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+MI_Net_deeperAttention_cube_70d:
+  model_name: MotionImage_deeper_attention
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.00472750561311841
+    - 0.0024797574151307344
+    - 0.0024128209333866835
+  - - 0.037871796637773514
+    - 0.02840505540370941
+    - 0.027390215545892715
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: pjc8kfrt
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+MI_Net_auxiliary_cube_70d:
+  model_name: MotionImage_auxiliary
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.00472750561311841
+    - 0.0024797574151307344
+    - 0.0024128209333866835
+  - - 0.037871796637773514
+    - 0.02840505540370941
+    - 0.027390215545892715
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1gevkp9o
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+MI_Net_indepAE_cube_70d:
+  model_name: MotionImage_indepAE
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_indep
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.00472750561311841
+    - 0.0024797574151307344
+    - 0.0024128209333866835
+  - - 0.037871796637773514
+    - 0.02840505540370941
+    - 0.027390215545892715
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 3d8xqzih
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+MI_Net64_cube_70d:
+  model_name: MotionImage_attention_64
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.004713874310255051
+    - 0.002471860032528639
+    - 0.002404499100521207
+  - - 0.06389211863279343
+    - 0.046941183507442474
+    - 0.04639061540365219
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 3beu0evr
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+MI_Net_delta1_cube_70d:
+  model_name: MotionImage_attention
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.008833146654069424
+    - 0.0049682799726724625
+    - 0.004808124620467424
+  - - 0.04728204011917114
+    - 0.03438328579068184
+    - 0.03306495398283005
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 632q8v1x
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+MI_Net_unfiltered_cube_70d:
+  model_name: MotionImage_attention
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.029255816712975502
+    - 0.02387143112719059
+    - 0.024550234898924828
+  - - 0.057669498026371
+    - 0.0438787043094635
+    - 0.04369078949093819
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 16fto5wg
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+Future_Net_cube_70d:
+  model_name: MotionImage_attention
+  data_folder: cubeGrasp_vis_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.8216055631637573
+    - 0.7817884683609009
+    - 0.745313286781311
+  - - 0.06097305938601494
+    - 0.1185070127248764
+    - 0.1099899560213089
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1ogn2hco
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+MI_Net_cubeO_30d:
+  model_name: MotionImage_attention
+  data_folder: cubeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.004707783926278353
+    - 0.002251226454973221
+    - 0.002194180153310299
+  - - 0.03781314194202423
+    - 0.026781141757965088
+    - 0.025597741827368736
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: h8ju35ve
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+MI_Net_deeperAttention_cubeO_30d:
+  model_name: MotionImage_deeper_attention
+  data_folder: cubeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.004707783926278353
+    - 0.002251226454973221
+    - 0.002194180153310299
+  - - 0.03781314194202423
+    - 0.026781141757965088
+    - 0.025597741827368736
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 3i9eoyq5
+  Testing:
+    Cube_Reached:
+    - 38
+    - 74
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_cube0_70d:
+  model_name: MotionImage_attention
+  data_folder: cubeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.004492170177400112
+    - 0.002195832785218954
+    - 0.0021332893520593643
+  - - 0.03613243252038956
+    - 0.025852147489786148
+    - 0.024595854803919792
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 245oyxl5
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+MI_Net_deeperAttention_cube0_70d:
+  model_name: MotionImage_deeper_attention
+  data_folder: cubeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 70
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 6
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.004492170177400112
+    - 0.002195832785218954
+    - 0.0021332893520593643
+  - - 0.03613243252038956
+    - 0.025852147489786148
+    - 0.024595854803919792
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: g5zehckl
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+MI_Net_deep_deb1:
+  model_name: MotionImage_deeper_attention
+  data_folder: cubeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 40
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.004759662318974733
+    - 0.002254033461213112
+    - 0.0021899123676121235
+  - - 0.03819645941257477
+    - 0.026827748864889145
+    - 0.025594044476747513
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1h4hbsil
+  Testing:
+    Cube_Reached:
+    - 36
+    - 74
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
+
+MI_Net_deep_deb2:
+  model_name: MotionImage_deeper_attention
+  data_folder: cubeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.004660663660615683
+    - 0.0022590882144868374
+    - 0.002192398300394416
+  - - 0.037300076335668564
+    - 0.026553984731435776
+    - 0.025342483073472977
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 3vqkz3ay
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE:
+
+MI_Net_deep_deb3:
+  model_name: MotionImage_deeper_attention
+  data_folder: cubeGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 50
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 100
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.004585539922118187
+    - 0.0023090471513569355
+    - 0.002243354683741927
+  - - 0.037359073758125305
+    - 0.027856793254613876
+    - 0.026696428656578064
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  id: 1s6ufx3r
+  Testing:
+    Cube_Reached:
+    - 84
+    Boundary_Restriction:
+    - moderate
+    Attempts: 100
+#NOTE:

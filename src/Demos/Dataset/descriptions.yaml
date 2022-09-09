@@ -1,0 +1,181 @@
+floow_stopping_1:
+  bot_type: Baxter
+  constrained: False
+  distance_cubeReached: 0.01
+  n_episodes: 100
+  n_runs: 1
+  n_steps: 100
+  trj_type: HumanTrj_stop
+
+linearDemo_1:
+  bot_type: Baxter
+  constrained: true
+  distance_cubeReached: 0.01
+  n_episodes: 100
+  n_runs: 1
+  n_steps: 100
+  trj_type: LinearTrj
+
+HumanLikeDemos_1:
+  bot_type: Baxter
+  trj_type: HumanTrj
+  n_episodes: 100
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.04
+  always_maxDev: true
+  distance_cubeReached: 0.01
+  constrained: true
+#NOTE: First version with the algorithm that checks the quality of the grasp (but did not delete folders)
+
+HumanLikeDemos_2:
+  bot_type: Baxter
+  trj_type: HumanTrj
+  n_episodes: 100
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  distance_cubeReached: 0.02
+  constrained: true
+#NOTE: First version with the fully working algorithm that checks the quality of the grasp
+
+linearDemo_2:
+  bot_type: Baxter
+  trj_type: LinearTrj
+  n_episodes: 100
+  n_runs: 1
+  n_steps: 100
+  boundary_restriction: moderate
+  distance_cubeReached: 0.02
+  constrained: true
+
+linearGrasp_1:
+  bot_type: Baxter
+  trj_type: LinearGrasp
+  n_episodes: 100
+  n_runs: 1
+  n_steps: 100
+  boundary_restriction: moderate
+  distance_cubeReached: 0.025
+  constrained: true
+
+linearGrasp_experiment_64:
+  bot_type: Baxter
+  trj_type: LinearGrasp
+  n_episodes: 500
+  n_val_episodes: 100
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.025
+  constrained: true
+
+cubeGrasp_64:
+  bot_type: Baxter
+  trj_type: graspDemo
+  scene_type: cube
+  n_episodes: 300
+  n_val_episodes: 60
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.025
+  constrained: true
+
+distrGrasp_64:
+  bot_type: Baxter
+  trj_type: graspDemo
+  scene_type: distractor
+  n_episodes: 200
+  n_val_episodes: 40
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.025
+  constrained: true
+
+namaste:
+  bot_type: Baxter
+  trj_type: graspDemo
+  scene_type: cube
+  n_episodes: 15
+  n_val_episodes: 3
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.015
+  constrained: true
+
+cubeGrasp:
+  bot_type: Baxter
+  trj_type: graspDemo
+  scene_type: cube
+  n_episodes: 200
+  n_val_episodes: 40
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.015
+  constrained: true
+
+distrGrasp_64:
+  bot_type: Baxter
+  trj_type: graspDemo
+  scene_type: distractor
+  n_episodes: 200
+  n_val_episodes: 40
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.015
+  constrained: true
+
+shapeGrasp_64:
+  bot_type: Baxter
+  trj_type: graspDemo
+  scene_type: shape
+  n_episodes: 60
+  n_val_episodes: 12
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: moderate
+  image_size: 64
+  distance_cubeReached: 0.02
+  constrained: true
+
+cubeGrasp_vis_64:
+  bot_type: Baxter
+  trj_type: graspDemo
+  scene_type: cube
+  n_episodes: 100
+  n_val_episodes: 20
+  n_runs: 1
+  n_steps: 100
+  max_deviation: 0.03
+  always_maxDev: true
+  boundary_restriction: visible
+  image_size: 64
+  distance_cubeReached: 0.015
+  constrained: true

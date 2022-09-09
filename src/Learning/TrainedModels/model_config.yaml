@@ -1,0 +1,814 @@
+SpatialAE_fc_follow_1:
+  batch_size: 64
+  data_folder: followDummy_fixed_2
+  learning_rate: 0.001
+  loss: MSE
+  model_name: SpatialAE_fc
+  n_epochs: 100
+  num_aux_outputs: 9
+  num_outputs: 3
+  optimiser: Adamax
+  reconstruction_size: 16
+  stopping_loss: BCE
+  training_method: stop
+  use_gpu: true
+  weight_decay: 1.0e-07
+  Testing:
+    Cube_Reached:
+    - 0
+#NOTE: Was very bad, the robot arm missed the cube basically all the time. Often the cube went outside of the fov of the camera
+
+Stopping_base_follow_1:
+  batch_size: 64
+  data_folder: follow_stopping_1
+  learning_rate: 0.001
+  loss: MSE
+  model_name: Stopping_base
+  n_epochs: 100
+  num_aux_outputs: 9
+  num_outputs: 3
+  optimiser: Adamax
+  reconstruction_size: 16
+  stopping_loss: BCE
+  training_method: stop
+  use_gpu: true
+  weight_decay: 1.0e-07
+  Testing:
+    Cube_Reached:
+    - 0
+#NOTE: Just did not work. Values of sopping never increased above 0.3
+
+Aux_BaselineCNN_baxFollow_1:
+  batch_size: 64
+  data_folder: followDummy_3
+  learning_rate: 0.001
+  loss: MSE
+  model_name: Aux_BaselineCNN
+  n_epochs: 100
+  num_aux_outputs: 9
+  num_outputs: 6
+  optimiser: Adamax
+  reconstruction_size: 16
+  stopping_loss: BCE
+  training_method: eeVel_aux
+  use_gpu: true
+  weight_decay: 1.0e-07
+  Testing:
+    Cube_Reached:
+    - 31
+#NOTE: Very good. Only once did the arm not reached the cube, because it went above it and missed it. Once the cube is not in the fov (because it misses
+#      it when it gets close) the arm does not know what to do (LSTM?)
+
+SpatialAE_fc_follow_2:
+  batch_size: 64
+  data_folder: followDummy_3
+  learning_rate: 0.001
+  loss: MSE
+  model_name: SpatialAE_fc
+  n_epochs: 100
+  num_aux_outputs: 9
+  num_outputs: 6
+  optimiser: Adamax
+  reconstruction_size: 16
+  stopping_loss: BCE
+  training_method: AE
+  use_gpu: true
+  weight_decay: 1.0e-07
+  Testing:
+    Cube_Reached:
+    - 22
+    - 18
+#NOTE: Quite good. However it is less precise when it gets closer to the cube. It has not learnt well how to approach the cube yet. It may need some modification
+
+StrengthSpatialAE_fc_follow_1:
+  batch_size: 64
+  data_folder: followDummy_3
+  learning_rate: 0.001
+  loss: MSE
+  model_name: StrengthSpatialAE_fc
+  n_epochs: 100
+  num_aux_outputs: 9
+  num_outputs: 6
+  optimiser: Adamax
+  reconstruction_size: 16
+  stopping_loss: BCE
+  training_method: AE
+  use_gpu: true
+  weight_decay: 1.0e-07
+  Testing:
+    Cube_Reached:
+    - 11
+#NOTE: Much worse then before, although the model above was trained with decoder(x) not x=decoder(x)
+
+Aux_BaselineCNN_1_wrong:
+  model_name: Aux_BaselineCNN
+  data_folder: HumanLikeDemos_1
+  training_method: eeVel_aux
+  n_epochs: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 0
+    Attempts: 32
+#NOTE: So bad, it does not even move in the right direction. Sometimes it bugs
+
+Aux_BaselineCNN_2_wrong:
+  model_name: Aux_BaselineCNN
+  data_folder: HumanLikeDemos_1
+  training_method: eeVel_aux
+  n_epochs: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0004
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 7
+    Attempts: 32
+#NOTE: Much better than before, it moves in the right direction but it hardly reaches the target (maybe too slow?)
+
+Aux_BaselineCNN_1:
+  model_name: Aux_BaselineCNN
+  data_folder: HumanLikeDemos_1
+  training_method: eeVel_aux
+  n_epochs: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 28
+    - 29
+    Attempts: 32
+#NOTE: Very good model! Dataset seems to be working. This uses the orientation as well and you can see the robot turning the orientation to face the cube!
+#      This being said sometimes it messes up strangely (usually when the cube is to its left or very lateral). I definitely have to adjust the spawnable space
+#      of the cube in testing and probably also in trining
+
+Aux_BaselineCNN_2:
+  model_name: Aux_BaselineCNN
+  data_folder: HumanLikeDemos_1
+  training_method: eeVel_aux
+  n_epochs: 30
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 22
+    Attempts: 32
+#NOTE: Seemed better at first but it turned out to be slightly more unstable
+
+Aux_BaselineCNN_3:
+  model_name: Aux_BaselineCNN
+  data_folder: HumanLikeDemos_2
+  training_method: eeVel_aux
+  n_epochs: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 24
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE: Not good, it did some very strange movements with the arm
+
+Aux_BaselineCNN_4:
+  model_name: Aux_BaselineCNN
+  data_folder: linearDemo_2
+  training_method: eeVel_aux
+  n_epochs: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 32
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE: Flawless, it is just like the demonstrations however it uses linear trajectories!
+
+Stop_AuxBaselineCNN_1:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: linearGrasp_1
+  training_method: aux_stopIndividual
+  n_epochs: 100
+  n_epochs_stopping: 100
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE: It did not move at all, could it be that the weights were not fixed? I then implemented the fix weights
+
+Stop_AuxBaselineCNN_2:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: linearGrasp_1
+  training_method: aux_stopIndividual
+  n_epochs: 13
+  n_epochs_stopping: 14
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE: The model had not learnt how to reach the cube
+
+Stop_AuxBaselineCNN_3:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: linearGrasp_1
+  training_method: aux_stopIndividual
+  n_epochs: 100
+  n_epochs_stopping: 14
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 6
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE: It did grasp some cubes. Sometimes it stops in mid air. However the main problem is that the reaching is not very good
+
+Stop_AuxBaselineCNN_test:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: linearGrasp_1
+  training_method: aux_stopIndividual
+  n_epochs: 100
+  n_epochs_stopping: 0
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 1
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE: The arm reached the cube perfectly. Therefore I assume that it is the stopping training that affects the reaching as well
+
+Stop_AuxBaselineCNN_4:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: linearGrasp_1
+  training_method: aux_stopIndividual
+  n_epochs: 100
+  n_epochs_stopping: 10
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 1
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE: I added the fc layers for reaching in the fix params but it does not work. The reaching model gets compromised
+
+Stop_AuxBaselineCNN_5:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: linearGrasp_1
+  training_method: aux_stopIndividual
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 30
+    - 29
+    - 30
+    - 30
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    Attempts: 32
+#NOTE: It works amazingly!!
+
+MotionImage_attention_1:
+  model_name: MotionImage_attention
+  data_folder: linearGrasp_1
+  training_method: motion_image
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 30
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE:
+
+MotionImage_attention_2:
+  model_name: MotionImage_attention
+  data_folder: linearGrasp_1
+  training_method: motion_image
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-06
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 24
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE:
+
+MotionImage_attention_3:
+  model_name: MotionImage_attention
+  data_folder: linearGrasp_1
+  training_method: motion_image
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 29
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE:
+
+MotionImage_attention_4:
+  model_name: MotionImage_attention
+  data_folder: linearGrasp_1
+  training_method: motion_image
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 5.0e-08
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  Testing:
+    Cube_Reached:
+    - 26
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE:
+
+Pure_SimpleAE_mediumDec_1:
+  model_name: Pure_SimpleAE_mediumDec
+  data_folder: linearGrasp_1
+  training_method: pureAE
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  optimiser: Adamax
+  learning_rate: 0.001
+  weight_decay: 1.0e-07
+  loss: MSE
+  Testing:
+    Cube_Reached: []
+    Boundary_Restriction: []
+    Attempts:
+#NOTE: Not bad at all, the final training loss was between 0.09 and 0.06 although I should check validation loss as well
+
+CoordReduceTo1x1_100_100_reach:
+  model_name: CoordReduceTo1x1
+  data_folder: linearGrasp_experiment_64
+  training_method: eeVel_aux_wandb
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 100
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0001
+  weight_decay: 1.0e-07
+  loss: MSE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.8197298049926758
+    - 0.7808372378349304
+    - 0.7447342276573181
+  - - 0.06673736870288849
+    - 0.12106295675039291
+    - 0.11275460571050644
+  eeVel_metrics:
+  - - -0.0023999537630164085
+    - -0.09525168974152616
+    - -0.10993967073056495
+    - 0.0015188546700322155
+    - 0.0026745655722996537
+    - -0.0022286665085516854
+  - - 0.03442870213690665
+    - 0.01635090119549282
+    - 0.014301650047776233
+    - 0.07217983852662392
+    - 0.04672039193814877
+    - 0.08094697985758811
+  aux_metrics:
+  - - -0.004645400756342262
+    - 0.9861640740175908
+    - 0.32033922656355895
+    - 0.717556329684952
+    - -0.003011237585012188
+    - -1.578135961253346
+    - -0.005213966968276338
+    - -0.24855552028763397
+    - -0.2953370962298152
+  - - 0.09195238390860551
+    - 0.1408402031757925
+    - 0.15549981089751985
+    - 0.06746339683379561
+    - 0.18052229302144832
+    - 0.2020547085899632
+    - 0.10072883757963506
+    - 0.14256321507863418
+    - 0.15549724585285304
+  Testing:
+    Cube_Reached:
+    - 3
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE:
+
+discard_mi:
+  model_name: MotionImage_attention
+  data_folder: linearGrasp_experiment_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 30
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.8187927007675171
+    - 0.7812894582748413
+    - 0.7450950741767883
+  - - 0.06595294922590256
+    - 0.11751066893339157
+    - 0.10935831815004349
+  recon_metrics:
+  - - 0.004528498277068138
+    - 0.002044858643785119
+    - 0.0020007146522402763
+  - - 0.03699255734682083
+    - 0.024249641224741936
+    - 0.02323889173567295
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  Testing:
+    Cube_Reached:
+    - 10
+    Boundary_Restriction:
+    - moderate
+    Attempts: 32
+#NOTE:
+
+discard_base_distr_100:
+  model_name: Stop_AuxBaselineCNN
+  data_folder: distrGrasp_64
+  training_method: aux_stop_wandb
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 100
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  Testing:
+    Cube_Reached:
+    - 25
+    Boundary_Restriction:
+    - moderate
+    Attempts: 100
+#NOTE:
+
+discard_mi_distr_100:
+  model_name: MotionImage_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 100
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 100
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011768153868615627
+    - 0.008024786598980427
+    - 0.009863205254077911
+  - - 0.05737045407295227
+    - 0.04618072137236595
+    - 0.04988754168152809
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  Testing:
+    Cube_Reached:
+    - 20
+    Boundary_Restriction:
+    - moderate
+    Attempts: 100
+#NOTE:
+
+discard_mi300_distr_100:
+  model_name: MotionImage_attention
+  data_folder: distrGrasp_64
+  training_method: AE_wandb
+  n_epochs: 300
+  n_epochs_stopping: 30
+  batch_size: 64
+  use_gpu: true
+  n_demos_used: 100
+  train_val_split: 0.8
+  optimiser: Adamax
+  learning_rate: 0.0007
+  weight_decay: 1.0e-07
+  loss: MSE
+  stopping_loss: BCE
+  num_outputs: 6
+  num_aux_outputs: 9
+  input_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+  recon_metrics:
+  - - 0.011480615474283695
+    - 0.00786689855158329
+    - 0.009680717252194881
+  - - 0.05613642558455467
+    - 0.04512590914964676
+    - 0.04903450235724449
+  eeVel_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  aux_metrics:
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+    - 1.0
+  Testing:
+    Cube_Reached:
+    - 19
+    - 0
+    Boundary_Restriction:
+    - moderate
+    - moderate
+    Attempts: 100
+#NOTE:
