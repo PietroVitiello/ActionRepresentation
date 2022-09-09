@@ -45,7 +45,6 @@ class TL_aux(SimDataset):
             image = self.transform(image)
         elif self.transform is None:
             image = T.ToTensor()(image)
-        # return image, (eeTarget, eePos, eeOri, cPos)
         return image, (eeTarget, eePos, eeOri)
 
     def filter_stopData(self):

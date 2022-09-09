@@ -30,11 +30,6 @@ class Cube_Scene(Scene):
 
     def log_test_run(self, run, n_completions):
         run.log({
-            f"cubes_grasped_4": n_completions
+            f"cubes_grasped": n_completions
         })
-        # run.log({
-        #     f"cubes_grasped": n_completions,
-        #     "epoch" : 101
-        # }, step=101)
-        # run.summary["cubes_grasped"] = n_completions
         

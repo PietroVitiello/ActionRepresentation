@@ -62,22 +62,6 @@ class Distractor(Shape):
     def set_posBoundaries(self, min, max):
         self.position_min, self.position_max = min, max
 
-    # def set_restrictedBoundaries(self, restriction_type: str="slightly"):
-    #     if restriction_type == "None":
-    #         pass
-    #     elif restriction_type == "slightly":
-    #         self.position_min = [-0.35, 0.55, 0.025]
-    #         self.position_max = [0.35, 0.85, 0.025]
-    #     elif restriction_type == "moderate":
-    #         self.position_min = [-0.30, 0.60, 0.025]
-    #         self.position_max = [0.30, 0.85, 0.025]
-    #     elif restriction_type == "highly":
-    #         self.position_min = [-0.20, 0.60, 0.025]
-    #         self.position_max = [0.20, 0.80, 0.025]
-    #     else:
-    #         raise Exception("Cube restiction option is not available")
-        
-
     def random_pos(self, other_objects: List[Union[Target, Distractor]] = None):
         valid_pos = False
         n_iterations = 0

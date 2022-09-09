@@ -63,7 +63,6 @@ class TL_futureImage(SimDataset):
             image = self.transform(image)
             future_image = self.transform(future_image)
 
-        # return image, (eeTarget, eePos, eeOri, cPos, future_image)
         return image, (eeTarget, eePos, eeOri, future_image)
 
     def get_valid_imagePair(self, index: int) -> Tuple[str, str]:

@@ -13,8 +13,7 @@ class Target(Shape):
         self._set_color(color)
         self.set_renderable(True)
 
-        self.position_min, self.position_max = [-0.5, 0.5, self._height/2], [0.5, 0.85, self._height/2] #[-0.5, 0.5, 0.3], [0.5, 1, 0.3]
-        # self.position_min, self.position_max = [-0.4, 0.5, self._height/2], [0.4, 1, self._height/2]
+        self.position_min, self.position_max = [-0.5, 0.5, self._height/2], [0.5, 0.85, self._height/2] #[-0.4, 0.5, self._height/2], [0.4, 1, self._height/2]
         self.initailOrientation = self.get_orientation()
         self.random_pos()
 

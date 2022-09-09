@@ -47,7 +47,6 @@ class TL_currentImage(SimDataset):
             image = T.ToTensor()(image)
             current_image = T.Resize((32, 32))(image)
             current_image = T.Grayscale()(current_image)
-        # return image, (eeTarget, eePos, eeOri, cPos, current_image)
         return image, (eeTarget, eePos, eeOri, current_image)
 
     def filter_stopData(self):
