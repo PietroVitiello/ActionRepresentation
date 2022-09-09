@@ -35,7 +35,7 @@ def editConfig(cube_reached, restriction):
 
 
 scene_type = "cube"
-saved_locations = "cube_envs_2" #"LinearGrasp"
+saved_locations = "cube_envs_vis" #"LinearGrasp"
 config_file_name = "thesis_models" #"cnn2fc_config" "model_config"
 restriction_type = "same"
 use_metrics = True

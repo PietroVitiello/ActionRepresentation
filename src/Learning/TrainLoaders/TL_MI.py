@@ -68,6 +68,7 @@ class TL_motionImage(SimDataset):
             motion_image = self.transform(motion_image)
 
         return image, (eeTarget, eePos, eeOri, cPos, motion_image)
+        # return image, (eeTarget, eePos, eeOri, motion_image)
 
     def get_valid_imagePair(self, index: int) -> Tuple[str, str]:
         filename = self.df["imLoc"][index]

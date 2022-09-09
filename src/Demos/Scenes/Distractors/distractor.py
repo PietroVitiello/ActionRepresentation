@@ -28,7 +28,7 @@ class Distractor(Shape):
         self.set_renderable(True)
         self.set_collidable(True)
 
-        self.position_min, self.position_max = [-0.4, 0.6, height/2], [0.4, 0.85, height/2] #[-0.26, 0.63, 0.025] [0.26, 0.85, 0.025]
+        self.position_min, self.position_max = [-0.4, 0.6, height/2], [0.4, 1, height/2] #[-0.26, 0.63, 0.025] [0.26, 0.85, 0.025]
         self.initailOrientation = self.get_orientation()
         self._set_far_position()
         self.random_orientation()

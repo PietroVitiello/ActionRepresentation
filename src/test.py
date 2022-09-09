@@ -51,20 +51,20 @@ def get_valid_test_positions():
 
 
 
-scene_type = "cube"
+scene_type = "distractor"
 n_distractors = 3
 shape = 'tall cylinder'
 
-model_filename = "MI_Net_cube_30d_7e4lr"
+model_filename = "MI_Net_deeperAttention_distr_30d" #"MI_Net_deep_deb3"
 restriction_type = "same"
 
-saved_locations = "cube_envs_3" #"LinearGrasp"
+saved_locations = "distr_deb" #"LinearGrasp"
 use_metrics = True
 
 num_episodes = 100
 max_n_steps = 140
 
-config_file_name = "thesis_tuning" #"cnn2fc_config" "model_config"
+config_file_name = "report_models" #"cnn2fc_config" "model_config"
 
 show_testing = True
 

@@ -35,12 +35,12 @@ def model_testing(
     pr.step_ui()
 
     run_id = get_run_id(model_filename, config_filename)
-    run = wandb.init(
-        project="New-Robot-Action-Representation",
-        id=run_id,
-        reinit=True,
-        resume="allow"
-    )
+    # run = wandb.init(
+    #     project="New-Robot-Action-Representation",
+    #     id=run_id,
+    #     reinit=True,
+    #     resume="allow"
+    # )
 
     model_name, constrained, dataset_name, model_params = getModelData(model_filename, config_filename)
     model = model_choice(model_name, *model_params)
@@ -59,7 +59,7 @@ def model_testing(
 
     test = Test(pr, scene, model, data_transforms, restriction_type, camera_res=64, num_episodes=num_episodes, max_n_steps=max_n_steps, saved_positions=saved_positions)
     reached = testMethod(test, model_name, constrained, use_saved_locations)
-    scene.log_test_run(run, reached)
+    # scene.log_test_run(run, reached)
 
     pr.stop()
     pr.shutdown()

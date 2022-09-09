@@ -14,6 +14,7 @@ class Target(Shape):
         self.set_renderable(True)
 
         self.position_min, self.position_max = [-0.5, 0.5, self._height/2], [0.5, 0.85, self._height/2] #[-0.5, 0.5, 0.3], [0.5, 1, 0.3]
+        # self.position_min, self.position_max = [-0.4, 0.5, self._height/2], [0.4, 1, self._height/2]
         self.initailOrientation = self.get_orientation()
         self.random_pos()
 
@@ -68,6 +69,9 @@ class Target(Shape):
         elif restriction_type == "highly":
             self.position_min = [-0.20, 0.60, self._height/2]
             self.position_max = [0.20, 0.80, self._height/2]
+        elif restriction_type == "visible":
+            self.position_min = [-0.35, 0.6, self._height/2]
+            self.position_max = [0.35, 1, self._height/2]
         else:
             raise Exception("Cube restiction option is not available")
         
