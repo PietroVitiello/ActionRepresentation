@@ -1,12 +1,16 @@
 # A New Representation for Actions in Visual Robot Learning
-This repo was created for a project aimed at finding a new representation for robot actions. The work environment consists in a robotic arm with a camera mounted on its wrist. An agent is then trained through imitation learning to control this robotic arm by receiving as input the images captured by the camera. The presented work has been fully developed in simulation and here you will find:
-* code to interface with a simulated environment and control it
-* a kinematics package to control a robotic arm to reach and grasp a target object
-* code to generate different simulation scenes
-* code to create demonstrations of the robotic arm grasping objects in these scenes
-* various neural networks that process an image and return a robot action
-* code to train these models using different data pipelines
-* code to test the models by using them to control the robot in simulation
+This repo was created for a project aimed at finding a new representation for robot actions. The work environment consists in a robotic arm with a camera mounted on its wrist. An agent is then trained through imitation learning to control this robotic arm by receiving as input the images captured by the camera. The presented work has been fully developed in simulation and this repo includes:
+* code to interface with a simulated environment and control it.
+* a kinematics package to control a robotic arm, making it possible to reach and grasp a target object.
+* code to generate different simulation scenes.
+* code to collect demonstrations of a robotic arm grasping objects.
+* various neural networks that process an image and return a robot action.
+* code to train these models using different data pipelines.
+* code that evaluates the ability of each trained model to autonomously grasp objects.
+
+<p align="center">
+  <img src="/Images/demos_gif_2.gif" align="center" height="300">
+</p>
 
 Table of contents
 =================
