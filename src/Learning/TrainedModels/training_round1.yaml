@@ -2533,7 +2533,43 @@ MI_Net_deeperAttention_distr_30d:
     - 7
     - 11
     - 8
+    - 7
+    - 8
+    - 9
+    - 7
+    - 6
+    - 5
+    - 5
+    - 6
+    - 5
+    - 7
+    - 1
+    - 4
+    - 4
+    - 6
+    - 3
+    - 4
+    - 12
+    - 12
     Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
     - moderate
     - moderate
     - moderate
@@ -4228,7 +4264,27 @@ MI_Net_deeperAttention_shapes_30d:
     - 8
     - 12
     - 7
+    - 4
+    - 4
+    - 6
+    - 3
+    - 3
+    - 20
+    - 5
+    - 8
+    - 4
+    - 18
     Boundary_Restriction:
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
+    - moderate
     - moderate
     - moderate
     - moderate

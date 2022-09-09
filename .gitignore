@@ -6,6 +6,16 @@ __pycache__
 **/TrainedModels/**
 !**/TrainedModels/*.yaml
 
-/Images
 **/wandb
+
 src/Debugging
+src/Demos/Scenes/varyingCube_scene.py
+src/multi_train.py
+src/multi_test.py
+
+**/Train_scripts/**
+**/Test_scripts/**
+
+src/Learning/Testing/cube_envs_[2-5]/**
+src/Learning/Testing/cube_envs_vis/**
+src/Learning/Testing/distr_deb/**

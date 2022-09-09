@@ -66,13 +66,12 @@ class Distractor_Scene(Scene):
             obj.set_position(data[index:index+3])
             orientation = obj.get_orientation()
             orientation[2] = data[index+3]
-            # obj.set_orientation(orientation)
+            obj.set_orientation(orientation)
 
     def log_test_run(self, run, n_completions):
         run.log({
             f"{self.n_distractors}_distractor": n_completions
         })
-        # run.summary[f"{self.n_distractors}_distractor"] = n_completions
 
         
         

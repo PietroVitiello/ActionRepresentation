@@ -55,13 +55,13 @@ def saveConfig(configs):
         dataset = {f"{file_name}": configs}
         yaml.dump(dataset, file, sort_keys=False)
 
-file_name = "shapeGrasp_64"
+file_name = "cubeGrasp_vis_64"
 trj_type = "graspDemo"
-scene_type = "shape"
+scene_type = "cube"
 distance_cubeReached = 0.02
-boundary_restriction = "moderate"
+boundary_restriction = "visible"
 
-n_episodes = 60
+n_episodes = 100
 n_runs = 1
 n_steps = 100
 add_validation = True

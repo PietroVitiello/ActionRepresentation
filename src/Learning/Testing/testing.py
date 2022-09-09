@@ -166,7 +166,7 @@ class Test():
             self.bot.resetInitial(self.pr)
             stop = 0
             step_n = 0
-            while stop < 0.96 and step_n<self.max_n_steps:
+            while stop < 0.965 and step_n<self.max_n_steps:
                 stop = self.rmove.autonomousStop(self.model, constrained)
                 step_n += 1
 
@@ -193,6 +193,9 @@ class Test():
                 print("Cube not Grasped\n")
 
             self.rmove.curve.remove_dummies()
+
+            q = [0]*n_joints
+            self.bot.robot.set_joint_target_velocities(q)
 
         print(f"The robot was able to grasp {num_reached} targets out of {self.num_episodes}")
         return num_reached

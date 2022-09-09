@@ -371,7 +371,7 @@ class RobotMovement():
         while not self.check_cubeReached(0.025):
             orientation = self.curve.get_FaceTargetOrientation(dmove.getDummy())
             v = self.curve.getVelocity2Target(v_lin)
-            w = self.bot.get_angularSpeed(orientation)
+            w = self.bot.get_angularSpeed(orientation, time=0.05)
             q = self.bot.get_jointVelo_constrained(v, w)
             self.robot.set_joint_target_velocities(q)
             self.pr.step()
